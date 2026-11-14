@@ -26,13 +26,13 @@
     .panel-left {
       display: flex; flex-direction: column;
       padding: 48px 52px;
-      background: linear-gradient(145deg, rgba(163,230,53,.05) 0%, rgba(34,211,238,.025) 50%, transparent 100%);
+      background: linear-gradient(145deg, rgba(5,150,105,0.04) 0%, rgba(37,99,235,0.04) 50%, transparent 100%);
       border-right: 1px solid var(--rh-border);
       position: relative; overflow: hidden;
     }
     .panel-left::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 30% 80%, rgba(163,230,53,.07) 0%, transparent 55%);
+      background: radial-gradient(circle at 30% 80%, rgba(5,150,105,0.049) 0%, transparent 55%);
       pointer-events: none;
     }
 
@@ -44,11 +44,11 @@
 
     .hero-card-main {
       width: 320px; padding: 28px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(15,23,42,0.018);
+      border: 1px solid rgba(15,23,42,0.07);
       border-radius: 22px;
       backdrop-filter: blur(20px);
-      box-shadow: 0 30px 70px -20px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.05);
+      box-shadow: 0 30px 70px -20px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,.05);
       position: relative; z-index: 2;
       animation: rh-float 7s ease-in-out infinite;
       transform-style: preserve-3d;
@@ -58,31 +58,31 @@
     }
     .hero-card-stat .dot {
       width: 10px; height: 10px; border-radius: 50%; background: var(--rh-green);
-      box-shadow: 0 0 10px rgba(163,230,53,.5);
+      box-shadow: 0 0 10px rgba(15,23,42,.08);
       animation: rh-pulseDot 2s ease-in-out infinite;
     }
     .hero-card-stat span { font-size: 12px; color: var(--rh-text-2); font-weight: 600; }
-    .hero-card-val { font-family: var(--font-display); font-size: 38px; font-weight: 900; color: #fff; letter-spacing: -1px; }
+    .hero-card-val { font-family: var(--font-display); font-size: 38px; font-weight: 900; color: #0f172a; letter-spacing: -1px; }
     .hero-card-val small { font-size: 16px; color: var(--rh-green); }
     .hero-card-label { font-size: 11px; color: var(--rh-text-3); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
     .hero-mini-bar { display: flex; gap: 3px; margin-top: 16px; }
     .hero-mini-bar span {
       height: 20px; border-radius: 4px; flex: 1;
-      background: linear-gradient(180deg, rgba(163,230,53,.2), rgba(163,230,53,.05));
+      background: linear-gradient(180deg, rgba(5,150,105,0.12), rgba(5,150,105,0.04));
     }
-    .hero-mini-bar span:nth-child(2) { height: 30px; align-self: flex-end; background: linear-gradient(180deg, rgba(34,211,238,.3), rgba(34,211,238,.08)); }
+    .hero-mini-bar span:nth-child(2) { height: 30px; align-self: flex-end; background: linear-gradient(180deg, rgba(37,99,235,0.12), rgba(37,99,235,0.056)); }
     .hero-mini-bar span:nth-child(3) { height: 24px; align-self: flex-end; }
-    .hero-mini-bar span:nth-child(4) { height: 36px; align-self: flex-end; background: linear-gradient(180deg, rgba(163,230,53,.35), rgba(163,230,53,.1)); }
-    .hero-mini-bar span:nth-child(5) { height: 28px; align-self: flex-end; background: linear-gradient(180deg, rgba(129,140,248,.25), rgba(129,140,248,.08)); }
+    .hero-mini-bar span:nth-child(4) { height: 36px; align-self: flex-end; background: linear-gradient(180deg, rgba(5,150,105,0.12), rgba(5,150,105,0.07)); }
+    .hero-mini-bar span:nth-child(5) { height: 28px; align-self: flex-end; background: linear-gradient(180deg, rgba(79,70,229,0.12), rgba(79,70,229,0.056)); }
 
     /* Floating satellite chips */
     .sat-chip {
       position: absolute; border-radius: 14px;
-      background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.06);
+      background: rgba(15,23,42,0.015); border: 1px solid rgba(15,23,42,0.06);
       backdrop-filter: blur(12px); padding: 10px 14px;
       font-size: 11px; font-weight: 700; color: var(--rh-text-2);
       display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 10px 30px -10px rgba(0,0,0,.4);
+      box-shadow: 0 10px 30px -10px rgba(15,23,42,0.088);
       z-index: 1;
     }
     .sat-chip-1 { top: 12%; right: 8%; animation: rh-float 8s ease-in-out infinite; animation-delay: -2s; }
@@ -90,22 +90,22 @@
     .sat-chip-3 { top: 55%; right: 3%; animation: rh-float 7s ease-in-out infinite; animation-delay: -1s; }
 
     .sat-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .sat-dot-green { background: var(--rh-green); box-shadow: 0 0 8px rgba(163,230,53,.5); }
-    .sat-dot-cyan { background: var(--rh-cyan); box-shadow: 0 0 8px rgba(34,211,238,.5); }
+    .sat-dot-green { background: var(--rh-green); box-shadow: 0 0 8px rgba(15,23,42,.08); }
+    .sat-dot-cyan { background: var(--rh-cyan); box-shadow: 0 0 8px rgba(15,23,42,.08); }
 
     /* ── Panel Copy ── */
     .panel-copy { position: relative; z-index: 1; margin-top: 36px; }
     .copy-badge {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 6px 14px; border-radius: var(--r-full);
-      background: rgba(163,230,53,.08); border: 1px solid rgba(163,230,53,.15);
+      background: rgba(5,150,105,0.056); border: 1px solid rgba(5,150,105,0.15);
       font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase; color: var(--rh-green); margin-bottom: 18px;
     }
     .copy-h {
       font-family: var(--font-display);
       font-size: 28px; font-weight: 800; line-height: 1.3; letter-spacing: -.5px;
-      background: linear-gradient(135deg, #fff 0%, #d9f99d 50%, #22d3ee 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #047857 50%, #047857 100%);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 14px;
     }
@@ -115,12 +115,12 @@
     .stats-row { display: flex; gap: 16px; margin-top: 32px; position: relative; z-index: 1; }
     .stat-chip {
       flex: 1; padding: 14px 16px;
-      background: rgba(255,255,255,.025); border: 1px solid var(--rh-border);
+      background: rgba(15,23,42,0.015); border: 1px solid var(--rh-border);
       border-radius: var(--r-md); text-align: center;
       backdrop-filter: blur(12px); transition: all .3s;
     }
-    .stat-chip:hover { border-color: rgba(163,230,53,.18); background: rgba(163,230,53,.03); transform: translateY(-3px); }
-    .stat-val { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
+    .stat-chip:hover { border-color: rgba(5,150,105,0.18); background: rgba(5,150,105,0.04); transform: translateY(-3px); }
+    .stat-val { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -.5px; }
     .stat-val span { font-size: 14px; color: var(--rh-green); }
     .stat-lbl { font-size: 10px; color: var(--rh-text-3); font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-top: 4px; }
 
@@ -137,7 +137,7 @@
       margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
     }
     .form-eyebrow::before { content:''; width: 18px; height: 2px; background: var(--rh-green); border-radius: 2px; }
-    .form-h { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -.6px; color: #fff; margin-bottom: 8px; }
+    .form-h { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -.6px; color: #0f172a; margin-bottom: 8px; }
     .form-sub { font-size: 14px; color: var(--rh-text-2); margin-bottom: 36px; }
 
     /* Field */
@@ -155,16 +155,16 @@
     }
     .field-input {
       width: 100%; padding: 14px 16px 14px 44px;
-      background: rgba(255,255,255,.03); border: 1.5px solid var(--rh-border);
+      background: rgba(15,23,42,0.018); border: 1.5px solid var(--rh-border);
       border-radius: var(--r-md); color: var(--rh-text);
       font-size: 14px; font-family: inherit; outline: none;
       transition: border-color .3s, background .3s, box-shadow .3s, transform .2s;
     }
     .field-input::placeholder { color: var(--rh-text-3); }
-    .field-input:hover { background: rgba(255,255,255,.05); border-color: var(--rh-border-hover); }
+    .field-input:hover { background: rgba(15,23,42,0.03); border-color: var(--rh-border-hover); }
     .field-input:focus {
-      background: rgba(163,230,53,.035); border-color: var(--rh-border-focus-green);
-      box-shadow: 0 0 0 4px rgba(163,230,53,.08), 0 6px 16px -4px rgba(163,230,53,.12);
+      background: rgba(5,150,105,0.04); border-color: var(--rh-border-focus-green);
+      box-shadow: 0 0 0 4px rgba(15,23,42,.08), 0 6px 16px -4px rgba(15,23,42,.08);
       transform: translateY(-1px);
     }
     .field-input:focus ~ .field-icon,
@@ -177,25 +177,25 @@
       display: flex; align-items: center; padding: 4px; transition: color .2s;
       border-radius: var(--r-xs);
     }
-    .eye-toggle:hover { color: var(--rh-text-2); background: rgba(255,255,255,.05); }
+    .eye-toggle:hover { color: var(--rh-text-2); background: rgba(15,23,42,0.03); }
 
     /* Row meta */
     .row-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
     .remember-label { display: flex; align-items: center; gap: 9px; cursor: pointer; }
     .custom-check {
       appearance: none; width: 18px; height: 18px; border-radius: 6px;
-      background: var(--rh-surface); border: 1.5px solid rgba(255,255,255,.12);
+      background: var(--rh-surface); border: 1.5px solid rgba(15,23,42,0.12);
       cursor: pointer; position: relative; transition: all .25s; flex-shrink: 0;
     }
-    .custom-check:checked { background: var(--rh-green); border-color: var(--rh-green); box-shadow: 0 0 10px rgba(163,230,53,.35); }
+    .custom-check:checked { background: var(--rh-green); border-color: var(--rh-green); box-shadow: 0 0 10px rgba(15,23,42,.08); }
     .custom-check:checked::after {
       content: ''; position: absolute; left: 5px; top: 2px;
-      width: 5px; height: 9px; border: 2px solid #050709; border-top: none; border-left: none;
+      width: 5px; height: 9px; border: 2px solid #e2e8f0; border-top: none; border-left: none;
       transform: rotate(45deg);
     }
     .remember-text { font-size: 13px; color: var(--rh-text-2); user-select: none; }
     .link-btn { font-size: 13px; color: var(--rh-cyan); text-decoration: none; font-weight: 600; transition: color .2s; }
-    .link-btn:hover { color: #fff; }
+    .link-btn:hover { color: #0f172a; }
 
     /* Social */
     .social-row { display: flex; gap: 10px; }
@@ -212,7 +212,7 @@
     /* Footer */
     .form-footer { text-align: center; font-size: 13px; color: var(--rh-text-2); margin-top: 28px; }
     .form-footer a { color: var(--rh-green); text-decoration: none; font-weight: 700; transition: color .2s; }
-    .form-footer a:hover { color: #fff; }
+    .form-footer a:hover { color: #0f172a; }
 
     /* ── Responsive ── */
     @media (max-width: 860px) {
@@ -232,7 +232,6 @@
 </div>
 <div class="rh-aurora"></div>
 <div class="rh-grid"></div>
-<canvas id="particleCanvas"></canvas>
 
 <div class="page">
 
@@ -243,17 +242,17 @@
         <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#a3e635"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/>
+              <stop offset="0%" stop-color="#10b981"/><stop offset="50%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/>
             </linearGradient>
             <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#a3e635"/>
+              <stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#10b981"/>
             </linearGradient>
           </defs>
           <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
           <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
           <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
           <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
-          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#a3e635" opacity="0.6"/>
+          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#047857" opacity="0.6"/>
         </svg>
       </div>
       <span class="rh-brand-name">Recycle Hub</span>
@@ -328,12 +327,12 @@
       </div>
 
       <!-- Figma / Framer Motion Segmented Role Switcher (Sourcing & Industrial) -->
-      <div class="role-selector-wrap" style="background:rgba(255,255,255,0.03); border:1px solid var(--rh-border); border-radius:14px; padding:4px; display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:20px; position:relative;">
-        <button type="button" class="role-tab active" id="tabSourcing" onclick="setLoginRole('sourcing')" style="padding:10px 6px; font-size:12px; font-weight:700; border-radius:10px; border:none; background:linear-gradient(135deg,rgba(163,230,53,0.2),rgba(101,163,13,0.25)); color:#a3e635; cursor:pointer; font-family:inherit; transition:all 0.25s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 0 15px rgba(163,230,53,0.2);">
-          <span>🌿</span> Sourcing Partner
+      <div class="role-selector-wrap" style="background:rgba(15,23,42,0.018); border:1px solid var(--rh-border); border-radius:14px; padding:4px; display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:20px; position:relative;">
+        <button type="button" class="role-tab active" id="tabSourcing" onclick="setLoginRole('sourcing')" style="padding:10px 6px; font-size:12px; font-weight:700; border-radius:10px; border:none; background:linear-gradient(135deg,rgba(5,150,105,0.12),rgba(5,150,105,0.12)); color:#047857; cursor:pointer; font-family:inherit; transition:all 0.25s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 0 15px rgba(15,23,42,.08);">
+          Sourcing Partner
         </button>
         <button type="button" class="role-tab" id="tabIndustrial" onclick="setLoginRole('industrial')" style="padding:10px 6px; font-size:12px; font-weight:700; border-radius:10px; border:none; background:transparent; color:var(--rh-text-2); cursor:pointer; font-family:inherit; transition:all 0.25s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; gap:6px;">
-          <span>⚙️</span> Industrial Partner
+          Industrial Partner
         </button>
       </div>
 
@@ -400,27 +399,26 @@
       <div class="rh-divider">or instant one-click demo</div>
 
       <!-- Role-Based Instant Demo Portals -->
-      <div style="padding:14px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.08); border-radius:14px; backdrop-filter:blur(10px);">
+      <div style="padding:14px; background:rgba(15,23,42,0.015); border:1px solid rgba(15,23,42,0.08); border-radius:14px; backdrop-filter:blur(10px);">
         <div style="font-size:10px; font-weight:800; color:var(--rh-green); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
           <span style="display:flex; align-items:center; gap:6px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             Instant Demo Credentials
           </span>
-          <span style="color:var(--rh-text-3); font-weight:600; font-size:9px;">Figma Spring Physics</span>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-          <button type="button" onclick="fillSourcingCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(163,230,53,.12),rgba(101,163,13,.12)); border:1px solid rgba(163,230,53,.25); border-radius:9px; color:#a3e635; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(163,230,53,.2)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(163,230,53,.12),rgba(101,163,13,.12))'">
+          <button type="button" onclick="fillSourcingCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(5,150,105,0.084),rgba(5,150,105,0.084)); border:1px solid rgba(5,150,105,0.25); border-radius:9px; color:#047857; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(5,150,105,0.12)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(5,150,105,0.084),rgba(5,150,105,0.084))'">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            🌿 Sourcing Demo
+            Sourcing Demo
           </button>
-          <button type="button" onclick="fillIndustrialCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(34,211,238,.12)); border:1px solid rgba(59,130,246,.3); border-radius:9px; color:#60a5fa; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(59,130,246,.22)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(37,99,235,.12),rgba(34,211,238,.12))'">
+          <button type="button" onclick="fillIndustrialCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(37,99,235,0.084),rgba(37,99,235,0.084)); border:1px solid rgba(37,99,235,0.3); border-radius:9px; color:#1d4ed8; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(37,99,235,0.12)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(37,99,235,0.084),rgba(37,99,235,0.084))'">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-            ⚙️ Industrial Demo
+            Industrial Demo
           </button>
         </div>
-        <button type="button" id="adminQuickBtn" onclick="fillAdminCredentials()" style="width:100%; padding:9px 12px; background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.08)); border:1px solid rgba(251,191,36,.22); border-radius:9px; color:#fde68a; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(251,191,36,.16)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(251,191,36,.08),rgba(245,158,11,.08))'">
+        <button type="button" id="adminQuickBtn" onclick="fillAdminCredentials()" style="width:100%; padding:9px 12px; background:linear-gradient(135deg,rgba(217,119,6,0.056),rgba(217,119,6,0.056)); border:1px solid rgba(217,119,6,0.22); border-radius:9px; color:#b45309; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(217,119,6,0.112)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(217,119,6,0.056),rgba(217,119,6,0.056))'">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          🛡️ Admin Demo → recycle.hub.pvt.ltd@gmail.com
+          Admin Demo → recycle.hub.pvt.ltd@gmail.com
         </button>
       </div>
 
@@ -433,8 +431,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="js/particles.js"></script>
-<script src="js/interactions.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   // ── Entry Animation ──
@@ -558,7 +554,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     if (data.success) {
       showStatus('Login successful! Redirecting...', 'success');
       btn.innerHTML = '✓ Signed In!';
-      btn.style.background = 'linear-gradient(135deg, #65a30d, #0891b2)';
+      btn.style.background = 'linear-gradient(135deg, #047857, #2563eb)';
 
       if (data.user) {
         sessionStorage.setItem('loggedInUser', JSON.stringify(data.user));
@@ -614,9 +610,9 @@ function setLoginRole(role) {
 
   if (role === 'sourcing') {
     tabSourcing.classList.add('active');
-    tabSourcing.style.background = 'linear-gradient(135deg,rgba(163,230,53,0.2),rgba(101,163,13,0.25))';
-    tabSourcing.style.color = '#a3e635';
-    tabSourcing.style.boxShadow = '0 0 15px rgba(163,230,53,0.2)';
+    tabSourcing.style.background = 'linear-gradient(135deg,rgba(5,150,105,0.12),rgba(5,150,105,0.12))';
+    tabSourcing.style.color = '#047857';
+    tabSourcing.style.boxShadow = '0 0 15px rgba(15,23,42,.08)';
     
     idLabel.innerText = 'Email Address (Normal Login by Mail ID)';
     emailInput.placeholder = 'e.g. partner@recyclehub.com (Any email ID accepted)';
@@ -625,28 +621,28 @@ function setLoginRole(role) {
     roleHint.style.color = 'var(--rh-green)';
   } else if (role === 'industrial') {
     tabIndustrial.classList.add('active');
-    tabIndustrial.style.background = 'linear-gradient(135deg,rgba(37,99,235,0.2),rgba(6,182,212,0.25))';
-    tabIndustrial.style.color = '#38bdf8';
-    tabIndustrial.style.boxShadow = '0 0 15px rgba(37,99,235,0.25)';
+    tabIndustrial.style.background = 'linear-gradient(135deg,rgba(37,99,235,0.12),rgba(37,99,235,0.12))';
+    tabIndustrial.style.color = '#1d4ed8';
+    tabIndustrial.style.boxShadow = '0 0 15px rgba(15,23,42,.08)';
 
     idLabel.innerText = 'Unique Partner Code';
     emailInput.placeholder = 'e.g. IND-STEEL-99 or RHI-26-XXXX (Any unique code)';
     idIcon.innerHTML = '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>';
-    roleHint.innerHTML = '<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#38bdf8;"></span> Industrial login using Unique Partner Code + Password';
-    roleHint.style.color = '#38bdf8';
+    roleHint.innerHTML = '<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#2563eb;"></span> Industrial login using Unique Partner Code + Password';
+    roleHint.style.color = '#1d4ed8';
   } else if (role === 'admin') {
     if (tabAdmin) {
       tabAdmin.classList.add('active');
-      tabAdmin.style.background = 'linear-gradient(135deg,rgba(251,191,36,0.2),rgba(245,158,11,0.25))';
-      tabAdmin.style.color = '#fde68a';
-      tabAdmin.style.boxShadow = '0 0 15px rgba(251,191,36,0.2)';
+      tabAdmin.style.background = 'linear-gradient(135deg,rgba(217,119,6,0.12),rgba(217,119,6,0.12))';
+      tabAdmin.style.color = '#b45309';
+      tabAdmin.style.boxShadow = '0 0 15px rgba(15,23,42,.08)';
     }
 
     idLabel.innerText = 'Admin Email Address';
     emailInput.placeholder = 'recycle.hub.pvt.ltd@gmail.com';
     idIcon.innerHTML = '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>';
-    roleHint.innerHTML = '<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#fbbf24;"></span> Admin Command Center: Monitoring live partner activities';
-    roleHint.style.color = '#fbbf24';
+    roleHint.innerHTML = '<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#d97706;"></span> Admin Command Center: Monitoring live partner activities';
+    roleHint.style.color = '#b45309';
   }
 
   if (window.gsap) {
@@ -659,7 +655,7 @@ async function fillSourcingCredentials() {
   setLoginRole('sourcing');
   document.getElementById('email').value = 'saikatpradhan239@gmail.com';
   document.getElementById('password').value = 'Partner@2026';
-  showStatus('🌿 Signing in as Sourcing Partner...', 'success');
+  showStatus('Signing in as Sourcing Partner...', 'success');
 
   try {
     const res = await fetch('/login', {
@@ -684,7 +680,7 @@ async function fillIndustrialCredentials() {
   setLoginRole('industrial');
   document.getElementById('email').value = 'IND-STEEL-99';
   document.getElementById('password').value = 'IndustryPass#1';
-  showStatus('⚙️ Signing in as Industrial Partner...', 'success');
+  showStatus('Signing in as Industrial Partner...', 'success');
 
   try {
     const res = await fetch('/login', {
@@ -709,7 +705,7 @@ async function fillAdminCredentials() {
   setLoginRole('admin');
   document.getElementById('email').value = 'recycle.hub.pvt.ltd@gmail.com';
   document.getElementById('password').value = 'admin123';
-  showStatus('🛡️ Signing in to Admin Command Center...', 'success');
+  showStatus('Signing in to Admin Command Center...', 'success');
 
   try {
     const res = await fetch('/login', {

@@ -12,21 +12,8 @@
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!Element.prototype.animate) return;
 
-  /* Damped-spring easing as CSS linear(), like Figma's "Gentle" spring.
-     x(t) = 1 - e^(-zwt) (cos(wd t) + (zw/wd) sin(wd t)) */
-  function springEasing(zeta, omega, n) {
-    const wd = omega * Math.sqrt(1 - zeta * zeta), pts = [];
-    for (let i = 0; i <= n; i++) {
-      const t = i / n;
-      const x = 1 - Math.exp(-zeta * omega * t) * (Math.cos(wd * t) + (zeta * omega / wd) * Math.sin(wd * t));
-      pts.push(+x.toFixed(4));
-    }
-    pts[n] = 1;
-    return 'linear(' + pts.join(', ') + ')';
-  }
-  const hasLinear = CSS.supports('animation-timing-function', 'linear(0, 1)');
-  const SPRING = hasLinear ? springEasing(0.62, 11, 48) : 'cubic-bezier(.34,1.56,.64,1)';
-  const SOFT = hasLinear ? springEasing(0.9, 10, 36) : 'cubic-bezier(.16,1,.3,1)';
+  // Plain ease-out: no overshoot, reads as calm rather than bouncy.
+  const EASE = 'cubic-bezier(.22,1,.36,1)';
 
   const CARD = [
     '.card', '.stat-card', '.metric-card', '.section-card', '.glass-panel',
@@ -42,8 +29,8 @@
 
   function enter(el, i, dist) {
     el.animate(
-      [{ opacity: 0, transform: `translateY(${dist}px) scale(.985)` }, { opacity: 1, transform: 'none' }],
-      { duration: 700, delay: Math.min(i, 12) * 45, easing: SPRING, fill: 'backwards' }
+      [{ opacity: 0, transform: `translateY(${dist}px)` }, { opacity: 1, transform: 'none' }],
+      { duration: 450, delay: Math.min(i, 8) * 40, easing: EASE, fill: 'backwards' }
     );
   }
 
@@ -53,7 +40,7 @@
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
       io.unobserve(e.target);
-      enter(e.target, i++, 18);
+      enter(e.target, i++, 8);
     });
   }, { rootMargin: '0px 0px -8% 0px' });
 
@@ -64,7 +51,7 @@
     let i = 0;
     els.forEach((el) => {
       const r = el.getBoundingClientRect();
-      if (r.top < vh && r.bottom > 0) enter(el, i++, 14);
+      if (r.top < vh && r.bottom > 0) enter(el, i++, 8);
       else io.observe(el);
     });
   }
@@ -73,7 +60,7 @@
   function onSectionShown(sec) {
     sec.animate(
       [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }],
-      { duration: 520, easing: SOFT }
+      { duration: 520, easing: EASE }
     );
     stagger(sec);
   }
@@ -98,7 +85,7 @@
       seen.add(k);
       if (!visible(r) || i > 14) return;
       r.animate([{ opacity: 0, transform: 'translateX(-8px)' }, { opacity: 1, transform: 'none' }],
-        { duration: 480, delay: i++ * 30, easing: SOFT, fill: 'backwards' });
+        { duration: 480, delay: i++ * 30, easing: EASE, fill: 'backwards' });
     });
     i = 0;
     leaves(cards).forEach((c) => {
@@ -143,10 +130,10 @@
   document.addEventListener('pointerdown', (e) => {
     const b = e.target.closest(PRESS);
     if (!b || b.disabled || b.closest('.rio')) return;
-    b.animate([{ scale: 1 }, { scale: 0.96 }], { duration: 120, easing: 'ease-out', fill: 'forwards' });
+    b.animate([{ scale: 1 }, { scale: 0.98 }], { duration: 120, easing: 'ease-out', fill: 'forwards' });
     const up = () => {
       b.getAnimations().forEach((a) => a.effect && a.effect.getKeyframes().some((k) => 'scale' in k) && a.cancel());
-      b.animate([{ scale: 0.96 }, { scale: 1 }], { duration: 550, easing: SPRING });
+      b.animate([{ scale: 0.98 }, { scale: 1 }], { duration: 200, easing: EASE });
     };
     b.addEventListener('pointerup', up, { once: true });
     b.addEventListener('pointerleave', up, { once: true });
@@ -185,7 +172,7 @@
     ind.classList.toggle('h', items.length > 1 && items[0].offsetTop === items[1].offsetTop);
     const was = ind.style.opacity === '1';
     ind.style.transition = animate && was
-      ? `transform .62s ${SPRING}, width .62s ${SPRING}, height .62s ${SPRING}` : 'opacity .2s ease';
+      ? `transform .3s ${EASE}, width .3s ${EASE}, height .3s ${EASE}` : 'opacity .2s ease';
     ind.style.transform = `translate(${a.offsetLeft}px, ${a.offsetTop}px)`;
     ind.style.width = a.offsetWidth + 'px';
     ind.style.height = a.offsetHeight + 'px';
