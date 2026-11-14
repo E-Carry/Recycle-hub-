@@ -21,12 +21,12 @@
 
 /* Keyboard focus: visible ring only for keyboard users */
 :focus-visible {
-  outline: 2px solid var(--rh-green, #34d399);
+  outline: 2px solid var(--rh-green, #a3e635);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
-::selection { background: rgba(52,211,153,.28); color: #fff; }
+::selection { background: rgba(163,230,53,.28); color: #fff; }
 
 /* Thin themed scrollbars */
 * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.14) transparent; }
@@ -36,7 +36,7 @@
   background: rgba(255,255,255,.12); border-radius: 9px;
   border: 2px solid transparent; background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover { background-color: rgba(52,211,153,.35); }
+::-webkit-scrollbar-thumb:hover { background-color: rgba(163,230,53,.35); }
 
 /* Table rows: soft hover highlight (rows only, table styling untouched) */
 tbody tr { transition: background-color .2s ease; }

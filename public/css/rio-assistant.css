@@ -3,8 +3,8 @@
    Uses design-system.css tokens; falls back to literals if absent.
    ══════════════════════════════════════════════════════════════ */
 .rio {
-  --rio-green: var(--rh-green, #34d399);
-  --rio-cyan: var(--rh-cyan, #2dd4bf);
+  --rio-green: var(--rh-green, #a3e635);
+  --rio-cyan: var(--rh-cyan, #22d3ee);
   --rio-text: var(--rh-text, #f1f5f9);
   --rio-text-2: var(--rh-text-2, #94a3b8);
   --rio-border: var(--rh-border, rgba(255,255,255,.06));
@@ -19,11 +19,11 @@
   position: relative; width: 58px; height: 58px; border-radius: 50%;
   border: 0; cursor: pointer; color: #04130a;
   background: linear-gradient(135deg, var(--rio-green), var(--rio-cyan));
-  box-shadow: 0 10px 30px -6px rgba(52,211,153,.55), inset 0 1px 0 rgba(255,255,255,.4);
+  box-shadow: 0 10px 30px -6px rgba(163,230,53,.55), inset 0 1px 0 rgba(255,255,255,.4);
   display: grid; place-items: center;
   transition: transform .45s var(--rio-spring), box-shadow .3s;
 }
-.rio-launch:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 16px 40px -6px rgba(52,211,153,.7); }
+.rio-launch:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 16px 40px -6px rgba(163,230,53,.7); }
 .rio-launch:active { transform: scale(.94); }
 .rio-launch .rio-ic-x { width: 26px; height: 26px; }
 .rio-launch svg { transition: transform .5s var(--rio-spring), opacity .25s; }
@@ -33,7 +33,7 @@
 /* breathing halo, idle only */
 .rio-launch::after {
   content: ''; position: absolute; inset: -6px; border-radius: 50%;
-  border: 2px solid rgba(52,211,153,.45);
+  border: 2px solid rgba(163,230,53,.45);
   animation: rio-halo 2.6s var(--rio-out) infinite;
 }
 .rio.open .rio-launch::after { animation: none; opacity: 0; }
@@ -60,7 +60,7 @@
   background: rgba(8,11,18,.94);
   border: 1px solid rgba(255,255,255,.09);
   backdrop-filter: blur(24px) saturate(140%); -webkit-backdrop-filter: blur(24px) saturate(140%);
-  box-shadow: 0 30px 80px -20px rgba(0,0,0,.8), 0 0 0 1px rgba(52,211,153,.06), inset 0 1px 0 rgba(255,255,255,.05);
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,.8), 0 0 0 1px rgba(163,230,53,.06), inset 0 1px 0 rgba(255,255,255,.05);
   transform-origin: calc(100% - 29px) calc(100% + 45px);
   transform: scale(.4) translateY(20px); opacity: 0; filter: blur(8px);
   visibility: hidden; pointer-events: none;
@@ -74,9 +74,9 @@
 .rio-head {
   display: flex; align-items: center; gap: 12px; padding: 14px 16px;
   border-bottom: 1px solid var(--rio-border);
-  background: linear-gradient(180deg, rgba(52,211,153,.07), transparent);
+  background: linear-gradient(180deg, rgba(163,230,53,.07), transparent);
 }
-.rio-ava { width: 38px; height: 38px; flex: none; display: grid; filter: drop-shadow(0 4px 12px rgba(16,185,129,.35)); }
+.rio-ava { width: 38px; height: 38px; flex: none; display: grid; filter: drop-shadow(0 4px 12px rgba(132,204,22,.35)); }
 .rio-ava .rio-mark { width: 100%; height: 100%; }
 .rio-title { font-family: var(--font-display, inherit); font-weight: 800; font-size: 15.5px; line-height: 1.2; }
 .rio-status { font-size: 12px; color: var(--rio-text-2); display: flex; align-items: center; gap: 6px; }
@@ -125,7 +125,7 @@
   transition: color .2s, border-color .2s, background .2s, transform .35s var(--rio-spring);
   animation: rio-pop .5s var(--rio-spring) both;
 }
-.rio-chip:hover { color: var(--rio-green); border-color: rgba(52,211,153,.4); background: rgba(52,211,153,.08); transform: translateY(-2px); }
+.rio-chip:hover { color: var(--rio-green); border-color: rgba(163,230,53,.4); background: rgba(163,230,53,.08); transform: translateY(-2px); }
 
 .rio-foot { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--rio-border); background: rgba(0,0,0,.25); }
 .rio-input {
@@ -134,7 +134,7 @@
   background: rgba(255,255,255,.04); border: 1.5px solid var(--rio-border);
   transition: border-color .25s, box-shadow .25s, background .25s;
 }
-.rio-input:focus { border-color: rgba(52,211,153,.5); background: rgba(52,211,153,.04); box-shadow: 0 0 0 4px rgba(52,211,153,.1); }
+.rio-input:focus { border-color: rgba(163,230,53,.5); background: rgba(163,230,53,.04); box-shadow: 0 0 0 4px rgba(163,230,53,.1); }
 .rio-send {
   width: 44px; flex: none; border: 0; border-radius: 12px; cursor: pointer; color: #04130a;
   background: linear-gradient(135deg, var(--rio-green), var(--rio-cyan)); display: grid; place-items: center;
@@ -154,18 +154,18 @@
 }
 
 /* ── Rio mark (animated SVG logo) ── */
-.rio-launch { background: transparent; padding: 0; box-shadow: 0 10px 30px -6px rgba(16,185,129,.55); }
+.rio-launch { background: transparent; padding: 0; box-shadow: 0 10px 30px -6px rgba(132,204,22,.55); }
 .rio-launch .rio-ic-chat { width: 100%; height: 100%; }
 .rio-launch .rio-ic-x { color: #04130a; }
 .rio.open .rio-launch { background: linear-gradient(135deg, var(--rio-green), var(--rio-cyan)); }
 .rio-mark { overflow: visible; }
 .rio-mark-orb { transform-origin: 20px 20px; animation: rio-breathe 4s ease-in-out infinite; }
-.rio-mark-leaf { transform-origin: 13px 27px; animation: rio-sway 5s ease-in-out infinite; }
+.rio-mark-core { transform-origin: 20px 19px; animation: rio-twinkle 5s ease-in-out infinite; }
+@keyframes rio-twinkle { 0%, 100% { transform: rotate(0) scale(1); } 50% { transform: rotate(45deg) scale(.88); } }
 .rio-mark-spark { transform-origin: 20px 20px; animation: rio-orbit 9s linear infinite; }
 .rio.thinking .rio-mark-orb { animation: rio-pulse .9s ease-in-out infinite; }
 .rio.thinking .rio-mark-spark { animation-duration: 1.6s; }
 @keyframes rio-breathe { 50% { transform: scale(.95); } }
-@keyframes rio-sway { 50% { transform: rotate(-6deg); } }
 @keyframes rio-orbit { to { transform: rotate(360deg); } }
 @keyframes rio-pulse { 50% { transform: scale(.88); filter: brightness(1.2); } }
 
@@ -178,5 +178,5 @@
 }
 .rio-copy svg { width: 13px; height: 13px; }
 .rio-msg.bot:hover .rio-copy, .rio-copy:focus-visible { opacity: 1; }
-.rio-copy:hover { color: var(--rio-green); background: rgba(52,211,153,.1); }
+.rio-copy:hover { color: var(--rio-green); background: rgba(163,230,53,.1); }
 @media (hover: none) { .rio-copy { opacity: .7; } }

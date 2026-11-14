@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <meta name="description" content="Create a Recycle-Hub account — Choose your partner type" />
   <title>Create Account | Recycle-Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/design-system.css" />
   <link rel="stylesheet" href="css/motion.css" />
   <link rel="stylesheet" href="css/rio-assistant.css" />
@@ -35,7 +36,7 @@
       font-family: var(--font-display);
       font-size: 42px; font-weight: 900; letter-spacing: -1.2px;
       line-height: 1.15;
-      background: linear-gradient(135deg, #ffffff 20%, #86efac 55%, #2dd4bf 85%, #818cf8 100%);
+      background: linear-gradient(135deg, #ffffff 20%, #d9f99d 55%, #22d3ee 85%, #818cf8 100%);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 12px;
     }
@@ -99,20 +100,20 @@
       transition: opacity .5s; pointer-events: none; z-index: 1;
     }
     .partner-card.sourcing::after {
-      background: radial-gradient(ellipse at 25% 15%, rgba(52,211,153,.1), transparent 65%);
+      background: radial-gradient(ellipse at 25% 15%, rgba(163,230,53,.1), transparent 65%);
     }
     .partner-card.industrial::after {
-      background: radial-gradient(ellipse at 25% 15%, rgba(45,212,191,.1), transparent 65%);
+      background: radial-gradient(ellipse at 25% 15%, rgba(34,211,238,.1), transparent 65%);
     }
     .partner-card:hover::after { opacity: 1; }
 
     .partner-card.sourcing:hover {
-      border-color: rgba(52,211,153,.35);
+      border-color: rgba(163,230,53,.35);
       box-shadow: var(--shadow-xl), var(--shadow-glow-green), inset 0 1px 0 rgba(255,255,255,.08);
       transform: translateY(-10px);
     }
     .partner-card.industrial:hover {
-      border-color: rgba(45,212,191,.35);
+      border-color: rgba(34,211,238,.35);
       box-shadow: var(--shadow-xl), var(--shadow-glow-cyan), inset 0 1px 0 rgba(255,255,255,.08);
       transform: translateY(-10px);
     }
@@ -139,16 +140,16 @@
     }
 
     .sourcing .card-icon-wrap {
-      background: linear-gradient(135deg, rgba(52,211,153,.15), rgba(45,212,191,.08));
-      box-shadow: 0 8px 28px rgba(52,211,153,.22);
+      background: linear-gradient(135deg, rgba(163,230,53,.15), rgba(34,211,238,.08));
+      box-shadow: 0 8px 28px rgba(163,230,53,.22);
     }
-    .sourcing .card-icon-wrap::before { border: 2px solid rgba(52,211,153,.25); }
+    .sourcing .card-icon-wrap::before { border: 2px solid rgba(163,230,53,.25); }
 
     .industrial .card-icon-wrap {
-      background: linear-gradient(135deg, rgba(45,212,191,.15), rgba(99,102,241,.08));
-      box-shadow: 0 8px 28px rgba(45,212,191,.22);
+      background: linear-gradient(135deg, rgba(34,211,238,.15), rgba(99,102,241,.08));
+      box-shadow: 0 8px 28px rgba(34,211,238,.22);
     }
-    .industrial .card-icon-wrap::before { border: 2px solid rgba(45,212,191,.25); }
+    .industrial .card-icon-wrap::before { border: 2px solid rgba(34,211,238,.25); }
 
     /* ── Card Body ── */
     .card-body { position: relative; z-index: 3; flex: 1; display: flex; flex-direction: column; }
@@ -160,12 +161,12 @@
       border-radius: var(--r-full); margin-bottom: 16px; width: fit-content;
     }
     .sourcing .card-tag {
-      background: rgba(52,211,153,.1); color: var(--rh-green);
-      border: 1px solid rgba(52,211,153,.15);
+      background: rgba(163,230,53,.1); color: var(--rh-green);
+      border: 1px solid rgba(163,230,53,.15);
     }
     .industrial .card-tag {
-      background: rgba(45,212,191,.1); color: var(--rh-cyan);
-      border: 1px solid rgba(45,212,191,.15);
+      background: rgba(34,211,238,.1); color: var(--rh-cyan);
+      border: 1px solid rgba(34,211,238,.15);
     }
 
     .card-body h3 {
@@ -193,8 +194,8 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; margin-top: 1px;
     }
-    .sourcing .f-icon { background: rgba(52,211,153,.1); }
-    .industrial .f-icon { background: rgba(45,212,191,.1); }
+    .sourcing .f-icon { background: rgba(163,230,53,.1); }
+    .industrial .f-icon { background: rgba(34,211,238,.1); }
 
     /* CTA */
     .card-btn {
@@ -215,12 +216,12 @@
     .card-btn:hover { transform: translateY(-2px); }
 
     .sourcing .card-btn {
-      background: linear-gradient(135deg, #15803d, #34d399);
-      box-shadow: 0 10px 30px -8px rgba(52,211,153,.4);
+      background: linear-gradient(135deg, #4d7c0f, #a3e635);
+      box-shadow: 0 10px 30px -8px rgba(163,230,53,.4);
     }
     .industrial .card-btn {
-      background: linear-gradient(135deg, #155e75, #2dd4bf);
-      box-shadow: 0 10px 30px -8px rgba(45,212,191,.35);
+      background: linear-gradient(135deg, #155e75, #22d3ee);
+      box-shadow: 0 10px 30px -8px rgba(34,211,238,.35);
     }
 
     /* ── 3D Floating Elements ── */
@@ -291,21 +292,21 @@
           <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#34d399"/><stop offset="50%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#818cf8"/>
+                <stop offset="0%" stop-color="#a3e635"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/>
               </linearGradient>
               <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#34d399"/>
+                <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#a3e635"/>
               </linearGradient>
             </defs>
             <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
             <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
             <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
             <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
-            <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#34d399" opacity="0.6"/>
+            <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#a3e635" opacity="0.6"/>
           </svg>
         </div>
       </div>
-      <h1>Join Recycle Hub</h1>
+      <h1 data-split>Join Recycle Hub</h1>
       <p class="tagline">Choose the partnership that fits your organization and start making a sustainable impact today.</p>
     </div>
 
@@ -323,7 +324,7 @@
         <div class="float-element float-el-1"></div>
         <div class="float-element float-el-2"></div>
         <div class="card-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a3e635" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
             <path d="M8 12l2 2 4-4"/>
             <path d="M7 3.34V5a3 3 0 003 3h0a2 2 0 012 2v0a2 2 0 004 0v0a2 2 0 012-2h0a3 3 0 003-3V3.34"/>
@@ -339,19 +340,19 @@
           <p>For businesses and collectors who supply, sort, and deliver recyclable raw materials to Recycle Hub.</p>
           <ul class="features">
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a3e635" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               List and manage recyclable material inventory
             </li>
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a3e635" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               Connect with Recycle Hub as a verified Sourcing Partner
             </li>
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a3e635" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               Track Quick pickups or Scheduled pickups
             </li>
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a3e635" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               Access transparent pricing analytics
             </li>
           </ul>
@@ -369,7 +370,7 @@
         <div class="float-element float-el-1"></div>
         <div class="float-element float-el-2"></div>
         <div class="card-icon-wrap">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M2 20h20"/>
             <path d="M5 20V8l5-4v16"/>
             <path d="M10 20V4l5 4v12"/>
@@ -386,19 +387,19 @@
           <p>For manufacturers and processing units that require a consistent, certified supply of recyclable materials.</p>
           <ul class="features">
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               Browse quality-verified recyclable material listings
             </li>
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               Connect with Recycle Hub as a verified Industrial Partner
             </li>
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               Track Quick delivery or Scheduled delivery
             </li>
             <li>
-              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
               Access Real time pricing on Recyclable materials
             </li>
           </ul>
@@ -453,6 +454,7 @@
     });
   </script>
   <script src="js/ux.js" defer></script>
+  <script src="js/fx.js" defer></script>
   <script src="js/motion.js" defer></script>
   <script src="js/rio-assistant.js" defer></script>
 </body>

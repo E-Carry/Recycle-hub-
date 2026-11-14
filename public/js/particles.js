@@ -30,20 +30,20 @@
   const theme = (canvas.dataset.theme || 'default').toLowerCase();
 
   let COLORS = [
-    'rgba(52,211,153,',   // green
-    'rgba(45,212,191,',   // cyan
+    'rgba(163,230,53,',   // green
+    'rgba(34,211,238,',   // cyan
     'rgba(129,140,248,',  // indigo
   ];
-  let connectionBase = 'rgba(52,211,153,';
+  let connectionBase = 'rgba(163,230,53,';
 
   if (theme.includes('source') || theme.includes('emerald')) {
     COLORS = [
-      'rgba(16,185,129,',  // emerald
-      'rgba(52,211,153,',  // mint
+      'rgba(132,204,22,',  // emerald
+      'rgba(163,230,53,',  // mint
       'rgba(6,182,212,',   // cyan
       'rgba(110,231,183,', // light green
     ];
-    connectionBase = 'rgba(52,211,153,';
+    connectionBase = 'rgba(163,230,53,';
   } else if (theme.includes('ind') || theme.includes('cobalt')) {
     COLORS = [
       'rgba(37,99,235,',   // cobalt
@@ -54,12 +54,12 @@
     connectionBase = 'rgba(56,189,248,';
   } else if (theme.includes('admin')) {
     COLORS = [
-      'rgba(52,211,153,',  // green
-      'rgba(45,212,191,',  // cyan
+      'rgba(163,230,53,',  // green
+      'rgba(34,211,238,',  // cyan
       'rgba(251,191,36,',  // amber
       'rgba(129,140,248,', // violet
     ];
-    connectionBase = 'rgba(45,212,191,';
+    connectionBase = 'rgba(34,211,238,';
   }
 
   function resize() {

@@ -138,7 +138,7 @@
         const r = panel.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width;
         const y = (e.clientY - r.top) / r.height;
-        panel.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(52,211,153,.035) 0%, transparent 55%)`;
+        panel.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(163,230,53,.035) 0%, transparent 55%)`;
       });
       panel.addEventListener('mouseleave', () => {
         panel.style.background = '';

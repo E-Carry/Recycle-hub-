@@ -24,17 +24,23 @@
   })();
   const isAdmin = !!(user.isAdmin || user.type === 'admin');
 
-  // Rio mark: emerald->teal orb, white leaf, orbiting spark. Gradient ids must be unique per instance.
+  // Rio mark: lime->cyan->violet squircle, dark AI sparkle with a leaf cut, orbiting spark.
+  // Gradient ids must be unique per instance.
   let markN = 0;
   const mark = (cls) => {
     const g = 'rioG' + (++markN);
     return `<svg class="rio-mark ${cls}" viewBox="0 0 40 40" aria-hidden="true">
-      <defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#14b8a6"/></linearGradient></defs>
-      <circle class="rio-mark-orb" cx="20" cy="20" r="18" fill="url(#${g})"/>
-      <circle cx="20" cy="20" r="17.25" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
-      <path class="rio-mark-leaf" d="M12.5 26.5C12 18 17 12.5 27.5 12.5 27.5 22 22 27 14 27.2" fill="#fff"/>
-      <path d="M12.5 27.5 22 18" stroke="#0d9488" stroke-width="1.7" stroke-linecap="round" fill="none"/>
-      <g class="rio-mark-spark"><path d="M31 6.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="#fff"/></g>
+      <defs>
+        <linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9f99d"/><stop offset=".5" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
+        <radialGradient id="${g}h" cx=".3" cy=".2" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect class="rio-mark-orb" x="2" y="2" width="36" height="36" rx="12" fill="url(#${g})"/>
+      <rect x="2" y="2" width="36" height="36" rx="12" fill="url(#${g}h)"/>
+      <g class="rio-mark-core">
+        <path d="M20 8.5c1 6.2 4.3 9.5 10.5 10.5-6.2 1-9.5 4.3-10.5 10.5-1-6.2-4.3-9.5-10.5-10.5C15.7 18 19 14.7 20 8.5z" fill="#06120a"/>
+        <path d="M17.2 22.4c.3-3 2.3-5 5.6-5.4-.4 3.2-2.4 5.1-5.6 5.4z" fill="#bef264"/>
+      </g>
+      <g class="rio-mark-spark"><circle cx="31.5" cy="31" r="2.6" fill="#06120a"/><circle cx="31.5" cy="31" r="1.1" fill="#bef264"/></g>
     </svg>`;
   };
 

@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <meta name="description" content="Sign in to Recycle Hub — Your trusted recycling platform" />
   <title>Sign In | Recycle Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/design-system.css" />
   <link rel="stylesheet" href="css/motion.css" />
   <link rel="stylesheet" href="css/rio-assistant.css" />
@@ -25,13 +26,13 @@
     .panel-left {
       display: flex; flex-direction: column;
       padding: 48px 52px;
-      background: linear-gradient(145deg, rgba(52,211,153,.05) 0%, rgba(45,212,191,.025) 50%, transparent 100%);
+      background: linear-gradient(145deg, rgba(163,230,53,.05) 0%, rgba(34,211,238,.025) 50%, transparent 100%);
       border-right: 1px solid var(--rh-border);
       position: relative; overflow: hidden;
     }
     .panel-left::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 30% 80%, rgba(52,211,153,.07) 0%, transparent 55%);
+      background: radial-gradient(circle at 30% 80%, rgba(163,230,53,.07) 0%, transparent 55%);
       pointer-events: none;
     }
 
@@ -57,7 +58,7 @@
     }
     .hero-card-stat .dot {
       width: 10px; height: 10px; border-radius: 50%; background: var(--rh-green);
-      box-shadow: 0 0 10px rgba(52,211,153,.5);
+      box-shadow: 0 0 10px rgba(163,230,53,.5);
       animation: rh-pulseDot 2s ease-in-out infinite;
     }
     .hero-card-stat span { font-size: 12px; color: var(--rh-text-2); font-weight: 600; }
@@ -67,11 +68,11 @@
     .hero-mini-bar { display: flex; gap: 3px; margin-top: 16px; }
     .hero-mini-bar span {
       height: 20px; border-radius: 4px; flex: 1;
-      background: linear-gradient(180deg, rgba(52,211,153,.2), rgba(52,211,153,.05));
+      background: linear-gradient(180deg, rgba(163,230,53,.2), rgba(163,230,53,.05));
     }
-    .hero-mini-bar span:nth-child(2) { height: 30px; align-self: flex-end; background: linear-gradient(180deg, rgba(45,212,191,.3), rgba(45,212,191,.08)); }
+    .hero-mini-bar span:nth-child(2) { height: 30px; align-self: flex-end; background: linear-gradient(180deg, rgba(34,211,238,.3), rgba(34,211,238,.08)); }
     .hero-mini-bar span:nth-child(3) { height: 24px; align-self: flex-end; }
-    .hero-mini-bar span:nth-child(4) { height: 36px; align-self: flex-end; background: linear-gradient(180deg, rgba(52,211,153,.35), rgba(52,211,153,.1)); }
+    .hero-mini-bar span:nth-child(4) { height: 36px; align-self: flex-end; background: linear-gradient(180deg, rgba(163,230,53,.35), rgba(163,230,53,.1)); }
     .hero-mini-bar span:nth-child(5) { height: 28px; align-self: flex-end; background: linear-gradient(180deg, rgba(129,140,248,.25), rgba(129,140,248,.08)); }
 
     /* Floating satellite chips */
@@ -89,22 +90,22 @@
     .sat-chip-3 { top: 55%; right: 3%; animation: rh-float 7s ease-in-out infinite; animation-delay: -1s; }
 
     .sat-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .sat-dot-green { background: var(--rh-green); box-shadow: 0 0 8px rgba(52,211,153,.5); }
-    .sat-dot-cyan { background: var(--rh-cyan); box-shadow: 0 0 8px rgba(45,212,191,.5); }
+    .sat-dot-green { background: var(--rh-green); box-shadow: 0 0 8px rgba(163,230,53,.5); }
+    .sat-dot-cyan { background: var(--rh-cyan); box-shadow: 0 0 8px rgba(34,211,238,.5); }
 
     /* ── Panel Copy ── */
     .panel-copy { position: relative; z-index: 1; margin-top: 36px; }
     .copy-badge {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 6px 14px; border-radius: var(--r-full);
-      background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.15);
+      background: rgba(163,230,53,.08); border: 1px solid rgba(163,230,53,.15);
       font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase; color: var(--rh-green); margin-bottom: 18px;
     }
     .copy-h {
       font-family: var(--font-display);
       font-size: 28px; font-weight: 800; line-height: 1.3; letter-spacing: -.5px;
-      background: linear-gradient(135deg, #fff 0%, #86efac 50%, #2dd4bf 100%);
+      background: linear-gradient(135deg, #fff 0%, #d9f99d 50%, #22d3ee 100%);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 14px;
     }
@@ -118,7 +119,7 @@
       border-radius: var(--r-md); text-align: center;
       backdrop-filter: blur(12px); transition: all .3s;
     }
-    .stat-chip:hover { border-color: rgba(52,211,153,.18); background: rgba(52,211,153,.03); transform: translateY(-3px); }
+    .stat-chip:hover { border-color: rgba(163,230,53,.18); background: rgba(163,230,53,.03); transform: translateY(-3px); }
     .stat-val { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
     .stat-val span { font-size: 14px; color: var(--rh-green); }
     .stat-lbl { font-size: 10px; color: var(--rh-text-3); font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-top: 4px; }
@@ -162,8 +163,8 @@
     .field-input::placeholder { color: var(--rh-text-3); }
     .field-input:hover { background: rgba(255,255,255,.05); border-color: var(--rh-border-hover); }
     .field-input:focus {
-      background: rgba(52,211,153,.035); border-color: var(--rh-border-focus-green);
-      box-shadow: 0 0 0 4px rgba(52,211,153,.08), 0 6px 16px -4px rgba(52,211,153,.12);
+      background: rgba(163,230,53,.035); border-color: var(--rh-border-focus-green);
+      box-shadow: 0 0 0 4px rgba(163,230,53,.08), 0 6px 16px -4px rgba(163,230,53,.12);
       transform: translateY(-1px);
     }
     .field-input:focus ~ .field-icon,
@@ -186,7 +187,7 @@
       background: var(--rh-surface); border: 1.5px solid rgba(255,255,255,.12);
       cursor: pointer; position: relative; transition: all .25s; flex-shrink: 0;
     }
-    .custom-check:checked { background: var(--rh-green); border-color: var(--rh-green); box-shadow: 0 0 10px rgba(52,211,153,.35); }
+    .custom-check:checked { background: var(--rh-green); border-color: var(--rh-green); box-shadow: 0 0 10px rgba(163,230,53,.35); }
     .custom-check:checked::after {
       content: ''; position: absolute; left: 5px; top: 2px;
       width: 5px; height: 9px; border: 2px solid #050709; border-top: none; border-left: none;
@@ -242,17 +243,17 @@
         <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#34d399"/><stop offset="50%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#818cf8"/>
+              <stop offset="0%" stop-color="#a3e635"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/>
             </linearGradient>
             <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#34d399"/>
+              <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#a3e635"/>
             </linearGradient>
           </defs>
           <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
           <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
           <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
           <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
-          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#34d399" opacity="0.6"/>
+          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#a3e635" opacity="0.6"/>
         </svg>
       </div>
       <span class="rh-brand-name">Recycle Hub</span>
@@ -292,7 +293,7 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         Trusted Platform
       </div>
-      <h2 class="copy-h">Trusted Transparency,<br/>Unmatched Quality</h2>
+      <h2 class="copy-h" data-split>Trusted Transparency,<br/>Unmatched Quality</h2>
       <p class="copy-p">Empowering sustainable choices with verified, premium-grade recyclable materials — connecting sourcing partners and industry seamlessly.</p>
     </div>
 
@@ -328,7 +329,7 @@
 
       <!-- Figma / Framer Motion Segmented Role Switcher (Sourcing & Industrial) -->
       <div class="role-selector-wrap" style="background:rgba(255,255,255,0.03); border:1px solid var(--rh-border); border-radius:14px; padding:4px; display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:20px; position:relative;">
-        <button type="button" class="role-tab active" id="tabSourcing" onclick="setLoginRole('sourcing')" style="padding:10px 6px; font-size:12px; font-weight:700; border-radius:10px; border:none; background:linear-gradient(135deg,rgba(52,211,153,0.2),rgba(5,150,105,0.25)); color:#34d399; cursor:pointer; font-family:inherit; transition:all 0.25s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 0 15px rgba(52,211,153,0.2);">
+        <button type="button" class="role-tab active" id="tabSourcing" onclick="setLoginRole('sourcing')" style="padding:10px 6px; font-size:12px; font-weight:700; border-radius:10px; border:none; background:linear-gradient(135deg,rgba(163,230,53,0.2),rgba(101,163,13,0.25)); color:#a3e635; cursor:pointer; font-family:inherit; transition:all 0.25s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 0 15px rgba(163,230,53,0.2);">
           <span>🌿</span> Sourcing Partner
         </button>
         <button type="button" class="role-tab" id="tabIndustrial" onclick="setLoginRole('industrial')" style="padding:10px 6px; font-size:12px; font-weight:700; border-radius:10px; border:none; background:transparent; color:var(--rh-text-2); cursor:pointer; font-family:inherit; transition:all 0.25s cubic-bezier(.16,1,.3,1); display:flex; align-items:center; justify-content:center; gap:6px;">
@@ -408,11 +409,11 @@
           <span style="color:var(--rh-text-3); font-weight:600; font-size:9px;">Figma Spring Physics</span>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-          <button type="button" onclick="fillSourcingCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(5,150,105,.12)); border:1px solid rgba(52,211,153,.25); border-radius:9px; color:#34d399; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(52,211,153,.2)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(52,211,153,.12),rgba(5,150,105,.12))'">
+          <button type="button" onclick="fillSourcingCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(163,230,53,.12),rgba(101,163,13,.12)); border:1px solid rgba(163,230,53,.25); border-radius:9px; color:#a3e635; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(163,230,53,.2)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(163,230,53,.12),rgba(101,163,13,.12))'">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             🌿 Sourcing Demo
           </button>
-          <button type="button" onclick="fillIndustrialCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(45,212,191,.12)); border:1px solid rgba(59,130,246,.3); border-radius:9px; color:#60a5fa; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(59,130,246,.22)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(37,99,235,.12),rgba(45,212,191,.12))'">
+          <button type="button" onclick="fillIndustrialCredentials()" style="padding:9px 10px; background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(34,211,238,.12)); border:1px solid rgba(59,130,246,.3); border-radius:9px; color:#60a5fa; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-family:inherit; transition:all .2s;" onmouseover="this.style.background='rgba(59,130,246,.22)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(37,99,235,.12),rgba(34,211,238,.12))'">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
             ⚙️ Industrial Demo
           </button>
@@ -557,7 +558,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     if (data.success) {
       showStatus('Login successful! Redirecting...', 'success');
       btn.innerHTML = '✓ Signed In!';
-      btn.style.background = 'linear-gradient(135deg, #059669, #0d9488)';
+      btn.style.background = 'linear-gradient(135deg, #65a30d, #0891b2)';
 
       if (data.user) {
         sessionStorage.setItem('loggedInUser', JSON.stringify(data.user));
@@ -613,9 +614,9 @@ function setLoginRole(role) {
 
   if (role === 'sourcing') {
     tabSourcing.classList.add('active');
-    tabSourcing.style.background = 'linear-gradient(135deg,rgba(52,211,153,0.2),rgba(5,150,105,0.25))';
-    tabSourcing.style.color = '#34d399';
-    tabSourcing.style.boxShadow = '0 0 15px rgba(52,211,153,0.2)';
+    tabSourcing.style.background = 'linear-gradient(135deg,rgba(163,230,53,0.2),rgba(101,163,13,0.25))';
+    tabSourcing.style.color = '#a3e635';
+    tabSourcing.style.boxShadow = '0 0 15px rgba(163,230,53,0.2)';
     
     idLabel.innerText = 'Email Address (Normal Login by Mail ID)';
     emailInput.placeholder = 'e.g. partner@recyclehub.com (Any email ID accepted)';
@@ -729,6 +730,7 @@ async function fillAdminCredentials() {
 }
 </script>
   <script src="js/ux.js" defer></script>
+  <script src="js/fx.js" defer></script>
   <script src="js/motion.js" defer></script>
   <script src="js/rio-assistant.js" defer></script>
 </body>
