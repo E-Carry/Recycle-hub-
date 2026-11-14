@@ -109,7 +109,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static client assets from public/
+// Serve static client assets from public/ ("/" -> public/index.html, the landing page)
 const PUBLIC_DIR = path.join(__dirname, 'public');
 app.use(express.static(PUBLIC_DIR));
 
@@ -119,11 +119,6 @@ app.use('/js', express.static(path.join(PUBLIC_DIR, 'js')));
 // Fallback so root requests for design-system.css or particles.js resolve cleanly
 app.use(express.static(path.join(PUBLIC_DIR, 'css')));
 app.use(express.static(path.join(PUBLIC_DIR, 'js')));
-
-// Default route to serve login.html when visiting the root URL
-app.get('/', (req, res) => {
-    res.sendFile(path.join(PUBLIC_DIR, 'login.html'));
-});
 
 // In-memory store for OTPs
 const otpStore = {};

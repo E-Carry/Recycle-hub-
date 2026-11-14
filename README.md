@@ -1,0 +1,30 @@
+# Recycle Hub
+
+Recycling marketplace connecting sourcing partners (who collect material) with industrial partners (who process it), with the Rio AI assistant built into every page.
+
+## Run locally
+
+```
+npm install
+cp .env.example .env   # then fill in your Gmail address and app password
+npm start              # http://localhost:3000
+```
+
+Email (OTP) is skipped if `EMAIL_USER`/`EMAIL_PASS` are not set. `data/users.json` is created on first run and is not committed.
+
+## Pages (`public/`)
+
+| Page | Purpose |
+|---|---|
+| `index.html` | Landing page, served at `/` |
+| `login.html` | Sign in |
+| `register.html` | Choose partner type |
+| `register-sourcing.html`, `register-industrial.html` | Partner registration |
+| `sourcing-dashboard.html`, `industrial-dashboard.html`, `admin-dashboard.html` | Dashboards |
+| `rio/index.html` | Rio AI console (knowledge base, alerts), served at `/rio/` |
+
+Shared layers: `css/design-system.css` (tokens), `css/motion.css` + `js/motion.js` (animations), `css/rio-assistant.css` + `js/rio-assistant.js` (chat widget).
+
+## Deploying
+
+This is an Express app (`server.js`), so it needs a Node host such as Render or Railway. GitHub Pages cannot run it.
