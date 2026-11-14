@@ -113,12 +113,37 @@
     return engine;
   }
 
+  // LLM reply via the server (key never reaches the browser). null = use the engine's answer.
+  let llmOff = false;
+  async function llm(text, prior) {
+    if (llmOff) return null;
+    const m = window.rioKB && window.rioKB.findBestMatch(text);
+    try {
+      const r = await fetch('/api/rio/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          facts: m ? [{ q: m.entry.question, a: m.entry.answer }] : [],
+          history: prior.filter((h) => !h.alert).map((h) => ({ role: h.who === 'user' ? 'user' : 'assistant', content: h.text })),
+        }),
+      });
+      if (r.status === 503) llmOff = true; // not configured on this server
+      if (!r.ok) return null;
+      return (await r.json()).reply || null;
+    } catch (e) {
+      console.warn('[Rio] LLM unavailable, using built-in answers', e);
+      return null;
+    }
+  }
+
   let busy = false;
   async function ask(text) {
     text = text.trim();
     if (!text || busy) return;
     busy = true; input.value = ''; send.disabled = true;
     chips.innerHTML = '';
+    const prior = history.slice(-8);
     push({ who: 'user', text });
 
     const typing = document.createElement('div');
@@ -132,9 +157,10 @@
         rio.processMessage(text, { name: user.fullName, email: user.email }),
         new Promise((r) => setTimeout(r, 450)), // let the typing dots read as "thinking"
       ]);
+      // Alerts keep the engine's reply: it carries the incident reference.
+      const reply = res.flaggedAlert ? null : await llm(text, prior);
       typing.remove();
-      // Engine already appends its own "flagged" note when an alert fires.
-      push({ who: 'bot', alert: !!res.flaggedAlert, text: res.botMsg.text, time: res.botMsg.time });
+      push({ who: 'bot', alert: !!res.flaggedAlert, text: reply || res.botMsg.text, time: res.botMsg.time });
     } catch (err) {
       typing.remove();
       console.error('[Rio]', err);

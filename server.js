@@ -121,6 +121,21 @@ app.use('/js', express.static(path.join(PUBLIC_DIR, 'js')));
 app.use(express.static(path.join(PUBLIC_DIR, 'css')));
 app.use(express.static(path.join(PUBLIC_DIR, 'js')));
 
+// Rio AI LLM replies (OpenRouter). Public endpoint spending the site's key,
+// so cap each IP at 15 requests/minute.
+const rioLLM = require('./rio-llm');
+const rioHits = new Map();
+app.post('/api/rio/chat', async (req, res) => {
+    const now = Date.now();
+    const hits = (rioHits.get(req.ip) || []).filter((t) => now - t < 60000);
+    if (hits.length >= 15) return res.status(429).json({ error: 'Too many requests' });
+    hits.push(now);
+    rioHits.set(req.ip, hits);
+    if (rioHits.size > 5000) rioHits.clear();
+    const r = await rioLLM.chat(req.body);
+    res.status(r.status).json(r.body);
+});
+
 // In-memory store for OTPs
 const otpStore = {};
 

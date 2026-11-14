@@ -12,6 +12,8 @@ npm start              # http://localhost:3000
 
 Email (OTP) is skipped if `EMAIL_USER`/`EMAIL_PASS` are not set. `data/users.json` is created on first run and is not committed.
 
+Rio AI answers with an LLM via OpenRouter when `OPENROUTER_API_KEY` is set in `.env` (default model `google/gemma-4-31b-it:free`, change with `OPENROUTER_MODEL`). Without it, Rio uses its built-in FAQ engine. The key stays on the server. Tests: `npm test`.
+
 ## Pages (`public/`)
 
 | Page | Purpose |
