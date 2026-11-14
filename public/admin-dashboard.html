@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Recycle Hub — Admin Command Center & Developer Workspace" />
+  <title>Admin Command Center | Recycle Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/motion.css" />
+  <link rel="stylesheet" href="css/rio-assistant.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #4ade80; --cyan: #22d3ee; --indigo: #818cf8; --amber: #fbbf24; --red: #f87171; --rose: #fb7185;
+      --bg: #030507; --surface: rgba(255,255,255,.03); --surface-2: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.06); --border-hover: rgba(255,255,255,.12);
+      --text: #f1f5f9; --text-2: #94a3b8; --text-3: #475569;
+      --ease: cubic-bezier(.16,1,.3,1);
+      --sidebar-w: 72px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    body::before { content:''; position:fixed; inset:0; z-index:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; }
+
+    /* ── Ambient Background ── */
+    .bg-ambient { position:fixed; inset:0; z-index:0; overflow:hidden;
+      background: radial-gradient(ellipse 80% 60% at 10% 5%,rgba(74,222,128,.1),transparent 65%),
+                  radial-gradient(ellipse 60% 50% at 90% 95%,rgba(34,211,238,.08),transparent 65%),
+                  radial-gradient(ellipse 40% 40% at 50% 50%,rgba(129,140,248,.05),transparent 65%),var(--bg); }
+    .orb { position:absolute; border-radius:50%; pointer-events:none; will-change:transform; }
+    .orb-1 { width:700px; height:700px; top:-300px; left:-200px; background:radial-gradient(circle,rgba(74,222,128,.15),transparent 65%); filter:blur(100px); animation:orbF1 12s ease-in-out infinite; }
+    .orb-2 { width:600px; height:600px; bottom:-200px; right:-150px; background:radial-gradient(circle,rgba(34,211,238,.12),transparent 65%); filter:blur(100px); animation:orbF2 14s ease-in-out infinite; }
+    .orb-3 { width:400px; height:400px; top:40%; left:50%; background:radial-gradient(circle,rgba(129,140,248,.07),transparent 65%); filter:blur(110px); animation:orbF3 16s ease-in-out infinite; }
+    @keyframes orbF1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(30px,18px) scale(1.03);} }
+    @keyframes orbF2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-22px,-14px) scale(1.05);} }
+    @keyframes orbF3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(16px,-20px) scale(.97);} }
+    .bg-grid { position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+      background-size:56px 56px; mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black 25%,transparent 100%); }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position:fixed; left:0; top:0; bottom:0; width:var(--sidebar-w);
+      background:rgba(3,5,7,.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+      border-right:1px solid var(--border); z-index:100;
+      display:flex; flex-direction:column; align-items:center; padding:18px 0 14px; gap:4px;
+    }
+    .sidebar-logo { width:42px; height:42px; border-radius:13px; background:linear-gradient(135deg,#4ade80,#22d3ee); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 6px 20px rgba(74,222,128,.3); margin-bottom:18px; flex-shrink:0; cursor:pointer; transition:transform .3s var(--ease); }
+    .sidebar-logo:hover { transform:scale(1.08) rotate(-5deg); }
+    .nav-btn { width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center; color:var(--text-3); cursor:pointer; transition:all .2s; position:relative; border:none; background:none; }
+    .nav-btn:hover, .nav-btn.active { background:rgba(74,222,128,.12); color:var(--green); }
+    .nav-btn.active::before { content:''; position:absolute; left:-14px; top:50%; transform:translateY(-50%); width:3px; height:22px; background:var(--green); border-radius:0 3px 3px 0; }
+    .nav-tip { position:absolute; left:56px; background:rgba(15,23,42,.95); color:#fff; font-size:11px; font-weight:600; padding:5px 11px; border-radius:7px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .15s; border:1px solid var(--border); z-index:200; }
+    .nav-btn:hover .nav-tip { opacity:1; }
+    .sidebar-spacer { flex:1; }
+    .nav-divider { width:28px; height:1px; background:var(--border); margin:6px 0; }
+
+    /* ── Main Content Area ── */
+    .main { margin-left:var(--sidebar-w); min-height:100vh; position:relative; z-index:1; }
+
+    /* ── Top Bar ── */
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 32px; border-bottom:1px solid var(--border); background:rgba(3,5,7,.8); backdrop-filter:blur(16px); position:sticky; top:0; z-index:50; gap:16px; }
+    .topbar-left { display:flex; align-items:center; gap:14px; }
+    .topbar-left h2 { font-size:16px; font-weight:800; font-family:'Outfit',sans-serif; letter-spacing:-.3px; }
+    .topbar-left h2 span { background:linear-gradient(135deg,#4ade80,#22d3ee); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+    .mode-switch { display:flex; background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+    .mode-btn { padding:7px 16px; font-size:11px; font-weight:700; letter-spacing:.5px; color:var(--text-3); background:none; border:none; cursor:pointer; transition:all .2s; font-family:inherit; }
+    .mode-btn.active { background:rgba(74,222,128,.12); color:var(--green); }
+    .topbar-center { flex:1; max-width:340px; }
+    .search-box { width:100%; padding:9px 14px 9px 36px; background:var(--surface); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:13px; font-family:inherit; outline:none; transition:border-color .2s,box-shadow .2s; }
+    .search-box:focus { border-color:rgba(74,222,128,.3); box-shadow:0 0 0 3px rgba(74,222,128,.06); }
+    .search-wrap { position:relative; }
+    .search-wrap svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-3); pointer-events:none; }
+    .topbar-right { display:flex; align-items:center; gap:12px; }
+    .top-btn { width:36px; height:36px; border-radius:10px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-2); transition:all .2s; position:relative; }
+    .top-btn:hover { background:var(--surface-2); color:var(--text); }
+    .notif-dot { position:absolute; top:7px; right:7px; width:7px; height:7px; border-radius:50%; background:var(--green); border:1.5px solid var(--bg); }
+    .admin-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#4ade80,#22d3ee); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; color:#050709; cursor:pointer; border:2px solid rgba(74,222,128,.3); }
+    .live-clock { font-size:11px; font-weight:600; color:var(--text-3); font-family:'JetBrains Mono',monospace; }
+    .admin-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:20px; background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.25); font-size:10px; font-weight:700; color:var(--green); letter-spacing:.5px; }
+
+    /* ── Content ── */
+    .content { padding:28px 32px 48px; }
+    .section { display:none; }
+    .section.active { display:block; animation:fadeSlide .4s var(--ease); }
+    @keyframes fadeSlide { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+
+    /* ── Section Header ── */
+    .sec-header { margin-bottom:24px; }
+    .sec-header h1 { font-family:'Outfit',sans-serif; font-size:24px; font-weight:800; letter-spacing:-.5px; margin-bottom:4px; }
+    .sec-header p { font-size:13px; color:var(--text-2); }
+
+    /* ── Cards ── */
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:22px 24px; transition:border-color .25s,transform .25s; position:relative; overflow:hidden; }
+    .card:hover { border-color:var(--border-hover); }
+    .card-h { font-size:14px; font-weight:700; margin-bottom:3px; }
+    .card-sub { font-size:11px; color:var(--text-3); margin-bottom:16px; }
+
+    /* ── Stats Grid ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+    .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 20px; position:relative; overflow:hidden; transition:all .25s; cursor:default; }
+    .stat-card:hover { border-color:var(--border-hover); transform:translateY(-2px); }
+    .stat-card::after { content:''; position:absolute; top:0; right:0; width:70px; height:70px; border-radius:0 16px 0 70px; opacity:.06; }
+    .sc-green::after { background:var(--green); }
+    .sc-cyan::after { background:var(--cyan); }
+    .sc-indigo::after { background:var(--indigo); }
+    .sc-amber::after { background:var(--amber); }
+    .sc-red::after { background:var(--red); }
+    .sc-rose::after { background:var(--rose); }
+    .stat-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; }
+    .sc-green .stat-icon { background:rgba(74,222,128,.12); color:var(--green); }
+    .sc-cyan .stat-icon { background:rgba(34,211,238,.12); color:var(--cyan); }
+    .sc-indigo .stat-icon { background:rgba(129,140,248,.12); color:var(--indigo); }
+    .sc-amber .stat-icon { background:rgba(251,191,36,.12); color:var(--amber); }
+    .sc-red .stat-icon { background:rgba(248,113,113,.12); color:var(--red); }
+    .sc-rose .stat-icon { background:rgba(251,113,133,.12); color:var(--rose); }
+    .stat-val { font-size:26px; font-weight:900; letter-spacing:-1px; color:#fff; }
+    .stat-lbl { font-size:11px; color:var(--text-3); font-weight:600; margin-top:2px; }
+    .stat-trend { font-size:10px; font-weight:700; margin-top:6px; display:flex; align-items:center; gap:4px; }
+    .trend-up { color:var(--green); }
+    .trend-down { color:var(--red); }
+    .trend-neutral { color:var(--text-3); }
+
+    /* ── Data Table ── */
+    .data-table { width:100%; border-collapse:collapse; }
+    .data-table th { text-align:left; font-size:10px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:1px; padding:10px 14px; border-bottom:1px solid var(--border); }
+    .data-table td { padding:12px 14px; font-size:13px; color:var(--text-2); border-bottom:1px solid rgba(255,255,255,.03); vertical-align:middle; }
+    .data-table tr:hover td { background:rgba(255,255,255,.015); }
+    .data-table tr:last-child td { border-bottom:none; }
+
+    /* ── Badges ── */
+    .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; }
+    .badge-green { background:rgba(74,222,128,.12); color:var(--green); }
+    .badge-cyan { background:rgba(34,211,238,.12); color:var(--cyan); }
+    .badge-amber { background:rgba(251,191,36,.12); color:var(--amber); }
+    .badge-red { background:rgba(248,113,113,.12); color:var(--red); }
+    .badge-indigo { background:rgba(129,140,248,.12); color:var(--indigo); }
+
+    /* ── Buttons ── */
+    .btn-sm { padding:7px 14px; border-radius:8px; font-size:11px; font-weight:700; border:none; cursor:pointer; font-family:inherit; transition:all .2s; display:inline-flex; align-items:center; gap:5px; }
+    .btn-green { background:rgba(74,222,128,.15); color:var(--green); border:1px solid rgba(74,222,128,.2); }
+    .btn-green:hover { background:rgba(74,222,128,.25); }
+    .btn-cyan { background:rgba(34,211,238,.15); color:var(--cyan); border:1px solid rgba(34,211,238,.2); }
+    .btn-cyan:hover { background:rgba(34,211,238,.25); }
+    .btn-red { background:rgba(248,113,113,.15); color:var(--red); border:1px solid rgba(248,113,113,.2); }
+    .btn-red:hover { background:rgba(248,113,113,.25); }
+    .btn-primary-solid { padding:10px 20px; border-radius:10px; font-size:13px; font-weight:800; border:none; cursor:pointer; font-family:inherit; background:linear-gradient(135deg,#16a34a,#4ade80); color:#050709; box-shadow:0 6px 20px -6px rgba(74,222,128,.4); transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+    .btn-primary-solid:hover { transform:translateY(-1px); box-shadow:0 10px 28px -6px rgba(74,222,128,.5); }
+
+    /* ── Modal ── */
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); z-index:500; display:none; align-items:center; justify-content:center; animation:modalFadeIn .3s; }
+    .modal-overlay.show { display:flex; }
+    @keyframes modalFadeIn { from{opacity:0;} to{opacity:1;} }
+    .modal { background:rgba(8,11,18,.96); border:1px solid var(--border-hover); border-radius:22px; padding:32px; width:100%; max-width:520px; max-height:85vh; overflow-y:auto; animation:modalSlide .35s var(--ease); }
+    @keyframes modalSlide { from{opacity:0;transform:translateY(20px) scale(.97);} to{opacity:1;transform:translateY(0) scale(1);} }
+    .modal-h { font-family:'Outfit',sans-serif; font-size:20px; font-weight:800; margin-bottom:4px; }
+    .modal-sub { font-size:12px; color:var(--text-3); margin-bottom:22px; }
+    .modal-field { margin-bottom:14px; }
+    .modal-label { display:block; font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+    .modal-input { width:100%; padding:11px 14px; background:var(--surface); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:13px; font-family:inherit; outline:none; transition:border-color .2s; }
+    .modal-input:focus { border-color:rgba(74,222,128,.4); }
+    .modal-actions { display:flex; gap:10px; margin-top:20px; justify-content:flex-end; }
+
+    /* ── Grid Layouts ── */
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+    .grid-2-1 { display:grid; grid-template-columns:2fr 1fr; gap:20px; }
+    .grid-1-1 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+    /* ── Product Cards ── */
+    .product-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; transition:all .25s; }
+    .product-card:hover { border-color:var(--border-hover); transform:translateY(-3px); box-shadow:0 12px 32px -8px rgba(0,0,0,.4); }
+    .product-img { width:100%; height:140px; object-fit:cover; display:block; }
+    .product-body { padding:16px; }
+    .product-name { font-size:13px; font-weight:700; margin-bottom:4px; }
+    .product-cat { font-size:10px; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+    .product-price { font-size:20px; font-weight:900; color:var(--green); margin:8px 0; letter-spacing:-.5px; }
+    .product-stock { font-size:11px; color:var(--text-2); margin-bottom:10px; }
+    .product-actions { display:flex; gap:6px; }
+
+    /* ── Activity Feed ── */
+    .feed-item { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.03); }
+    .feed-item:last-child { border-bottom:none; }
+    .feed-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .fi-green { background:rgba(74,222,128,.12); color:var(--green); }
+    .fi-cyan { background:rgba(34,211,238,.12); color:var(--cyan); }
+    .fi-amber { background:rgba(251,191,36,.12); color:var(--amber); }
+    .fi-red { background:rgba(248,113,113,.12); color:var(--red); }
+    .feed-body { flex:1; }
+    .feed-title { font-size:12px; font-weight:600; }
+    .feed-meta { font-size:10px; color:var(--text-3); margin-top:2px; }
+
+    /* ── Profit/Loss Calculator ── */
+    .calc-row { display:flex; gap:12px; margin-bottom:10px; align-items:flex-end; }
+    .calc-field { flex:1; }
+    .calc-label { font-size:10px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; display:block; }
+    .calc-input { width:100%; padding:9px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:14px; font-family:inherit; outline:none; transition:border-color .2s; }
+    .calc-input:focus { border-color:rgba(74,222,128,.4); }
+    .calc-result { padding:18px; background:linear-gradient(135deg,rgba(74,222,128,.08),rgba(34,211,238,.06)); border:1px solid rgba(74,222,128,.2); border-radius:14px; margin-top:14px; }
+    .calc-result-val { font-size:32px; font-weight:900; letter-spacing:-1px; font-family:'Outfit',sans-serif; }
+    .calc-result-lbl { font-size:11px; color:var(--text-3); font-weight:600; }
+    .profit { color:var(--green); }
+    .loss { color:var(--red); }
+
+    /* ── Code Block ── */
+    .code-block { background:rgba(0,0,0,.4); border:1px solid var(--border); border-radius:12px; padding:16px; overflow-x:auto; }
+    .code-block pre { font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.7; color:var(--text-2); white-space:pre-wrap; word-break:break-all; }
+    .code-block .kw { color:var(--indigo); }
+    .code-block .fn { color:var(--cyan); }
+    .code-block .str { color:var(--green); }
+    .code-block .cm { color:var(--text-3); }
+
+    /* ── Tab Buttons ── */
+    .tab-row { display:flex; gap:4px; margin-bottom:18px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:4px; }
+    .tab-btn { padding:8px 16px; border-radius:9px; font-size:12px; font-weight:700; color:var(--text-3); background:none; border:none; cursor:pointer; transition:all .2s; font-family:inherit; white-space:nowrap; }
+    .tab-btn.active { background:rgba(74,222,128,.12); color:var(--green); }
+    .tab-btn:hover:not(.active) { color:var(--text-2); }
+
+    /* ── Mini Chart (CSS) ── */
+    .mini-chart { display:flex; align-items:flex-end; gap:3px; height:48px; padding-top:4px; }
+    .mini-bar { flex:1; border-radius:3px 3px 0 0; transition:height .6s var(--ease); }
+    .mini-bar-green { background:linear-gradient(180deg,rgba(74,222,128,.5),rgba(74,222,128,.15)); }
+    .mini-bar-cyan { background:linear-gradient(180deg,rgba(34,211,238,.5),rgba(34,211,238,.15)); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(255,255,255,.08); border-radius:3px; }
+    ::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,.14); }
+
+    /* ── AI Error Card ── */
+    .ai-error-card { background:rgba(248,113,113,.04); border:1px solid rgba(248,113,113,.15); border-radius:14px; padding:18px; margin-bottom:12px; }
+    .ai-error-code { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--red); font-weight:700; margin-bottom:4px; }
+    .ai-error-desc { font-size:12px; color:var(--text-2); line-height:1.6; margin-bottom:8px; }
+    .ai-error-severity { display:inline-flex; padding:3px 8px; border-radius:6px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:1px; }
+    .severity-high { background:rgba(248,113,113,.15); color:var(--red); }
+    .severity-medium { background:rgba(251,191,36,.15); color:var(--amber); }
+
+    /* ── Transport Card ── */
+    .transport-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; display:flex; align-items:center; gap:14px; transition:all .25s; margin-bottom:10px; }
+    .transport-card:hover { border-color:var(--border-hover); }
+    .transport-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .transport-info { flex:1; }
+    .transport-name { font-size:13px; font-weight:700; }
+    .transport-meta { font-size:11px; color:var(--text-3); margin-top:2px; }
+    .transport-status { text-align:right; }
+    .battery-bar { width:60px; height:6px; background:rgba(255,255,255,.06); border-radius:3px; overflow:hidden; margin-top:4px; }
+    .battery-fill { height:100%; border-radius:3px; transition:width .6s var(--ease); }
+
+    /* ── Framer Motion Style Live Activity Popups ── */
+    .framer-popup-container {
+      position: fixed; top: 24px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 12px;
+      pointer-events: none;
+    }
+    .framer-popup-card {
+      pointer-events: auto;
+      min-width: 360px; max-width: 440px;
+      background: rgba(10, 15, 26, 0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), 0 0 25px rgba(74, 222, 128, 0.2);
+      display: flex; align-items: flex-start; gap: 14px;
+      transform: translateX(120%) scale(0.9);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .framer-popup-card.show {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+    }
+    .framer-popup-card.industrial {
+      border-color: rgba(56, 189, 248, 0.35);
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), 0 0 25px rgba(56, 189, 248, 0.2);
+    }
+    .framer-popup-card.ai-flag {
+      border-color: rgba(248, 113, 113, 0.4);
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8), 0 0 25px rgba(248, 113, 113, 0.25);
+    }
+    .framer-popup-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+      background: rgba(74, 222, 128, 0.15); color: var(--green);
+    }
+    .framer-popup-card.industrial .framer-popup-icon {
+      background: rgba(56, 189, 248, 0.15); color: var(--cyan);
+    }
+    .framer-popup-card.ai-flag .framer-popup-icon {
+      background: rgba(248, 113, 113, 0.15); color: var(--red);
+    }
+    .framer-popup-body { flex: 1; }
+    .framer-popup-title { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 3px; font-family: 'Outfit', sans-serif; }
+    .framer-popup-desc { font-size: 11px; color: var(--text-2); line-height: 1.4; margin-bottom: 8px; }
+    .framer-popup-action {
+      font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border);
+      color: #fff; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .framer-popup-action:hover {
+      background: rgba(74, 222, 128, 0.2); border-color: var(--green); color: var(--green);
+      transform: translateY(-2px);
+    }
+
+    /* ── Responsive ── */
+    @media(max-width:1200px) { .stats-grid { grid-template-columns:repeat(2,1fr); } .grid-2,.grid-3,.grid-2-1,.grid-1-1 { grid-template-columns:1fr; } }
+    @media(max-width:768px) { .sidebar { width:56px; } .main { margin-left:56px; } .content { padding:20px 16px; } .topbar { padding:12px 16px; } .stats-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="bg-ambient">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="bg-grid"></div>
+<canvas id="particleCanvas" data-theme="admin"></canvas>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo" title="Recycle Hub Admin" onclick="window.location.href='login.html'" style="background:transparent; box-shadow:none; padding:4px; margin-bottom:12px;">
+    <div style="width:44px; height:44px; border-radius:14px; background:linear-gradient(135deg, rgba(74,222,128,0.2), rgba(34,211,238,0.2)); border:1px solid rgba(74,222,128,0.35); display:flex; align-items:center; justify-content:center; box-shadow:0 0 25px rgba(74,222,128,0.3); transition:all 0.3s cubic-bezier(0.16,1,0.3,1);">
+      <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#4ade80"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/>
+          </linearGradient>
+          <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#4ade80"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
+        <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
+        <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
+        <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
+        <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#4ade80" opacity="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+  <button class="nav-btn active" data-section="overview" onclick="showSection('overview',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span class="nav-tip">Overview</span>
+  </button>
+  <button class="nav-btn" data-section="store" onclick="showSection('store',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 7v13a2 2 0 002 2h14a2 2 0 002-2V7l-3-5z"/><line x1="3" y1="7" x2="21" y2="7"/><path d="M16 11a4 4 0 01-8 0"/></svg>
+    <span class="nav-tip">Store</span>
+  </button>
+  <button class="nav-btn" data-section="transactions" onclick="showSection('transactions',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    <span class="nav-tip">Transactions</span>
+  </button>
+  <button class="nav-btn" data-section="deliveries" onclick="showSection('deliveries',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    <span class="nav-tip">Deliveries</span>
+  </button>
+  <button class="nav-btn" data-section="slots" onclick="showSection('slots',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="nav-tip">Pickup Slots</span>
+  </button>
+  <button class="nav-btn" data-section="accounts" onclick="showSection('accounts',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <span class="nav-tip">Accounts</span>
+  </button>
+
+  <div class="nav-divider"></div>
+
+  <button class="nav-btn" data-section="calculator" onclick="showSection('calculator',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span class="nav-tip">Profit/Loss</span>
+  </button>
+  <button class="nav-btn" data-section="fleet" onclick="showSection('fleet',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+    <span class="nav-tip">Fleet</span>
+  </button>
+  <button class="nav-btn" data-section="ai" onclick="showSection('ai',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 110 2h-1.27a7 7 0 01-1.46 2.93l.77.77a1 1 0 11-1.42 1.42l-.77-.77A7 7 0 0114 21.73V23a1 1 0 11-2 0v-1a1 1 0 01-2 0v-1.27a7 7 0 01-2.93-1.46l-.77.77a1 1 0 01-1.42-1.42l.77-.77A7 7 0 014.27 16H3a1 1 0 110-2h1a7 7 0 017-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2z"/></svg>
+    <span class="nav-tip">AI Gen-X</span>
+  </button>
+  <button class="nav-btn" data-section="audit" onclick="showSection('audit',this)">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    <span class="nav-tip">Audit Logs</span>
+  </button>
+
+  <div class="sidebar-spacer"></div>
+
+  <a href="login.html" class="nav-btn" style="color:var(--red);" onclick="sessionStorage.clear()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+    <span class="nav-tip">Sign Out</span>
+  </a>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- Top Bar -->
+  <div class="topbar" id="topbar">
+    <div class="topbar-left">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <svg width="26" height="26" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
+          <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
+          <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
+          <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
+          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#4ade80" opacity="0.6"/>
+        </svg>
+        <h2><span>Recycle Hub</span> — Admin</h2>
+      </div>
+      <div class="mode-switch" id="modeSwitch">
+        <button class="mode-btn active" onclick="setMode('admin',this)">⚙ Admin</button>
+        <button class="mode-btn" onclick="setMode('dev',this)">{ } Developer</button>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-box" placeholder="Search accounts, orders, products…" id="globalSearch" />
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="live-clock" id="liveClock">--:--:--</div>
+      <div class="admin-badge">🔒 ADMIN</div>
+      <div class="top-btn" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="admin-avatar" id="adminAvatar" title="recycle.hub.pvt.ltd@gmail.com">RH</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="mainContent">
+
+    <!-- ═══════════ SECTION: OVERVIEW ═══════════ -->
+    <div class="section active" id="sec-overview">
+      <div class="sec-header">
+        <h1>📊 Dashboard Overview</h1>
+        <p>Real-time metrics and analytics for Recycle Hub operations — <span id="todayDate"></span></p>
+      </div>
+      <div class="stats-grid" id="overviewStats"><!-- JS fills --></div>
+      <div class="grid-2-1">
+        <div class="card">
+          <div class="card-h">Daily Revenue Analytics</div>
+          <div class="card-sub">Trade volume & revenue over the past 7 days</div>
+          <div class="mini-chart" id="revenueChart"><!-- JS fills --></div>
+          <div style="display:flex; gap:16px; margin-top:12px;">
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:3px;background:var(--green);"></div><span style="font-size:10px;color:var(--text-3);font-weight:600;">Revenue</span></div>
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:3px;background:var(--cyan);"></div><span style="font-size:10px;color:var(--text-3);font-weight:600;">Volume</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h">Recent Activity</div>
+          <div class="card-sub">Latest platform events</div>
+          <div id="activityFeed"><!-- JS fills --></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ SECTION: STORE ═══════════ -->
+    <div class="section" id="sec-store">
+      <div class="sec-header">
+        <h1>🏬 Store Management</h1>
+        <p>Modify products, pricing, stock levels — all changes generate audit logs</p>
+      </div>
+      <div class="grid-3" id="productGrid"><!-- JS fills --></div>
+    </div>
+
+    <!-- ═══════════ SECTION: TRANSACTIONS ═══════════ -->
+    <div class="section" id="sec-transactions">
+      <div class="sec-header">
+        <h1>💳 Transactions & Orders</h1>
+        <p>Complete order history, payment status, and stock synchronization records</p>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table class="data-table" id="txnTable">
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Material</th><th>Qty (Tons)</th><th>Amount</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="txnBody"><!-- JS fills --></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════ SECTION: DELIVERIES ═══════════ -->
+    <div class="section" id="sec-deliveries">
+      <div class="sec-header">
+        <h1>🚚 Delivery Tracking</h1>
+        <p>Real-time delivery status, route monitoring, and AI-powered anomaly detection</p>
+      </div>
+      <div class="tab-row" id="deliveryTabs">
+        <button class="tab-btn active" onclick="showDeliveryTab('all',this)">All Deliveries</button>
+        <button class="tab-btn" onclick="showDeliveryTab('active',this)">In Transit</button>
+        <button class="tab-btn" onclick="showDeliveryTab('delivered',this)">Delivered</button>
+        <button class="tab-btn" onclick="showDeliveryTab('flagged',this)" style="color:var(--red);">⚠ AI Flagged Errors</button>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table class="data-table" id="delTable">
+          <thead><tr><th>Delivery ID</th><th>Order</th><th>Transport</th><th>Driver</th><th>Route</th><th>Weight</th><th>ETA</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="delBody"><!-- JS fills --></tbody>
+        </table>
+      </div>
+      <div id="aiFlaggedSection" style="margin-top:20px; display:none;">
+        <div class="card-h" style="color:var(--red); margin-bottom:12px;">⚠ AI Flagged Errors — Special Tab</div>
+        <div id="aiFlaggedCards"><!-- JS fills --></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ SECTION: PICKUP SLOTS ═══════════ -->
+    <div class="section" id="sec-slots">
+      <div class="sec-header">
+        <h1>📅 Pickup Slot Booking</h1>
+        <p>Manage scheduled material pickups, partner confirmations, and transport assignments</p>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table class="data-table" id="slotTable">
+          <thead><tr><th>Slot ID</th><th>Partner</th><th>Date</th><th>Time Slot</th><th>Material</th><th>Est. Weight</th><th>Address</th><th>Transport</th><th>Status</th></tr></thead>
+          <tbody id="slotBody"><!-- JS fills --></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════ SECTION: ACCOUNTS ═══════════ -->
+    <div class="section" id="sec-accounts">
+      <div class="sec-header">
+        <h1>👥 Accounts & Authentication</h1>
+        <p>Manage registered accounts, verification status, and real-time activity monitoring</p>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table class="data-table" id="accTable">
+          <thead><tr><th>Name</th><th>Email</th><th>UID</th><th>Type</th><th>Registered</th><th>Activity</th><th>Verified</th><th>Action</th></tr></thead>
+          <tbody id="accBody"><!-- JS fills --></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════ SECTION: PROFIT/LOSS ═══════════ -->
+    <div class="section" id="sec-calculator">
+      <div class="sec-header">
+        <h1>📈 Profit / Loss Calculator</h1>
+        <p>Daily trade calculation — material tonnage, buy/sell prices, processing costs, and net margin</p>
+      </div>
+      <div class="grid-1-1">
+        <div class="card">
+          <div class="card-h">Trade Calculator</div>
+          <div class="card-sub">Enter trade details to calculate profit or loss</div>
+          <div class="calc-row">
+            <div class="calc-field"><label class="calc-label">Material</label><select class="calc-input" id="calcMaterial"><option>Scrap Iron</option><option>PET Plastic</option><option>PCB E-Waste</option><option>Aluminum</option><option>Paper/Cardboard</option></select></div>
+            <div class="calc-field"><label class="calc-label">Tonnage (T)</label><input class="calc-input" type="number" id="calcTonnage" value="10" min="0.1" step="0.1"/></div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-field"><label class="calc-label">Buy Price ($/T)</label><input class="calc-input" type="number" id="calcBuy" value="280" min="0"/></div>
+            <div class="calc-field"><label class="calc-label">Processing ($/T)</label><input class="calc-input" type="number" id="calcProcess" value="35" min="0"/></div>
+            <div class="calc-field"><label class="calc-label">Sell Price ($/T)</label><input class="calc-input" type="number" id="calcSell" value="340" min="0"/></div>
+          </div>
+          <button class="btn-primary-solid" onclick="calculatePL()" style="width:100%; justify-content:center; margin-top:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Calculate Profit / Loss
+          </button>
+          <div class="calc-result" id="calcResult" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <div>
+                <div class="calc-result-lbl">Net Profit / Loss</div>
+                <div class="calc-result-val" id="calcNetVal">$0</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="calc-result-lbl">Margin</div>
+                <div class="calc-result-val" id="calcMarginVal" style="font-size:22px;">0%</div>
+              </div>
+            </div>
+            <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border); display:flex; gap:24px;">
+              <div><span style="font-size:10px;color:var(--text-3);">Total Cost</span><div style="font-size:14px;font-weight:700;" id="calcTotalCost">$0</div></div>
+              <div><span style="font-size:10px;color:var(--text-3);">Total Revenue</span><div style="font-size:14px;font-weight:700;" id="calcTotalRev">$0</div></div>
+              <div><span style="font-size:10px;color:var(--text-3);">Transport</span><div style="font-size:14px;font-weight:700;" id="calcTransport">$0</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h">Today's Trade Summary</div>
+          <div class="card-sub">Aggregate P/L from all transactions today</div>
+          <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+            <div style="padding:14px; background:rgba(74,222,128,.06); border:1px solid rgba(74,222,128,.15); border-radius:12px;">
+              <div style="font-size:10px; color:var(--text-3); font-weight:600;">Total Revenue Today</div>
+              <div style="font-size:24px; font-weight:900; color:var(--green); letter-spacing:-1px;">$20,000</div>
+            </div>
+            <div style="padding:14px; background:rgba(34,211,238,.06); border:1px solid rgba(34,211,238,.15); border-radius:12px;">
+              <div style="font-size:10px; color:var(--text-3); font-weight:600;">Total Cost of Goods</div>
+              <div style="font-size:24px; font-weight:900; color:var(--cyan); letter-spacing:-1px;">$14,280</div>
+            </div>
+            <div style="padding:14px; background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.25); border-radius:12px;">
+              <div style="font-size:10px; color:var(--text-3); font-weight:600;">Net Profit Today</div>
+              <div style="font-size:28px; font-weight:900; color:var(--green); letter-spacing:-1px;">+$5,720</div>
+              <div style="font-size:11px; color:var(--green); font-weight:700; margin-top:2px;">▲ 28.6% margin</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ SECTION: FLEET ═══════════ -->
+    <div class="section" id="sec-fleet">
+      <div class="sec-header">
+        <h1>🚛 Transport Fleet Availability</h1>
+        <p>Real-time status of all Recycle Hub transport vehicles, battery levels, and current locations</p>
+      </div>
+      <div class="grid-2" id="fleetGrid"><!-- JS fills --></div>
+    </div>
+
+    <!-- ═══════════ SECTION: AI GEN-X ═══════════ -->
+    <div class="section" id="sec-ai">
+      <div class="sec-header">
+        <h1>🤖 AI Database & Gen-X Code Access</h1>
+        <p>AI-generated pricing algorithms, purity detection models, and recycling rule generators</p>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:20px;">
+        <input type="text" class="modal-input" id="aiPromptInput" placeholder="Describe the AI rule or algorithm to generate…" style="flex:1;" />
+        <button class="btn-primary-solid" onclick="generateAiCode()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Generate
+        </button>
+      </div>
+      <div id="aiCodesList"><!-- JS fills --></div>
+    </div>
+
+    <!-- ═══════════ SECTION: AUDIT LOGS ═══════════ -->
+    <div class="section" id="sec-audit">
+      <div class="sec-header">
+        <h1>📋 Audit Trail & Logs</h1>
+        <p>Complete record of Admin → Store → Edit → Save operations with timestamps</p>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table class="data-table" id="auditTable">
+          <thead><tr><th>Log ID</th><th>Timestamp</th><th>Admin</th><th>Action</th><th>Product</th><th>Old Price</th><th>New Price</th><th>Details</th></tr></thead>
+          <tbody id="auditBody"><!-- JS fills --></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ EDIT PRODUCT MODAL ═══ -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-h">Edit Product</div>
+    <div class="modal-sub">Admin → Store → Edit Product → Change Price → Save → Audit Log</div>
+    <input type="hidden" id="editProductId" />
+    <div class="modal-field"><label class="modal-label">Product Name</label><input class="modal-input" id="editName" /></div>
+    <div class="modal-field"><label class="modal-label">Price Per Ton ($)</label><input class="modal-input" id="editPrice" type="number" step="0.01" /></div>
+    <div class="modal-field"><label class="modal-label">Stock (Tons)</label><input class="modal-input" id="editStock" type="number" step="0.1" /></div>
+    <div class="modal-field"><label class="modal-label">Image URL</label><input class="modal-input" id="editImage" /></div>
+    <div class="modal-field"><label class="modal-label">Description</label><textarea class="modal-input" id="editDesc" rows="3" style="resize:vertical;"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-sm btn-red" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary-solid" onclick="saveProduct()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+        Save & Generate Audit Log
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="js/particles.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// RECYCLE HUB — ADMIN COMMAND CENTER — MAIN JS
+// ═══════════════════════════════════════════════════════════════
+
+const ADMIN_EMAIL = 'recycle.hub.pvt.ltd@gmail.com';
+let adminData = {};
+let currentMode = 'admin';
+let currentDeliveryFilter = 'all';
+
+// ── Auth Guard ──
+(function guardAccess() {
+  try {
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+    if (!user || (user.email && user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase() && user.type !== 'admin' && !user.isAdmin)) {
+      window.location.href = 'login.html';
+    }
+  } catch(e) {
+    window.location.href = 'login.html';
+  }
+})();
+
+// ── Live Clock ──
+function updateClock() {
+  const now = new Date();
+  document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-IN', { hour12: true });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── Date Display ──
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+// ── Section Navigation ──
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ── Mode Switch ──
+function setMode(mode, btn) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (mode === 'dev') {
+    // Open AI Codes Gen-X Workspace automatically
+    const aiNavBtn = document.querySelector('[data-section="ai"]');
+    showSection('ai', aiNavBtn);
+    showNotification('Developer Mode Activated — AI Code Gen-X Workspace Open', 'success');
+  } else if (mode === 'admin') {
+    // Switch to Overview section
+    const overviewNavBtn = document.querySelector('[data-section="overview"]');
+    showSection('overview', overviewNavBtn);
+    showNotification('Admin Mode Activated — Dashboard Overview Open', 'success');
+  }
+}
+
+// ── Load Admin Data ──
+async function loadAdminData() {
+  try {
+    const res = await fetch('/api/admin/data');
+    const json = await res.json();
+    if (json.success) {
+      adminData = json.data;
+      renderAll();
+    }
+  } catch(e) {
+    console.error('Failed to load admin data:', e);
+    // Use fallback data
+    renderFallback();
+  }
+}
+
+function renderAll() {
+  renderOverviewStats();
+  renderRevenueChart();
+  renderActivityFeed();
+  renderProducts();
+  renderTransactions();
+  renderDeliveries();
+  renderSlots();
+  renderAccounts();
+  renderFleet();
+  renderAiCodes();
+  renderAuditLogs();
+}
+
+// ── Overview Stats ──
+function renderOverviewStats() {
+  const users = adminData.users || [];
+  const txns = adminData.transactions || [];
+  const dels = adminData.deliveries || [];
+  const slots = adminData.pickupSlots || [];
+  const products = adminData.store || [];
+  const flagged = dels.filter(d => d.isAiFlagged).length;
+  const totalRevenue = txns.reduce((s,t) => s + (t.amount || 0), 0);
+  const verifiedCount = users.filter(u => u.isVerified).length;
+
+  document.getElementById('overviewStats').innerHTML = `
+    <div class="stat-card sc-green"><div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div><div class="stat-val">${users.length}</div><div class="stat-lbl">Total Accounts</div><div class="stat-trend trend-up">▲ ${verifiedCount} verified</div></div>
+    <div class="stat-card sc-cyan"><div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="stat-val">$${totalRevenue.toLocaleString()}</div><div class="stat-lbl">Total Revenue</div><div class="stat-trend trend-up">▲ ${txns.length} transactions</div></div>
+    <div class="stat-card sc-amber"><div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="stat-val">${dels.length}</div><div class="stat-lbl">Active Deliveries</div><div class="stat-trend ${flagged>0?'trend-down':'trend-up'}">${flagged > 0 ? '⚠ '+flagged+' AI flagged' : '✓ All clear'}</div></div>
+    <div class="stat-card sc-indigo"><div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div><div class="stat-val">${slots.length}</div><div class="stat-lbl">Pickup Slots</div><div class="stat-trend trend-up">${slots.filter(s=>s.status==='Confirmed').length} confirmed</div></div>
+    <div class="stat-card sc-green"><div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 7v13a2 2 0 002 2h14a2 2 0 002-2V7l-3-5z"/><line x1="3" y1="7" x2="21" y2="7"/></svg></div><div class="stat-val">${products.length}</div><div class="stat-lbl">Store Products</div><div class="stat-trend trend-neutral">${products.reduce((s,p)=>s+p.stockTons,0).toFixed(1)}T total stock</div></div>
+    <div class="stat-card sc-rose"><div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="stat-val">+28.6%</div><div class="stat-lbl">Profit Margin</div><div class="stat-trend trend-up">▲ Strong day</div></div>
+  `;
+}
+
+// ── Revenue Chart ──
+function renderRevenueChart() {
+  const heights = [35, 55, 42, 68, 48, 72, 60];
+  const heights2 = [28, 45, 38, 55, 40, 62, 50];
+  const chart = document.getElementById('revenueChart');
+  chart.innerHTML = heights.map((h, i) =>
+    `<div class="mini-bar mini-bar-green" style="height:${h}%"></div><div class="mini-bar mini-bar-cyan" style="height:${heights2[i]}%"></div>`
+  ).join('');
+}
+
+// ── Activity Feed (Real-Time Dynamic from Partner Activities) ──
+function renderActivityFeed() {
+  const feed = document.getElementById('activityFeed');
+  const logs = adminData.auditLogs || [];
+
+  if (logs.length > 0) {
+    feed.innerHTML = logs.slice(0, 6).map(l => {
+      let iconClass = 'fi-cyan';
+      let svg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
+      
+      if (l.action.includes('SOURCING') || l.action.includes('PICKUP')) {
+        iconClass = 'fi-green';
+        svg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>';
+      } else if (l.action.includes('ORDER') || l.action.includes('INDUSTRIAL')) {
+        iconClass = 'fi-amber';
+        svg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>';
+      } else if (l.action.includes('STORE')) {
+        iconClass = 'fi-rose';
+        svg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>';
+      }
+
+      const timeStr = l.timestamp ? new Date(l.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : 'Just now';
+
+      return `
+        <div class="feed-item">
+          <div class="feed-icon ${iconClass}">${svg}</div>
+          <div class="feed-body">
+            <div class="feed-title">${escapeHtml(l.action.replace(/_/g, ' '))}: ${escapeHtml(l.productName || l.action)}</div>
+            <div class="feed-meta">${escapeHtml(l.details || '')} — <span style="color:var(--text-3); font-family:'JetBrains Mono',monospace;">${timeStr}</span></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    return;
+  }
+
+  const items = [
+    { icon:'fi-green', svg:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>', title:'Sourcing Partner Connected', meta:'All sourcing nodes active' },
+    { icon:'fi-cyan', svg:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>', title:'Industrial Consignments Ready', meta:'Foundry & Smelter line queue' },
+  ];
+  feed.innerHTML = items.map(i => `<div class="feed-item"><div class="feed-icon ${i.icon}">${i.svg}</div><div class="feed-body"><div class="feed-title">${i.title}</div><div class="feed-meta">${i.meta}</div></div></div>`).join('');
+}
+
+// ── Products ──
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  const products = adminData.store || [];
+  grid.innerHTML = products.map(p => `
+    <div class="product-card">
+      <img class="product-img" src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/600x300/0a0f1a/4ade80?text=${encodeURIComponent(p.category)}'" />
+      <div class="product-body">
+        <div class="product-cat">${p.category}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">$${p.pricePerTon}<span style="font-size:12px;color:var(--text-3);font-weight:500;">/ton</span></div>
+        <div class="product-stock">Stock: ${p.stockTons} tons · <span class="badge ${p.status==='In Stock'?'badge-green':p.status==='Limited Stock'?'badge-amber':'badge-red'}">${p.status}</span></div>
+        <div class="product-actions">
+          <button class="btn-sm btn-cyan" onclick="openEditModal('${p.id}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+          <button class="btn-sm btn-green" onclick="showSection('audit',document.querySelector('[data-section=audit]'))">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Audit
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Edit Modal ──
+function openEditModal(productId) {
+  const p = (adminData.store || []).find(x => x.id === productId);
+  if (!p) return;
+  document.getElementById('editProductId').value = p.id;
+  document.getElementById('editName').value = p.name;
+  document.getElementById('editPrice').value = p.pricePerTon;
+  document.getElementById('editStock').value = p.stockTons;
+  document.getElementById('editImage').value = p.image;
+  document.getElementById('editDesc').value = p.description;
+  document.getElementById('editModal').classList.add('show');
+}
+function closeModal() { document.getElementById('editModal').classList.remove('show'); }
+
+async function saveProduct() {
+  const payload = {
+    productId: document.getElementById('editProductId').value,
+    name: document.getElementById('editName').value,
+    pricePerTon: document.getElementById('editPrice').value,
+    stockTons: document.getElementById('editStock').value,
+    image: document.getElementById('editImage').value,
+    description: document.getElementById('editDesc').value,
+  };
+  try {
+    const res = await fetch('/api/admin/store/update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (json.success) {
+      closeModal();
+      loadAdminData();
+      showNotification('Product updated & Audit Log generated ✓', 'success');
+    } else {
+      showNotification(json.error || 'Update failed', 'error');
+    }
+  } catch(e) {
+    showNotification('Server error — please check connection', 'error');
+  }
+}
+
+// ── Transactions ──
+function renderTransactions() {
+  const tbody = document.getElementById('txnBody');
+  const txns = adminData.transactions || [];
+  tbody.innerHTML = txns.map(t => `
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);">${t.orderId}</td>
+      <td><div style="font-weight:600;color:var(--text);">${t.customer}</div><div style="font-size:10px;color:var(--text-3);">${t.email}</div></td>
+      <td>${t.material}</td>
+      <td style="font-weight:700;">${t.quantityTons}T</td>
+      <td style="font-weight:800;color:var(--green);">$${t.amount.toLocaleString()}</td>
+      <td><span style="font-size:10px;color:var(--text-3);">${t.paymentMethod}</span></td>
+      <td><span class="badge ${t.status==='Paid'?'badge-green':t.status.includes('Secured')?'badge-cyan':'badge-amber'}">${t.status}</span></td>
+      <td style="font-size:11px;color:var(--text-3);">${new Date(t.timestamp).toLocaleString('en-IN',{dateStyle:'short',timeStyle:'short'})}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Deliveries ──
+function renderDeliveries(filter) {
+  filter = filter || currentDeliveryFilter;
+  const tbody = document.getElementById('delBody');
+  let dels = adminData.deliveries || [];
+
+  if (filter === 'active') dels = dels.filter(d => d.status.includes('Transit'));
+  else if (filter === 'delivered') dels = dels.filter(d => d.status === 'Delivered');
+  else if (filter === 'flagged') dels = dels.filter(d => d.isAiFlagged);
+
+  tbody.innerHTML = dels.map(d => `
+    <tr style="${d.isAiFlagged ? 'background:rgba(248,113,113,.03);' : ''}">
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${d.isAiFlagged?'var(--red)':'var(--cyan)'};">${d.id}</td>
+      <td style="font-size:11px;">${d.orderId}</td>
+      <td style="font-size:11px;">${d.transportId}</td>
+      <td>${d.driver}</td>
+      <td><div style="font-size:11px;">${d.origin}</div><div style="font-size:10px;color:var(--text-3);">→ ${d.destination}</div></td>
+      <td style="font-weight:700;">${(d.weightKg/1000).toFixed(1)}T</td>
+      <td style="font-size:11px;color:var(--text-3);">${new Date(d.eta).toLocaleTimeString('en-IN',{hour12:true,hour:'2-digit',minute:'2-digit'})}</td>
+      <td><span class="badge ${d.isAiFlagged?'badge-red':d.status==='Delivered'?'badge-green':d.status.includes('Transit')?'badge-cyan':'badge-amber'}">${d.isAiFlagged?'⚠ AI Flagged':d.status}</span></td>
+      <td>${d.isAiFlagged ? '<button class="btn-sm btn-red" onclick="resolveAiError(\''+d.id+'\')">Resolve</button>' : '<span style="color:var(--text-3);font-size:11px;">—</span>'}</td>
+    </tr>
+  `).join('');
+
+  // AI Flagged Section
+  const flaggedDels = (adminData.deliveries || []).filter(d => d.isAiFlagged);
+  const flagSection = document.getElementById('aiFlaggedSection');
+  const flagCards = document.getElementById('aiFlaggedCards');
+  if (filter === 'flagged' && flaggedDels.length > 0) {
+    flagSection.style.display = 'block';
+    flagCards.innerHTML = flaggedDels.map(d => `
+      <div class="ai-error-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div class="ai-error-code">${d.aiErrorDetails?.errorCode || 'ERR-UNKNOWN'}</div>
+          <span class="ai-error-severity ${d.aiErrorDetails?.severity==='HIGH'?'severity-high':'severity-medium'}">${d.aiErrorDetails?.severity || 'MEDIUM'}</span>
+        </div>
+        <div class="ai-error-desc">${d.aiErrorDetails?.description || 'AI detected anomaly in delivery route.'}</div>
+        <div style="font-size:11px; color:var(--amber); font-weight:600; margin-bottom:10px;">⚡ ${d.aiErrorDetails?.recommendedAction || 'Manual inspection recommended.'}</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-sm btn-green" onclick="resolveAiError('${d.id}')">✓ Resolve & Clear</button>
+          <button class="btn-sm btn-red">Escalate</button>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    flagSection.style.display = 'none';
+  }
+}
+
+function showDeliveryTab(filter, btn) {
+  currentDeliveryFilter = filter;
+  document.querySelectorAll('#deliveryTabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDeliveries(filter);
+}
+
+async function resolveAiError(delId) {
+  try {
+    await fetch('/api/admin/deliveries/update', {
+      method: 'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ deliveryId: delId, resolveAiError: true })
+    });
+    showNotification('AI Error resolved for ' + delId, 'success');
+    loadAdminData();
+  } catch(e) { showNotification('Failed to resolve', 'error'); }
+}
+
+// ── Pickup Slots ──
+function renderSlots() {
+  const tbody = document.getElementById('slotBody');
+  const slots = adminData.pickupSlots || [];
+  tbody.innerHTML = slots.map(s => `
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--indigo);">${s.id}</td>
+      <td><div style="font-weight:600;">${s.partnerName}</div><div style="font-size:10px;color:var(--text-3);">${s.partnerEmail}</div></td>
+      <td style="font-weight:600;">${s.date}</td>
+      <td>${s.timeSlot}</td>
+      <td style="font-size:11px;">${s.materialType}</td>
+      <td style="font-weight:700;">${s.estimatedWeightKg} kg</td>
+      <td style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${s.address}">${s.address}</td>
+      <td style="font-size:11px;">${s.assignedTransport}</td>
+      <td><span class="badge ${s.status==='Confirmed'?'badge-green':'badge-amber'}">${s.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ── Accounts ──
+function renderAccounts() {
+  const tbody = document.getElementById('accBody');
+  const users = adminData.users || [];
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td style="font-weight:600;">${u.fullName}</td>
+      <td style="font-size:11px;">${u.email}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);">${u.uid}</td>
+      <td><span class="badge ${u.type==='admin'?'badge-red':u.type==='industrial'?'badge-indigo':'badge-green'}">${u.type}</span></td>
+      <td style="font-size:11px;color:var(--text-3);">${new Date(u.registeredAt).toLocaleDateString('en-IN')}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;"><span style="width:6px;height:6px;border-radius:50%;background:${u.activityStatus.includes('Online')||u.activityStatus.includes('Active')?'var(--green)':'var(--text-3)'};"></span>${u.activityStatus}</span></td>
+      <td><span class="badge ${u.isVerified?'badge-green':'badge-red'}">${u.isVerified?'✓ Verified':'✗ Unverified'}</span></td>
+      <td>${u.type!=='admin'?`<button class="btn-sm ${u.isVerified?'btn-red':'btn-green'}" onclick="toggleVerify('${u.email}',${!u.isVerified})">${u.isVerified?'Revoke':'Verify'}</button>`:'<span style="color:var(--text-3);font-size:10px;">Protected</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+async function toggleVerify(email, status) {
+  try {
+    await fetch('/api/admin/users/verify', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email, isVerified: status })
+    });
+    showNotification(`Account ${status?'verified':'unverified'}: ${email}`, 'success');
+    loadAdminData();
+  } catch(e) { showNotification('Verification failed','error'); }
+}
+
+// ── Fleet ──
+function renderFleet() {
+  const grid = document.getElementById('fleetGrid');
+  const fleet = adminData.transports || [];
+  grid.innerHTML = fleet.map(t => {
+    const bColor = t.batteryFuel > 60 ? 'var(--green)' : t.batteryFuel > 30 ? 'var(--amber)' : 'var(--red)';
+    const statusColor = t.status.includes('Available') ? 'badge-green' : t.status.includes('Transit') ? 'badge-cyan' : 'badge-amber';
+    return `
+    <div class="transport-card">
+      <div class="transport-icon" style="background:rgba(34,211,238,.1); color:var(--cyan);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div class="transport-info">
+        <div class="transport-name">${t.name}</div>
+        <div class="transport-meta">${t.type} · Driver: ${t.driverName} · ${t.capacityTons}T capacity</div>
+        <div class="transport-meta" style="color:var(--text-2);">📍 ${t.currentLocation}</div>
+      </div>
+      <div class="transport-status">
+        <span class="badge ${statusColor}">${t.status}</span>
+        <div class="battery-bar"><div class="battery-fill" style="width:${t.batteryFuel}%;background:${bColor};"></div></div>
+        <div style="font-size:10px;color:var(--text-3);text-align:right;margin-top:2px;">${t.batteryFuel}% fuel/charge</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── AI Gen-X Codes ──
+function renderAiCodes() {
+  const list = document.getElementById('aiCodesList');
+  const codes = adminData.aiGenXCodes || [];
+  list.innerHTML = codes.map(c => `
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div>
+          <div class="card-h" style="color:var(--cyan);">${c.title}</div>
+          <div class="card-sub" style="margin-bottom:0;">Generated: ${new Date(c.generatedAt).toLocaleString('en-IN')} · Language: ${c.language}</div>
+        </div>
+        <span class="badge badge-indigo">${c.id}</span>
+      </div>
+      <div class="code-block"><pre>${escapeHtml(c.code)}</pre></div>
+    </div>
+  `).join('');
+}
+
+async function generateAiCode() {
+  const prompt = document.getElementById('aiPromptInput').value.trim();
+  if (!prompt) return showNotification('Enter a prompt description', 'error');
+  try {
+    const res = await fetch('/api/admin/ai-genx', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ title: prompt, language: 'python', prompt })
+    });
+    const json = await res.json();
+    if (json.success) {
+      showNotification('AI Code Gen-X generated: ' + json.genCode.id, 'success');
+      document.getElementById('aiPromptInput').value = '';
+      loadAdminData();
+    }
+  } catch(e) { showNotification('Generation failed', 'error'); }
+}
+
+// ── Audit Logs ──
+function renderAuditLogs() {
+  const tbody = document.getElementById('auditBody');
+  const logs = adminData.auditLogs || [];
+  tbody.innerHTML = logs.map(l => `
+    <tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);">${l.id}</td>
+      <td style="font-size:11px;color:var(--text-3);">${new Date(l.timestamp).toLocaleString('en-IN')}</td>
+      <td style="font-size:11px;">${l.adminEmail}</td>
+      <td><span class="badge badge-cyan">${l.action}</span></td>
+      <td style="font-size:12px;font-weight:600;">${l.productName}</td>
+      <td style="color:var(--red);font-weight:600;">${l.oldPrice}</td>
+      <td style="color:var(--green);font-weight:600;">${l.newPrice}</td>
+      <td style="font-size:11px;color:var(--text-2);max-width:200px;">${l.details}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Profit/Loss Calculator ──
+function calculatePL() {
+  const tonnage = parseFloat(document.getElementById('calcTonnage').value) || 0;
+  const buyPrice = parseFloat(document.getElementById('calcBuy').value) || 0;
+  const processPrice = parseFloat(document.getElementById('calcProcess').value) || 0;
+  const sellPrice = parseFloat(document.getElementById('calcSell').value) || 0;
+
+  const transportCost = tonnage * 18; // $18/ton transport estimate
+  const totalCost = (buyPrice * tonnage) + (processPrice * tonnage) + transportCost;
+  const totalRevenue = sellPrice * tonnage;
+  const netPL = totalRevenue - totalCost;
+  const margin = totalRevenue > 0 ? ((netPL / totalRevenue) * 100) : 0;
+
+  const isProfit = netPL >= 0;
+
+  document.getElementById('calcResult').style.display = 'block';
+  document.getElementById('calcNetVal').textContent = (isProfit?'+':'') + '$' + Math.abs(netPL).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('calcNetVal').className = 'calc-result-val ' + (isProfit?'profit':'loss');
+  document.getElementById('calcMarginVal').textContent = margin.toFixed(1) + '%';
+  document.getElementById('calcMarginVal').className = 'calc-result-val ' + (isProfit?'profit':'loss');
+  document.getElementById('calcMarginVal').style.fontSize = '22px';
+  document.getElementById('calcTotalCost').textContent = '$' + totalCost.toLocaleString(undefined,{minimumFractionDigits:2});
+  document.getElementById('calcTotalRev').textContent = '$' + totalRevenue.toLocaleString(undefined,{minimumFractionDigits:2});
+  document.getElementById('calcTransport').textContent = '$' + transportCost.toLocaleString(undefined,{minimumFractionDigits:2});
+
+  gsap.from('#calcResult', { opacity:0, y:10, duration:.4, ease:'power2.out' });
+}
+
+// ── Notification Toast ──
+function showNotification(msg, type) {
+  const existing = document.querySelector('.toast-notification');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.className = 'toast-notification';
+  toast.style.cssText = `position:fixed;top:24px;right:24px;z-index:1000;padding:14px 20px;border-radius:14px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;backdrop-filter:blur(16px);box-shadow:0 12px 40px -8px rgba(0,0,0,.5);animation:fadeSlide .3s var(--ease);${type==='success'?'background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green);':'background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);'}`;
+  toast.innerHTML = `${type==='success'?'✓':'✗'} ${msg}`;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-10px)'; setTimeout(() => toast.remove(), 300); }, 3500);
+}
+
+// ── Fallback if no server ──
+function renderFallback() {
+  adminData = {
+    store: [], transactions: [], deliveries: [], transports: [],
+    pickupSlots: [], auditLogs: [], aiGenXCodes: [], users: []
+  };
+  renderAll();
+  showNotification('Running in offline mode — start server for full data', 'error');
+}
+
+// ── Utilities ──
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Real-Time Partner Activity Polling & Framer-Motion Popups ──
+let knownPickupsCount = 0;
+let knownOrdersCount = 0;
+let initialSyncDone = false;
+
+async function pollPartnerActivities() {
+  try {
+    const res = await fetch('/api/admin/live-activities');
+    const json = await res.json();
+    if (!json.success) return;
+
+    const pickups = json.recentPickups || [];
+    const orders = json.recentOrders || [];
+
+    if (!initialSyncDone) {
+      knownPickupsCount = pickups.length;
+      knownOrdersCount = orders.length;
+      initialSyncDone = true;
+      return;
+    }
+
+    // New pickup scheduled by Sourcing Partner
+    if (pickups.length > knownPickupsCount) {
+      const latest = pickups[0];
+      knownPickupsCount = pickups.length;
+      triggerFramerPopup({
+        type: 'sourcing',
+        icon: '🌿',
+        title: 'New Scrap Pickup Scheduled!',
+        desc: `Partner <strong>${escapeHtml(latest.partnerName || latest.partnerEmail)}</strong> requested pickup for <strong>${latest.weightKg} kg</strong> of ${escapeHtml(latest.materialName)}. Assigned EV Hauler <strong>${latest.assignedTransport || 'RHT-01'}</strong>.`,
+        actionLabel: 'View in Slots',
+        section: 'slots'
+      });
+      loadAdminData();
+    }
+
+    // New order placed by Industrial Partner
+    if (orders.length > knownOrdersCount) {
+      const latest = orders[0];
+      knownOrdersCount = orders.length;
+      triggerFramerPopup({
+        type: 'industrial',
+        icon: '📦',
+        title: 'New Industrial Bulk Order Placed!',
+        desc: `<strong>${escapeHtml(latest.companyName || latest.partnerUid)}</strong> ordered <strong>${latest.quantityTons} Tons</strong> of ${escapeHtml(latest.materialName)}. Amount: <strong>$${latest.totalAmount}</strong> (Invoice #${latest.invoiceNumber}).`,
+        actionLabel: 'View Orders',
+        section: 'transactions'
+      });
+      loadAdminData();
+    }
+  } catch(e) {
+    // Background polling
+  }
+}
+
+// Poll every 3.5 seconds
+setInterval(pollPartnerActivities, 3500);
+
+function triggerFramerPopup({ type, icon, title, desc, actionLabel, section }) {
+  let container = document.getElementById('framerPopupContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'framerPopupContainer';
+    container.className = 'framer-popup-container';
+    document.body.appendChild(container);
+  }
+
+  const card = document.createElement('div');
+  card.className = `framer-popup-card ${type}`;
+  card.innerHTML = `
+    <div class="framer-popup-icon">${icon}</div>
+    <div class="framer-popup-body">
+      <div class="framer-popup-title">${title}</div>
+      <div class="framer-popup-desc">${desc}</div>
+      <button class="framer-popup-action" onclick="showSection('${section}', document.querySelector('[data-section=\\'${section}\\']')); this.closest('.framer-popup-card').remove();">${actionLabel} →</button>
+    </div>
+    <button style="background:none; border:none; color:var(--text-3); font-size:14px; cursor:pointer; padding:4px;" onclick="this.closest('.framer-popup-card').remove()">✕</button>
+  `;
+
+  container.appendChild(card);
+
+  // Framer spring enter animation
+  requestAnimationFrame(() => {
+    card.classList.add('show');
+  });
+
+  // Sound pulse simulation / auto-dismiss after 8s
+  setTimeout(() => {
+    card.classList.remove('show');
+    setTimeout(() => card.remove(), 400);
+  }, 8000);
+}
+
+// ── GSAP Entry Animations ──
+document.addEventListener('DOMContentLoaded', () => {
+  loadAdminData();
+  pollPartnerActivities();
+
+  gsap.set('#sidebar > *', { opacity:0, x:-15 });
+  gsap.set('#topbar', { opacity:0, y:-15 });
+  gsap.set('.section.active', { opacity:0, y:20 });
+
+  const tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+  tl.to('#sidebar > *', { opacity:1, x:0, stagger:.04, duration:.4 })
+    .to('#topbar', { opacity:1, y:0, duration:.5 }, '-=.3')
+    .to('.section.active', { opacity:1, y:0, duration:.6 }, '-=.3');
+
+  // Nav hover effects
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', () => gsap.to(btn, { scale:1.08, duration:.15 }));
+    btn.addEventListener('mouseleave', () => gsap.to(btn, { scale:1, duration:.2 }));
+  });
+
+  // Stat cards hover
+  document.addEventListener('mouseenter', e => {
+    if (e.target.closest('.stat-card')) gsap.to(e.target.closest('.stat-card'), { y:-3, duration:.2 });
+  }, true);
+  document.addEventListener('mouseleave', e => {
+    if (e.target.closest('.stat-card')) gsap.to(e.target.closest('.stat-card'), { y:0, duration:.25 });
+  }, true);
+
+  // Close modal on overlay click
+  document.getElementById('editModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editModal')) closeModal();
+  });
+
+  // Keyboard shortcut
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+});
+</script>
+  <script src="js/motion.js" defer></script>
+  <script src="js/rio-assistant.js" defer></script>
+</body>
+</html>

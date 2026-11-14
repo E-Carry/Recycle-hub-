@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Recycle Hub — Sourcing Partner Command Dashboard" />
+  <title>Sourcing Partner Portal | Recycle Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/motion.css" />
+  <link rel="stylesheet" href="css/rio-assistant.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --em-50: #ecfdf5; --em-100: #d1fae5; --em-400: #34d399; --em-500: #10b981; --em-600: #059669; --em-700: #047857;
+      --mint: #6ee7b7; --cyan: #22d3ee; --amber: #fbbf24;
+      --bg-sourcing: #080d16;
+      --surface-src: rgba(14, 22, 36, 0.75);
+      --surface-src-hover: rgba(22, 34, 54, 0.85);
+      --border-src: rgba(255, 255, 255, 0.08);
+      --border-src-strong: rgba(52, 211, 153, 0.35);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-sub: #64748b;
+      --glow-emerald: 0 0 30px -8px rgba(16, 185, 129, 0.3);
+      --sidebar-w: 245px;
+      --spring-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-sourcing);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 90%, rgba(6, 182, 212, 0.06) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    #particleCanvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.7; }
+
+    /* Crisp Precision Grid */
+    .bg-grid {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* Subtle, Crisp Transitions */
+    .metric-card, .price-card, .glass-panel, .product-card, .nav-link, .btn-schedule, .btn-primary {
+      transition: all 0.25s var(--spring-ease);
+    }
+    .metric-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(52, 211, 153, 0.35) !important;
+      box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5), 0 0 18px -4px rgba(16, 185, 129, 0.15) !important;
+    }
+    .price-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--em-400) !important;
+      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    /* ── App Shell ── */
+    .app-shell { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+    /* ── Sidebar (Emerald Eco-Tech) ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: rgba(3, 10, 7, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid var(--border-src);
+      display: flex; flex-direction: column;
+      padding: 24px 18px;
+      position: sticky; top: 0; height: 100vh;
+      z-index: 40;
+    }
+    .brand-box {
+      display: flex; align-items: center; gap: 12px;
+      padding-bottom: 24px; margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-src);
+    }
+    .brand-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      display: flex; align-items: center; justify-content: center;
+      color: #030a07; font-weight: 900; font-size: 20px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+    .brand-title { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+    .brand-badge { font-size: 10px; font-weight: 700; color: var(--em-400); text-transform: uppercase; letter-spacing: 1px; }
+
+    .nav-list { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .nav-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 12px;
+      color: var(--text-muted); text-decoration: none;
+      font-size: 13px; font-weight: 600;
+      transition: all 0.2s cubic-bezier(.16,1,.3,1);
+      border: 1px solid transparent; cursor: pointer;
+    }
+    .nav-link svg { width: 18px; height: 18px; color: var(--text-sub); transition: color 0.2s; }
+    .nav-link:hover {
+      background: var(--surface-src-hover);
+      color: #fff; border-color: rgba(52, 211, 153, 0.15);
+    }
+    .nav-link:hover svg { color: var(--em-400); }
+    .nav-link.active {
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+      color: var(--em-400); border-color: var(--border-src-strong);
+      box-shadow: inset 3px 0 0 var(--em-400);
+    }
+    .nav-link.active svg { color: var(--em-400); }
+    .nav-badge { margin-left: auto; font-size: 10px; background: rgba(52, 211, 153, 0.15); color: var(--em-400); padding: 2px 7px; border-radius: 20px; font-weight: 700; }
+
+    /* Portal bridge pill */
+    .portal-bridge {
+      background: rgba(16, 185, 129, 0.05); border: 1px solid var(--border-src);
+      border-radius: 14px; padding: 14px; margin-top: auto;
+    }
+    .bridge-lbl { font-size: 10px; text-transform: uppercase; color: var(--text-sub); font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; }
+    .bridge-links { display: flex; flex-direction: column; gap: 6px; }
+    .bridge-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-decoration: none; padding: 6px 8px; border-radius: 8px;
+      transition: all 0.2s; background: rgba(255,255,255,0.02);
+    }
+    .bridge-btn:hover { background: rgba(52, 211, 153, 0.12); color: #fff; }
+
+    /* ── Main Content Area ── */
+    .main-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+    /* Top Bar */
+    .topbar {
+      height: 72px; padding: 0 36px;
+      background: rgba(3, 10, 7, 0.7); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-src);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 30;
+    }
+    .topbar-title h1 { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .topbar-title p { font-size: 12px; color: var(--em-400); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .live-pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--em-400); box-shadow: 0 0 8px var(--em-400); animation: pulseDot 2s infinite; }
+    @keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
+
+    .topbar-actions { display: flex; align-items: center; gap: 14px; }
+    .ev-status-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px; background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--border-src-strong); border-radius: 30px;
+      font-size: 11px; font-weight: 700; color: var(--em-400);
+    }
+    .partner-profile {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 12px 6px 8px; border-radius: 30px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border-src);
+    }
+    .partner-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 13px; color: #030a07;
+    }
+    .partner-info { text-align: left; }
+    .partner-name { font-size: 12px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .partner-email { font-size: 10px; color: var(--text-sub); }
+
+    /* Page View Container */
+    .view-content { padding: 32px 36px 60px; max-width: 1440px; margin: 0 auto; width: 100%; }
+    .view-section { display: none; }
+    .view-section.active { display: block; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Eco Metric Cards Grid ── */
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 28px; }
+    .metric-card {
+      background: var(--surface-src); border: 1px solid var(--border-src);
+      border-radius: 20px; padding: 22px; position: relative; overflow: hidden;
+      transition: all 0.25s; backdrop-filter: blur(12px);
+    }
+    .metric-card:hover { border-color: var(--border-src-strong); transform: translateY(-3px); box-shadow: var(--glow-emerald); }
+    .metric-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .metric-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+    .metric-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(16, 185, 129, 0.12); color: var(--em-400); display: flex; align-items: center; justify-content: center; }
+    .metric-val { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+    .metric-sub { font-size: 11px; font-weight: 600; color: var(--em-400); display: flex; align-items: center; gap: 4px; }
+
+    /* ── Schedule & Live Radar Split ── */
+    .split-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; margin-bottom: 28px; }
+
+    /* Glass Panels */
+    .glass-panel {
+      background: rgba(4, 15, 10, 0.7);
+      border: 1px solid var(--border-src);
+      border-radius: 22px; padding: 26px;
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .panel-header h2 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .panel-header h2 svg { color: var(--em-400); }
+    .panel-tag { font-size: 11px; font-weight: 700; background: rgba(52, 211, 153, 0.1); color: var(--em-400); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-src); }
+
+    /* Form Elements */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+    .form-control {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-src);
+      border-radius: 12px; padding: 11px 14px;
+      color: #fff; font-size: 13px; font-family: inherit;
+      outline: none; transition: all 0.2s;
+    }
+    .form-control:focus { border-color: var(--em-400); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); }
+    select.form-control option { background: #071510; color: #fff; }
+
+    .calc-quote-box {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(6, 78, 59, 0.15));
+      border: 1px dashed var(--border-src-strong);
+      border-radius: 14px; padding: 16px; margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .quote-item { display: flex; flex-direction: column; }
+    .quote-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .quote-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800; color: #fff; }
+    .quote-val.highlight { color: var(--em-400); }
+
+    .btn-schedule {
+      width: 100%; padding: 14px; border: none; border-radius: 14px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #020a06; font-family: 'Outfit', sans-serif;
+      font-size: 15px; font-weight: 800; letter-spacing: 0.3px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 8px 24px -6px rgba(16, 185, 129, 0.6);
+      transition: all 0.2s;
+    }
+    .btn-schedule:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -6px rgba(16, 185, 129, 0.8); }
+
+    /* ── Live EV Radar HUD ── */
+    .radar-canvas-wrap {
+      position: relative; height: 210px;
+      background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.12) 0%, rgba(4, 15, 10, 0.8) 70%);
+      border: 1px solid var(--border-src); border-radius: 16px;
+      overflow: hidden; margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .radar-rings {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(circle at 50% 50%, transparent 20%, rgba(52, 211, 153, 0.1) 20.5%, transparent 21%),
+                        radial-gradient(circle at 50% 50%, transparent 45%, rgba(52, 211, 153, 0.1) 45.5%, transparent 46%),
+                        radial-gradient(circle at 50% 50%, transparent 70%, rgba(52, 211, 153, 0.1) 70.5%, transparent 71%);
+    }
+    .radar-sweep {
+      position: absolute; width: 300px; height: 300px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, rgba(16, 185, 129, 0.35) 0deg, transparent 60deg);
+      animation: radarRotate 4s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes radarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .ev-truck-marker {
+      position: absolute; z-index: 5;
+      display: flex; flex-direction: column; align-items: center;
+      transition: all 1s ease-in-out;
+    }
+    .ev-pulse-icon {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #10b981; color: #020a06;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px #10b981; font-size: 16px;
+      animation: pulseMarker 1.5s infinite;
+    }
+    @keyframes pulseMarker { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); box-shadow: 0 0 30px #10b981; } }
+    .ev-marker-tag {
+      margin-top: 4px; padding: 2px 8px; border-radius: 6px;
+      background: rgba(3, 10, 7, 0.9); border: 1px solid var(--em-400);
+      font-size: 10px; font-weight: 800; color: #fff; font-family: 'JetBrains Mono', monospace;
+    }
+
+    .telemetry-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+    .tele-cell {
+      background: rgba(0,0,0,0.35); border: 1px solid var(--border-src);
+      border-radius: 12px; padding: 10px; text-align: center;
+    }
+    .tele-lbl { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+    .tele-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; color: #fff; margin-top: 2px; }
+
+    /* Waypoints Progress */
+    .waypoint-steps { display: flex; flex-direction: column; gap: 10px; }
+    .wp-step { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+    .wp-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
+    .wp-done { background: var(--em-500); color: #030a07; box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+    .wp-active { background: var(--amber); color: #030a07; box-shadow: 0 0 8px rgba(251,191,36,0.5); animation: pulseDot 1.5s infinite; }
+    .wp-wait { background: rgba(255,255,255,0.06); color: var(--text-sub); border: 1px solid var(--border-src); }
+    .wp-name { font-weight: 600; color: #fff; flex: 1; }
+    .wp-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-sub); }
+
+    /* ── Price Ticker Grid ── */
+    .prices-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+    .price-card {
+      background: var(--surface-src); border: 1px solid var(--border-src);
+      border-radius: 16px; padding: 18px; transition: all 0.2s;
+    }
+    .price-card:hover { border-color: var(--border-src-strong); transform: translateY(-2px); }
+    .price-card-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+    .mat-name { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800; color: #fff; }
+    .mat-code { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--em-400); }
+    .rate-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 800;
+      color: #fff; margin: 8px 0; display: flex; align-items: baseline; gap: 4px;
+    }
+    .rate-badge small { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .trend-pill { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
+    .trend-up { background: rgba(16,185,129,0.15); color: var(--em-400); }
+    .trend-down { background: rgba(244,63,94,0.15); color: #fb7185; }
+
+    /* ── GST Bills Table ── */
+    .table-card {
+      background: rgba(4, 15, 10, 0.7);
+      border: 1px solid var(--border-src);
+      border-radius: 20px; overflow: hidden;
+      margin-top: 24px;
+    }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+    th {
+      padding: 14px 18px; background: rgba(16,185,129,0.06);
+      color: var(--text-muted); font-weight: 700; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      border-bottom: 1px solid var(--border-src);
+    }
+    td { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text); }
+    tr:hover td { background: rgba(16,185,129,0.025); }
+    .bill-btn {
+      padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;
+      background: rgba(16,185,129,0.12); border: 1px solid var(--border-src-strong);
+      color: var(--em-400); cursor: pointer; transition: all 0.2s;
+    }
+    .bill-btn:hover { background: var(--em-500); color: #020a06; }
+
+    /* ── Store Styles ── */
+    .store-filters { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .filter-pill {
+      padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 700;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border-src);
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      background: rgba(16,185,129,0.15); border-color: var(--em-400); color: #fff;
+    }
+    .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .store-card {
+      background: rgba(4, 15, 10, 0.7); border: 1px solid var(--border-src);
+      border-radius: 18px; overflow: hidden; transition: all 0.25s;
+      display: flex; flex-direction: column;
+    }
+    .store-card:hover { border-color: var(--border-src-strong); transform: translateY(-3px); box-shadow: var(--glow-emerald); }
+    .store-img { width: 100%; height: 170px; object-fit: cover; background: #000; }
+    .store-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
+    .store-category { font-size: 10px; font-weight: 800; color: var(--em-400); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .store-title { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 8px; }
+    .store-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; flex: 1; }
+    .store-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .store-price { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800; color: #fff; }
+    .store-price small { text-decoration: line-through; font-size: 11px; color: var(--text-sub); margin-left: 6px; }
+    .btn-buy {
+      padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 800;
+      background: linear-gradient(135deg, #10b981, #059669); color: #020a06;
+      border: none; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-buy:hover { transform: scale(1.04); }
+
+    /* ── Modal (GST Bill & Buy) ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(16px);
+      z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.show { display: flex; animation: modalIn 0.3s cubic-bezier(.16,1,.3,1); }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .modal-box {
+      background: #06110c; border: 1px solid var(--border-src-strong);
+      border-radius: 22px; width: 100%; max-width: 680px; max-height: 90vh;
+      overflow-y: auto; padding: 32px; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    }
+    .modal-close {
+      position: absolute; right: 20px; top: 20px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border-src);
+      color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 120;
+      background: #047857; color: #fff; padding: 14px 22px;
+      border-radius: 12px; font-size: 13px; font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transform: translateY(100px); opacity: 0; transition: all 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 1024px) {
+      .split-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .sidebar { width: 72px; padding: 18px 10px; }
+      .brand-title, .brand-badge, .nav-text, .nav-badge, .portal-bridge { display: none; }
+      .nav-link { justify-content: center; padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<canvas id="particleCanvas" data-theme="emerald"></canvas>
+
+<div class="app-shell">
+  <!-- ══ SOURCING SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="brand-box" style="display:flex; align-items:center; gap:12px; padding-bottom:20px; margin-bottom:20px; border-bottom:1px solid var(--border-src);">
+      <div style="width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg, rgba(16,185,129,0.18), rgba(6,182,212,0.12)); border:1px solid rgba(52,211,153,0.3); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="srcLogoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#4ade80"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#10b981"/>
+            </linearGradient>
+            <linearGradient id="srcLogoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#4ade80"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="46" stroke="url(#srcLogoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
+          <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#srcLogoGrad1)" opacity="0.9"/>
+          <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#srcLogoGrad2)" opacity="0.9"/>
+          <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#srcLogoGrad1)" opacity="0.75"/>
+          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#4ade80" opacity="0.6"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title" style="font-family:'Outfit',sans-serif; font-size:16px; font-weight:800; color:#fff; letter-spacing:-0.3px;">Recycle Hub</div>
+        <div class="brand-badge" style="font-size:10px; font-weight:700; color:var(--em-400); text-transform:uppercase; letter-spacing:0.8px;">Sourcing Partner</div>
+      </div>
+    </div>
+
+    <nav class="nav-list">
+      <div class="nav-link active" onclick="switchTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span class="nav-text">Dashboard</span>
+      </div>
+      <div class="nav-link" onclick="switchTab('pickup')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        <span class="nav-text">Schedule Pickup</span>
+        <span class="nav-badge">Live EV</span>
+      </div>
+      <div class="nav-link" onclick="switchTab('prices')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <span class="nav-text">Price Ticker</span>
+      </div>
+      <div class="nav-link" onclick="switchTab('bills')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span class="nav-text">GST Tax Bills</span>
+      </div>
+      <div class="nav-link" onclick="switchTab('store')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="nav-text">Recycle Hub Store</span>
+        <span class="nav-badge" style="background:rgba(245,158,11,0.2); color:#fbbf24;">Pre-Loved</span>
+      </div>
+    </nav>
+
+    <!-- Role & Session Security -->
+    <div class="portal-bridge">
+      <div class="bridge-lbl">Session Role</div>
+      <div class="bridge-links">
+        <div class="bridge-btn" style="color:var(--em-400); background:rgba(16,185,129,0.08); border-color:rgba(16,185,129,0.25); cursor:default;">
+          <span>🌿 Sourcing Partner</span>
+          <span style="font-size:9px; font-family:'JetBrains Mono',monospace; background:rgba(16,185,129,0.2); padding:2px 6px; border-radius:4px;">ENCRYPTED</span>
+        </div>
+        <a href="login.html" class="bridge-btn" style="color:#f87171;" onclick="sessionStorage.clear()">
+          <span>🚪 Sign Out</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN WRAPPER ══ -->
+  <main class="main-wrap">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1>Sourcing Partner Workspace</h1>
+        <p><span class="live-pulse-dot"></span> Sourcing Raw Materials Network • Encrypted Portal</p>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="ev-status-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          EV Hauler #RHT-01 Active
+        </div>
+
+        <div class="partner-profile">
+          <div class="partner-avatar" id="avatarLetter">S</div>
+          <div class="partner-info">
+            <div class="partner-name" id="partnerDisplayName">Saikat Pradhan</div>
+            <div class="partner-email" id="partnerDisplayEmail">saikatpradhan239@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Views -->
+    <div class="view-content">
+
+      <!-- ════ 1. DASHBOARD & SCHEDULE VIEW ════ -->
+      <section id="tab-dashboard" class="view-section active">
+        <!-- Eco Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-head">
+              <span class="metric-label">Raw Material Supplied</span>
+              <div class="metric-icon">⚖️</div>
+            </div>
+            <div class="metric-val" id="metricTonnage">142.8 <small style="font-size:14px; color:var(--em-400);">Tons</small></div>
+            <div class="metric-sub">▲ Verified Circular Mass</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-head">
+              <span class="metric-label">Carbon Offset</span>
+              <div class="metric-icon">🌿</div>
+            </div>
+            <div class="metric-val" id="metricCarbon">82.8 <small style="font-size:14px; color:var(--em-400);">tCO2e</small></div>
+            <div class="metric-sub">Verified ESG Impact</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-head">
+              <span class="metric-label">Active EV Pickups</span>
+              <div class="metric-icon">⚡</div>
+            </div>
+            <div class="metric-val" id="activePickupCount">2 <small style="font-size:14px; color:var(--em-400);">En Route</small></div>
+            <div class="metric-sub">Live GPS Telemetry Active</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-head">
+              <span class="metric-label">Net Payouts (GST Paid)</span>
+              <div class="metric-icon">💰</div>
+            </div>
+            <div class="metric-val" id="metricPayout">$5,366 <small style="font-size:14px; color:var(--em-400);">USD</small></div>
+            <div class="metric-sub">Auto-credited via Escrow</div>
+          </div>
+        </div>
+
+        <!-- Schedule + Live EV Tracking Split -->
+        <div class="split-grid">
+          <!-- Left: Schedule Form -->
+          <div class="glass-panel">
+            <div class="panel-header">
+              <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                Schedule Raw Material Pickup
+              </h2>
+              <span class="panel-tag">⚡ Automated EV Dispatch</span>
+            </div>
+
+            <form id="pickupScheduleForm">
+              <div class="form-grid">
+                <div class="form-group full">
+                  <label class="form-label">Raw Material Category & Purity Grade</label>
+                  <select class="form-control" id="formMaterial" onchange="calculateQuote()">
+                    <!-- Populated via API -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Estimated Weight (Kilograms)</label>
+                  <input type="number" class="form-control" id="formWeight" value="500" min="10" step="10" oninput="calculateQuote()" required />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Pickup Date</label>
+                  <input type="date" class="form-control" id="formDate" required />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Preferred Time Slot</label>
+                  <select class="form-control" id="formSlot">
+                    <option>09:00 AM - 11:00 AM (Morning Slot)</option>
+                    <option selected>11:30 AM - 01:30 PM (Midday Slot)</option>
+                    <option>02:30 PM - 04:30 PM (Afternoon Slot)</option>
+                    <option>05:00 PM - 07:00 PM (Evening Express)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Loading Dock / Contact Mobile</label>
+                  <input type="text" class="form-control" id="formPhone" placeholder="+91 98300 12345" value="+91 84366 54974" />
+                </div>
+
+                <div class="form-group full">
+                  <label class="form-label">Scrap Collection Address / Facility Location</label>
+                  <input type="text" class="form-control" id="formAddress" placeholder="e.g., Yard 4, Madhabpur Eco Park, Haldia Highway" value="Eco Yard Madhabpur, Sector 3, Haldia Highway, WB - 721626" required />
+                </div>
+              </div>
+
+              <!-- Real-time quote preview -->
+              <div class="calc-quote-box">
+                <div class="quote-item">
+                  <span class="quote-lbl">Guaranteed Rate</span>
+                  <span class="quote-val" id="quoteRate">$8.45/kg</span>
+                </div>
+                <div class="quote-item">
+                  <span class="quote-lbl">Gross Scrap Value</span>
+                  <span class="quote-val" id="quoteGross">$4,225.00</span>
+                </div>
+                <div class="quote-item">
+                  <span class="quote-lbl">GST Rebate (18%)</span>
+                  <span class="quote-val" id="quoteGst">+$760.50</span>
+                </div>
+                <div class="quote-item">
+                  <span class="quote-lbl">Total Sourcing Payout</span>
+                  <span class="quote-val highlight" id="quoteNet">$4,985.50</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-schedule" id="btnSubmitPickup">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Confirm Pickup & Request EV Hauler
+              </button>
+            </form>
+          </div>
+
+          <!-- Right: Interactive EV Radar Tracking HUD -->
+          <div class="glass-panel">
+            <div class="panel-header">
+              <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                EV Transport Radar HUD
+              </h2>
+              <span class="panel-tag" id="evLiveStatusTag">In Transit</span>
+            </div>
+
+            <!-- Radar Screen -->
+            <div class="radar-canvas-wrap">
+              <div class="radar-rings"></div>
+              <div class="radar-sweep"></div>
+              <div class="ev-truck-marker" id="evMarker" style="top:45%; left:50%;">
+                <div class="ev-pulse-icon">🚚</div>
+                <div class="ev-marker-tag" id="evVehicleTag">RHT-01 • 38 km/h</div>
+              </div>
+            </div>
+
+            <!-- Telemetry Values -->
+            <div class="telemetry-row">
+              <div class="tele-cell">
+                <div class="tele-lbl">Battery Gauge</div>
+                <div class="tele-val" id="teleBattery" style="color:#34d399;">78% ⚡</div>
+              </div>
+              <div class="tele-cell">
+                <div class="tele-lbl">Distance</div>
+                <div class="tele-val" id="teleDistance">3.4 km</div>
+              </div>
+              <div class="tele-cell">
+                <div class="tele-lbl">Arrival ETA</div>
+                <div class="tele-val" id="teleEta" style="color:#fbbf24;">11 Mins</div>
+              </div>
+            </div>
+
+            <!-- Waypoint Pipeline -->
+            <div class="waypoint-steps" id="waypointStepsList">
+              <div class="wp-step">
+                <div class="wp-icon wp-done">✓</div>
+                <span class="wp-name">Central Scrap Depot Yard 4</span>
+                <span class="wp-time">09:15 AM</span>
+              </div>
+              <div class="wp-step">
+                <div class="wp-icon wp-done">✓</div>
+                <span class="wp-name">Automated Laser Weighbridge Scan</span>
+                <span class="wp-time">09:28 AM</span>
+              </div>
+              <div class="wp-step">
+                <div class="wp-icon wp-active">●</div>
+                <span class="wp-name">En Route Highway Sector 3</span>
+                <span class="wp-time">Tracking Active</span>
+              </div>
+              <div class="wp-step">
+                <div class="wp-icon wp-wait">4</div>
+                <span class="wp-name">Arrival & Loading at Partner Gate</span>
+                <span class="wp-time">~11:45 AM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raw Material Price Ticker Section -->
+        <div class="glass-panel" style="margin-bottom:28px;">
+          <div class="panel-header">
+            <h2>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              Standard Default Raw Material Price List
+            </h2>
+            <span class="panel-tag">Live Procurement Benchmarks</span>
+          </div>
+          <div class="prices-grid" id="pricesGrid">
+            <!-- Populated via API -->
+          </div>
+        </div>
+
+        <!-- Recent Scheduled Pickups & Auto-Generated GST Bills Table -->
+        <div class="glass-panel" id="pickupsTableSection">
+          <div class="panel-header">
+            <h2>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              Pickup Log & Auto-Generated GST Tax Bills
+            </h2>
+            <span class="panel-tag">Compliant GST Invoices</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pickup ID</th>
+                  <th>Raw Material</th>
+                  <th>Weight</th>
+                  <th>Rate</th>
+                  <th>Gross Payout</th>
+                  <th>GST (18%)</th>
+                  <th>Total Payout</th>
+                  <th>Assigned EV</th>
+                  <th>Status</th>
+                  <th>GST Invoice</th>
+                </tr>
+              </thead>
+              <tbody id="pickupsTableBody">
+                <!-- Populated via API -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ 2. RECYCLE HUB STORE VIEW ════ -->
+      <section id="tab-store" class="view-section">
+        <div class="glass-panel" style="margin-bottom:24px;">
+          <div class="panel-header">
+            <div>
+              <h2 style="font-size:22px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                Recycle Hub Store • Certified Pre-Loved & Refurbished Goods
+              </h2>
+              <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Direct access for partners to purchase high-grade second-hand books, electronic gadgets, ergonomic studio furniture, and calibrated tools at circular prices.</p>
+            </div>
+            <span class="panel-tag" style="background:rgba(251,191,36,0.1); color:#fbbf24; border-color:rgba(251,191,36,0.2);">♻️ 100% Circular Verified</span>
+          </div>
+
+          <!-- Category Filters -->
+          <div class="store-filters">
+            <button class="filter-pill active" onclick="filterStore('all', this)">All Items (8)</button>
+            <button class="filter-pill" onclick="filterStore('books', this)">📚 Books & Engineering</button>
+            <button class="filter-pill" onclick="filterStore('electronics', this)">💻 Electronic Gadgets</button>
+            <button class="filter-pill" onclick="filterStore('furniture', this)">🪑 Office Furniture</button>
+            <input type="text" id="storeSearchInput" class="form-control" placeholder="Search products..." style="max-width:240px; margin-left:auto;" oninput="searchStore(this.value)" />
+          </div>
+
+          <!-- Product Grid -->
+          <div class="store-grid" id="storeItemsGrid">
+            <!-- Populated via API -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ════ MODAL: OFFICIAL GST TAX INVOICE ════ -->
+<div class="modal-overlay" id="gstBillModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('gstBillModal')">✕</button>
+    <div style="border-bottom: 2px solid var(--em-500); padding-bottom: 16px; margin-bottom: 20px; display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="font-family:'Outfit',sans-serif; font-size:20px; font-weight:900; color:#fff; display:flex; align-items:center; gap:12px;">
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="46" stroke="url(#srcLogoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
+            <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#srcLogoGrad1)" opacity="0.9"/>
+            <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#srcLogoGrad2)" opacity="0.9"/>
+            <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#srcLogoGrad1)" opacity="0.75"/>
+            <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#4ade80" opacity="0.6"/>
+          </svg>
+          RECYCLE HUB PRIVATE LIMITED
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">CIN: U38210WB2026PTC240981 • GSTIN: 19AAACR9081P1ZV</div>
+        <div style="font-size:11px; color:var(--text-muted);">Registered Scrap Processing Hub, Sector V, Salt Lake, Kolkata 700091</div>
+      </div>
+      <div style="text-align:right;">
+        <span style="display:inline-block; padding:4px 10px; background:rgba(16,185,129,0.15); color:var(--em-400); border:1px solid var(--border-src); border-radius:6px; font-size:11px; font-weight:800;">TAX INVOICE / SALE BILL</span>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:800; color:#fff; margin-top:6px;" id="modalBillNo">GST-RH-2026-SRC-8812</div>
+        <div style="font-size:11px; color:var(--text-sub);" id="modalBillDate">Date: 03 Sep 2026</div>
+      </div>
+    </div>
+
+    <!-- Partner & Material Details -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; background:rgba(255,255,255,0.02); border:1px solid var(--border-src); border-radius:12px; padding:16px; margin-bottom:20px;">
+      <div>
+        <div style="font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">SELLER / SOURCING PARTNER:</div>
+        <div style="font-size:14px; font-weight:800; color:#fff; margin-top:2px;" id="modalPartnerName">Saikat Pradhan</div>
+        <div style="font-size:11px; color:var(--text-muted);" id="modalPartnerEmail">saikatpradhan239@gmail.com</div>
+        <div style="font-size:11px; color:var(--text-muted);" id="modalPartnerAddress">Eco Zone, Madhabpur, WB - 721626</div>
+      </div>
+      <div>
+        <div style="font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">PURCHASER:</div>
+        <div style="font-size:14px; font-weight:800; color:#fff; margin-top:2px;">Recycle Hub Central Processing Unit</div>
+        <div style="font-size:11px; color:var(--text-muted);">Assigned EV Fleet Carrier: <span id="modalTransport">RHT-01</span></div>
+        <div style="font-size:11px; color:var(--em-400);">Reverse Charge Mechanism (RCM): Applicable</div>
+      </div>
+    </div>
+
+    <!-- Bill Items Breakdown -->
+    <table style="margin-bottom:20px;">
+      <thead>
+        <tr>
+          <th>Item Description</th>
+          <th>HSN Code</th>
+          <th>Qty (Kg)</th>
+          <th>Rate ($/Kg)</th>
+          <th>Amount ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="modalItemName" style="font-weight:700;">Grade 1 Bare Bright Copper Wire Scrap</td>
+          <td id="modalHsn">74040012</td>
+          <td id="modalWeight">420 kg</td>
+          <td id="modalRate">$8.45</td>
+          <td id="modalGross" style="font-family:'JetBrains Mono',monospace;">$3,549.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Tax Computations -->
+    <div style="display:flex; justify-content:flex-end; margin-bottom:24px;">
+      <div style="width:280px; display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);">
+          <span>Taxable Value:</span>
+          <span id="taxGross" style="font-family:'JetBrains Mono'; color:#fff;">$3,549.00</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);">
+          <span>CGST (9.0%):</span>
+          <span id="taxCgst" style="font-family:'JetBrains Mono'; color:#fff;">+$319.41</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);">
+          <span>SGST (9.0%):</span>
+          <span id="taxSgst" style="font-family:'JetBrains Mono'; color:#fff;">+$319.41</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:800; color:var(--em-400); border-top:1px solid var(--border-src); padding-top:8px;">
+          <span>Net Payout Total:</span>
+          <span id="taxNet" style="font-family:'JetBrains Mono'; font-size:18px;">$4,187.82</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-src); padding-top:16px;">
+      <div style="font-size:11px; color:var(--text-sub); display:flex; align-items:center; gap:6px;">
+        <span>🔒 Digitally Signed & Authenticated by Recycle Hub System</span>
+      </div>
+      <button class="btn-schedule" style="width:auto; padding:10px 24px;" onclick="window.print()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Print / Save GST Invoice
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MODAL: STORE PURCHASE / INQUIRY ════ -->
+<div class="modal-overlay" id="storeModal">
+  <div class="modal-box" style="max-width:520px;">
+    <button class="modal-close" onclick="closeModal('storeModal')">✕</button>
+    <div style="font-family:'Outfit',sans-serif; font-size:20px; font-weight:800; color:#fff; margin-bottom:4px;" id="storeItemTitle">Product Title</div>
+    <div style="font-size:12px; color:var(--em-400); font-weight:700; margin-bottom:16px;" id="storeItemCat">Electronic Gadgets</div>
+
+    <img id="storeItemImg" src="" style="width:100%; height:180px; object-fit:cover; border-radius:12px; margin-bottom:16px;" />
+    
+    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-src); border-radius:12px; padding:14px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <span style="font-size:12px; color:var(--text-muted);">Circular Price:</span>
+        <span style="font-family:'JetBrains Mono'; font-size:18px; font-weight:800; color:var(--em-400);" id="storeItemPrice">$0.00</span>
+      </div>
+      <div style="font-size:11px; color:var(--text-muted);" id="storeItemSpecs">Specs</div>
+    </div>
+
+    <form id="storeBuyForm" onsubmit="submitStoreOrder(event)">
+      <input type="hidden" id="storeHiddenId" />
+      <div class="form-group" style="margin-bottom:12px;">
+        <label class="form-label">Delivery Address / Destination</label>
+        <input type="text" class="form-control" id="storeDeliveryAddress" value="Madhabpur Facility Loading Bay, WB" required />
+      </div>
+      <button type="submit" class="btn-schedule" id="btnConfirmStoreBuy">
+        Confirm Circular Purchase / Reservation
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toastMsg">Notification</div>
+
+<script>
+let globalPrices = [];
+let globalPickups = [];
+let activeUser = null;
+let currentTrackingInterval = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Load session or default
+  const saved = sessionStorage.getItem('loggedInUser');
+  if (saved) {
+    activeUser = JSON.parse(saved);
+  } else {
+    activeUser = {
+      fullName: 'Saikat Pradhan',
+      email: 'saikatpradhan239@gmail.com',
+      uid: 'SRC-2026-99'
+    };
+  }
+
+  // Update UI headers
+  document.getElementById('partnerDisplayName').innerText = activeUser.fullName || 'Sourcing Partner';
+  document.getElementById('partnerDisplayEmail').innerText = activeUser.email || 'partner@recyclehub.com';
+  document.getElementById('avatarLetter').innerText = (activeUser.fullName || 'S')[0].toUpperCase();
+
+  // Set default date to today
+  document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+
+  // Load prices & pickups
+  await loadPrices();
+  await loadPickups();
+  await loadStoreItems();
+
+  // Start continuous EV telemetry simulation
+  startTrackingLoop();
+});
+
+// ── Tab Switching ──
+function switchTab(tabId) {
+  const activeTabId = (tabId === 'store') ? 'tab-store' : 'tab-dashboard';
+
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+
+  const targetSection = document.getElementById(activeTabId);
+  if (targetSection) {
+    targetSection.classList.add('active');
+  } else {
+    const dash = document.getElementById('tab-dashboard');
+    if (dash) dash.classList.add('active');
+  }
+
+  // Highlight matching sidebar nav
+  const linkIndex = { 'dashboard': 0, 'pickup': 1, 'prices': 2, 'bills': 3, 'store': 4 }[tabId];
+  const links = document.querySelectorAll('.nav-link');
+  if (linkIndex !== undefined && links[linkIndex]) {
+    links[linkIndex].classList.add('active');
+  }
+
+  if (tabId === 'pickup') {
+    const el = document.getElementById('pickupScheduleForm');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if (tabId === 'prices') {
+    const el = document.getElementById('pricesGrid');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else if (tabId === 'bills') {
+    const el = document.getElementById('pickupsTableSection');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else if (tabId === 'dashboard') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ── Load Raw Material Prices ──
+async function loadPrices() {
+  try {
+    const res = await fetch('/api/raw-materials/prices');
+    const data = await res.json();
+    if (data.success && data.prices) {
+      globalPrices = data.prices;
+      renderPrices();
+      populateMaterialDropdown();
+      calculateQuote();
+    }
+  } catch (err) {
+    console.error('Error fetching prices:', err);
+  }
+}
+
+function renderPrices() {
+  const grid = document.getElementById('pricesGrid');
+  grid.innerHTML = globalPrices.map(p => `
+    <div class="price-card">
+      <div class="price-card-head">
+        <div>
+          <div class="mat-name">${p.name}</div>
+          <div class="mat-code">${p.code} • HSN: ${p.hsnCode}</div>
+        </div>
+        <span class="trend-pill ${p.trendDirection === 'up' ? 'trend-up' : 'trend-down'}">
+          ${p.trendDirection === 'up' ? '▲' : '▼'} ${p.trend}
+        </span>
+      </div>
+      <div class="rate-badge">
+        $${p.pricePerKg.toFixed(2)} <small>/ kg</small>
+        <span style="font-size:12px; color:var(--em-400); margin-left:auto;">($${p.pricePerTon}/ton)</span>
+      </div>
+      <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">Purity: ${p.purityStandard}</div>
+      <button class="bill-btn" style="width:100%; text-align:center;" onclick="selectMaterialForSchedule('${p.id}')">
+        Schedule Sell For This Lot →
+      </button>
+    </div>
+  `).join('');
+}
+
+function populateMaterialDropdown() {
+  const select = document.getElementById('formMaterial');
+  select.innerHTML = globalPrices.map(p => `
+    <option value="${p.id}" data-rate="${p.pricePerKg}" data-gst="${p.gstRate}">
+      ${p.name} — $${p.pricePerKg.toFixed(2)}/kg (GST: ${p.gstRate}%)
+    </option>
+  `).join('');
+}
+
+function selectMaterialForSchedule(matId) {
+  switchTab('pickup');
+  document.getElementById('formMaterial').value = matId;
+  calculateQuote();
+}
+
+function calculateQuote() {
+  const select = document.getElementById('formMaterial');
+  const opt = select.selectedOptions[0];
+  if (!opt) return;
+
+  const rate = parseFloat(opt.getAttribute('data-rate') || 1);
+  const gstRate = parseFloat(opt.getAttribute('data-gst') || 18);
+  const weight = parseFloat(document.getElementById('formWeight').value) || 0;
+
+  const gross = weight * rate;
+  const gst = (gross * gstRate) / 100;
+  const net = gross + gst;
+
+  document.getElementById('quoteRate').innerText = `$${rate.toFixed(2)}/kg`;
+  document.getElementById('quoteGross').innerText = `$${gross.toFixed(2)}`;
+  document.getElementById('quoteGst').innerText = `+$${gst.toFixed(2)} (${gstRate}%)`;
+  document.getElementById('quoteNet').innerText = `$${net.toFixed(2)}`;
+}
+
+// ── Schedule Form Submit ──
+document.getElementById('pickupScheduleForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btnSubmitPickup');
+  btn.innerHTML = '⚡ Assigning EV Hauler & Generating GST Bill...';
+  btn.disabled = true;
+
+  const payload = {
+    partnerEmail: activeUser.email,
+    partnerName: activeUser.fullName,
+    materialId: document.getElementById('formMaterial').value,
+    weightKg: document.getElementById('formWeight').value,
+    pickupDate: document.getElementById('formDate').value,
+    timeSlot: document.getElementById('formSlot').value,
+    address: document.getElementById('formAddress').value
+  };
+
+  try {
+    const res = await fetch('/api/sourcing/schedule-pickup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showToast('Pickup Confirmed! EV Hauler assigned & GST Bill Generated.');
+      await loadPickups();
+      // Open the generated GST Bill
+      if (data.pickup) openGstBillModal(data.pickup);
+    } else {
+      showToast(data.error || 'Failed to schedule pickup');
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Network error while scheduling pickup.');
+  } finally {
+    btn.innerHTML = 'Confirm Pickup & Request EV Hauler';
+    btn.disabled = false;
+  }
+});
+
+// ── Load Pickups Table ──
+async function loadPickups() {
+  try {
+    const res = await fetch(`/api/sourcing/pickups?email=${encodeURIComponent(activeUser.email)}`);
+    const data = await res.json();
+    if (data.success && data.pickups) {
+      globalPickups = data.pickups;
+      renderPickupsTable();
+      updateDashboardMetrics();
+    }
+  } catch (err) {
+    console.error('Error fetching pickups:', err);
+  }
+}
+
+function updateDashboardMetrics() {
+  document.getElementById('activePickupCount').innerHTML = `${globalPickups.length} <small style="font-size:14px; color:var(--em-400);">Active</small>`;
+
+  if (globalPickups.length > 0) {
+    const totalKg = globalPickups.reduce((sum, p) => sum + (p.weightKg || 0), 0);
+    const totalTons = (totalKg / 1000).toFixed(1);
+    const totalPayout = globalPickups.reduce((sum, p) => sum + (p.netPayout || 0), 0);
+    const carbon = (parseFloat(totalTons) * 0.58).toFixed(1);
+
+    const tonsEl = document.getElementById('metricTonnage');
+    if (tonsEl) tonsEl.innerHTML = `${totalTons} <small style="font-size:14px; color:var(--em-400);">Tons</small>`;
+
+    const carbonEl = document.getElementById('metricCarbon');
+    if (carbonEl) carbonEl.innerHTML = `${carbon} <small style="font-size:14px; color:var(--em-400);">tCO2e</small>`;
+
+    const payoutEl = document.getElementById('metricPayout');
+    if (payoutEl) payoutEl.innerHTML = `$${totalPayout.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} <small style="font-size:14px; color:var(--em-400);">USD</small>`;
+  }
+}
+
+function renderPickupsTable() {
+  const tbody = document.getElementById('pickupsTableBody');
+  if (globalPickups.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:24px; color:var(--text-muted);">No pickups scheduled yet. Use the form above to book an EV pickup.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = globalPickups.map(p => `
+    <tr>
+      <td style="font-family:'JetBrains Mono'; font-weight:700;">${p.id}</td>
+      <td style="font-weight:700;">${p.materialName}</td>
+      <td>${p.weightKg} kg</td>
+      <td style="font-family:'JetBrains Mono';">$${p.ratePerKg.toFixed(2)}</td>
+      <td style="font-family:'JetBrains Mono';">$${p.payoutGross.toFixed(2)}</td>
+      <td style="font-family:'JetBrains Mono'; color:var(--em-400);">+$${(p.cgst + p.sgst).toFixed(2)}</td>
+      <td style="font-family:'JetBrains Mono'; font-weight:800; color:#fff;">$${p.netPayout.toFixed(2)}</td>
+      <td><span style="color:var(--em-400); font-weight:700;">${p.assignedTransport}</span></td>
+      <td>
+        <span style="display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--em-400); background:rgba(16,185,129,0.1); padding:3px 8px; border-radius:12px;">
+          ● ${p.status}
+        </span>
+      </td>
+      <td>
+        <button class="bill-btn" onclick="openGstBillById('${p.id}')">
+          📄 GST Bill
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openGstBillById(id) {
+  const pickup = globalPickups.find(p => p.id === id);
+  if (pickup) openGstBillModal(pickup);
+}
+
+// ── Open GST Bill Modal ──
+function openGstBillModal(pickup) {
+  document.getElementById('modalBillNo').innerText = pickup.billNumber || 'GST-RH-2026-SRC-9011';
+  document.getElementById('modalBillDate').innerText = 'Date: ' + (pickup.pickupDate || new Date().toISOString().split('T')[0]);
+  document.getElementById('modalPartnerName').innerText = pickup.partnerName || activeUser.fullName;
+  document.getElementById('modalPartnerEmail').innerText = pickup.partnerEmail || activeUser.email;
+  document.getElementById('modalPartnerAddress').innerText = pickup.address || 'Standard Registered Facility';
+  document.getElementById('modalTransport').innerText = pickup.assignedTransport || 'RHT-01 (EV Heavy Loader)';
+
+  document.getElementById('modalItemName').innerText = pickup.materialName;
+  document.getElementById('modalHsn').innerText = pickup.hsnCode || '74040012';
+  document.getElementById('modalWeight').innerText = `${pickup.weightKg} kg`;
+  document.getElementById('modalRate').innerText = `$${pickup.ratePerKg.toFixed(2)}/kg`;
+  document.getElementById('modalGross').innerText = `$${pickup.payoutGross.toFixed(2)}`;
+
+  document.getElementById('taxGross').innerText = `$${pickup.payoutGross.toFixed(2)}`;
+  document.getElementById('taxCgst').innerText = `+$${pickup.cgst.toFixed(2)}`;
+  document.getElementById('taxSgst').innerText = `+$${pickup.sgst.toFixed(2)}`;
+  document.getElementById('taxNet').innerText = `$${pickup.netPayout.toFixed(2)}`;
+
+  document.getElementById('gstBillModal').classList.add('show');
+}
+
+// ── Live EV Telemetry Simulation ──
+function startTrackingLoop() {
+  const fetchTelemetry = async () => {
+    try {
+      const res = await fetch('/api/tracking/RHT-01');
+      const data = await res.json();
+      if (data.success && data.telemetry) {
+        const t = data.telemetry;
+        document.getElementById('teleBattery').innerText = `${t.batteryLevel}% ⚡`;
+        document.getElementById('teleDistance').innerText = `${t.distanceRemainingKm} km`;
+        document.getElementById('teleEta').innerText = `${t.etaMinutes} Mins`;
+        document.getElementById('evVehicleTag').innerText = `${t.vehicleId} • ${t.speedKmH} km/h`;
+        document.getElementById('evLiveStatusTag').innerText = t.status;
+
+        // Smooth subtle oscillation of marker on radar
+        const marker = document.getElementById('evMarker');
+        const offsetLat = (Math.sin(Date.now() / 4000) * 15);
+        const offsetLng = (Math.cos(Date.now() / 4000) * 20);
+        marker.style.top = `${45 + offsetLat}%`;
+        marker.style.left = `${50 + offsetLng}%`;
+      }
+    } catch(err) {}
+  };
+
+  fetchTelemetry();
+  currentTrackingInterval = setInterval(fetchTelemetry, 3500);
+}
+
+// ── Store Catalog Handlers ──
+let storeProducts = [];
+
+async function loadStoreItems(category = 'all', search = '') {
+  try {
+    let url = `/api/store/items?category=${category}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.success && data.items) {
+      storeProducts = data.items;
+      renderStoreGrid();
+    }
+  } catch (err) {
+    console.error('Error fetching store items:', err);
+  }
+}
+
+function renderStoreGrid() {
+  const grid = document.getElementById('storeItemsGrid');
+  if (storeProducts.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:36px; color:var(--text-muted);">No products match this category.</div>';
+    return;
+  }
+
+  grid.innerHTML = storeProducts.map(item => `
+    <div class="store-card">
+      <img src="${item.image}" alt="${item.title}" class="store-img" />
+      <div class="store-body">
+        <div class="store-category">${item.categoryLabel} • <span style="color:#fff;">${item.condition}</span></div>
+        <div class="store-title">${item.title}</div>
+        <div class="store-desc">${item.description}</div>
+        <div style="font-size:11px; color:var(--em-400); font-weight:700; margin-bottom:10px;">
+          🌱 Saved ${item.co2SavedKg} kg CO2 footprint
+        </div>
+        <div class="store-foot">
+          <div class="store-price">$${item.price} <small>$${item.originalPrice}</small></div>
+          <button class="btn-buy" onclick="openStoreModalById('${item.id}')">
+            Inquire / Buy
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openStoreModalById(id) {
+  const item = storeProducts.find(x => x.id === id);
+  if (item) openStoreModal(item);
+}
+
+function filterStore(cat, btn) {
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadStoreItems(cat, document.getElementById('storeSearchInput').value);
+}
+
+function searchStore(val) {
+  const activePill = document.querySelector('.filter-pill.active');
+  const cat = activePill ? activePill.innerText.toLowerCase() : 'all';
+  const cleanCat = cat.includes('book') ? 'books' : (cat.includes('elect') ? 'electronics' : (cat.includes('furn') ? 'furniture' : 'all'));
+  loadStoreItems(cleanCat, val);
+}
+
+function openStoreModal(item) {
+  document.getElementById('storeItemTitle').innerText = item.title;
+  document.getElementById('storeItemCat').innerText = `${item.categoryLabel} • Condition: ${item.condition} (${item.conditionScore})`;
+  document.getElementById('storeItemImg').src = item.image;
+  document.getElementById('storeItemPrice').innerText = `$${item.price}.00 (Was $${item.originalPrice})`;
+  document.getElementById('storeItemSpecs').innerText = item.specs;
+  document.getElementById('storeHiddenId').value = item.id;
+  document.getElementById('storeModal').classList.add('show');
+}
+
+async function submitStoreOrder(e) {
+  e.preventDefault();
+  const itemId = document.getElementById('storeHiddenId').value;
+  const deliveryAddress = document.getElementById('storeDeliveryAddress').value;
+  const btn = document.getElementById('btnConfirmStoreBuy');
+  btn.innerText = 'Processing Order...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/store/inquire-buy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        itemId,
+        buyerRole: 'Sourcing Partner',
+        buyerEmail: activeUser.email,
+        buyerName: activeUser.fullName,
+        deliveryAddress
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`Reserved successfully! Confirmation code: ${data.receiptId}`);
+      closeModal('storeModal');
+      await loadStoreItems();
+    } else {
+      showToast(data.error || 'Failed to place store inquiry');
+    }
+  } catch (err) {
+    showToast('Error connecting to store API');
+  } finally {
+    btn.innerText = 'Confirm Circular Purchase / Reservation';
+    btn.disabled = false;
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toastMsg');
+  t.innerText = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+<script src="js/particles.js"></script>
+  <script src="js/motion.js" defer></script>
+  <script src="js/rio-assistant.js" defer></script>
+</body>
+</html>
+

@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sourcing Partner Master Services Agreement & Terms | Recycle Hub Legal" />
+    <title>Sourcing Partner Agreement & Terms | Recycle Hub Legal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/motion.css" />
+  <link rel="stylesheet" href="css/rio-assistant.css" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green: #4ade80;
+            --emerald: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.3);
+            --cyan: #22d3ee;
+            --indigo: #818cf8;
+            --amber: #f59e0b;
+            --bg: #050709;
+            --surface-sheet: #0a1018;
+            --surface-card: #0e1726;
+            --surface-hover: #13203a;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-strong: rgba(74, 222, 128, 0.25);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ── Noise Texture (matches login/register) ── */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        /* ── Ambient Backdrop (matches login/register) ── */
+        .bg {
+            position: fixed; inset: 0; z-index: 0; overflow: hidden;
+            background:
+                radial-gradient(ellipse 90% 70% at 10% 5%, rgba(74,222,128,.09) 0, transparent 65%),
+                radial-gradient(ellipse 70% 60% at 90% 95%, rgba(34,211,238,.07) 0, transparent 65%),
+                radial-gradient(ellipse 50% 40% at 60% 50%, rgba(129,140,248,.04) 0, transparent 65%),
+                var(--bg);
+        }
+
+        .orb { position: absolute; border-radius: 50%; pointer-events: none; will-change: transform; }
+        .orb-1 { width: 600px; height: 600px; top: -200px; left: -150px; background: radial-gradient(circle, rgba(74,222,128,.13) 0%, transparent 65%); filter: blur(80px); animation: orbFloat1 10s ease-in-out infinite; }
+        .orb-2 { width: 500px; height: 500px; bottom: -150px; right: -100px; background: radial-gradient(circle, rgba(34,211,238,.10) 0%, transparent 65%); filter: blur(80px); animation: orbFloat2 12s ease-in-out infinite; }
+        .orb-3 { width: 350px; height: 350px; top: 40%; left: 35%; background: radial-gradient(circle, rgba(129,140,248,.08) 0%, transparent 65%); filter: blur(100px); animation: orbFloat3 14s ease-in-out infinite; }
+
+        @keyframes orbFloat1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(25px, 15px); } }
+        @keyframes orbFloat2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-20px, -12px); } }
+        @keyframes orbFloat3 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(12px, -18px); } }
+
+        /* Aurora */
+        .aurora {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: linear-gradient(125deg, rgba(74,222,128,.04) 0%, transparent 25%, rgba(34,211,238,.03) 50%, transparent 75%, rgba(129,140,248,.02) 100%);
+            background-size: 400% 400%; animation: auroraShift 15s ease-in-out infinite;
+        }
+        @keyframes auroraShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+            background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+        }
+
+        /* Particles */
+        .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .particle { position: absolute; border-radius: 50%; opacity: 0; animation: particleFloat linear infinite; }
+        .particle:nth-child(1) { left: 8%; width: 3px; height: 3px; background: rgba(74,222,128,.35); animation-duration: 14s; }
+        .particle:nth-child(2) { left: 22%; width: 2px; height: 2px; background: rgba(34,211,238,.4); animation-duration: 16s; animation-delay: -3s; }
+        .particle:nth-child(3) { left: 40%; width: 3px; height: 3px; background: rgba(74,222,128,.3); animation-duration: 11s; animation-delay: -5s; }
+        .particle:nth-child(4) { left: 58%; width: 2px; height: 2px; background: rgba(129,140,248,.35); animation-duration: 15s; animation-delay: -7s; }
+        .particle:nth-child(5) { left: 72%; width: 2px; height: 2px; background: rgba(34,211,238,.3); animation-duration: 13s; animation-delay: -2s; }
+        .particle:nth-child(6) { left: 88%; width: 3px; height: 3px; background: rgba(74,222,128,.3); animation-duration: 17s; animation-delay: -9s; }
+        @keyframes particleFloat { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
+
+        /* ── Sticky Top Navigation ── */
+        .top-nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(5, 7, 9, 0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); padding: 14px 36px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .brand-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-mark {
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            filter: drop-shadow(0 4px 10px rgba(74,222,128,.3));
+        }
+        .brand-name {
+            font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -.3px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .brand-tag {
+            font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 4px; background: rgba(74, 222, 128, 0.08); color: var(--green);
+            border: 1px solid rgba(74, 222, 128, 0.18);
+            -webkit-text-fill-color: var(--green);
+        }
+
+        /* Stepper */
+        .stepper { display: flex; align-items: center; gap: 0; }
+        .step-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 20px; transition: all .3s; }
+        .step-item.completed { color: var(--green); }
+        .step-item.active { color: #fff; background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.2); }
+        .step-badge {
+            width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 800;
+        }
+        .step-item.completed .step-badge { background: rgba(74,222,128,.15); border: 1.5px solid rgba(74,222,128,.35); color: var(--green); }
+        .step-item.active .step-badge {
+            background: linear-gradient(135deg, #4ade80, #22d3ee); border: none; color: #050709;
+            box-shadow: 0 2px 8px rgba(74,222,128,.3);
+        }
+
+        .step-line { width: 32px; height: 2px; background: var(--border); border-radius: 2px; position: relative; overflow: hidden; }
+        .step-line::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(90deg, var(--green), var(--cyan));
+            transform: scaleX(0); transform-origin: left; transition: transform .5s ease;
+        }
+        .step-line.done::after { transform: scaleX(1); }
+
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+        .btn-nav {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            color: var(--text-secondary); padding: 8px 16px; border-radius: 10px;
+            font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: all .2s var(--ease); font-family: inherit; text-decoration: none;
+        }
+        .btn-nav:hover { background: rgba(255,255,255,.06); color: #fff; border-color: rgba(255,255,255,.15); }
+
+        /* Reading Progress Bar */
+        .progress-bar-container { position: fixed; top: 67px; left: 0; right: 0; height: 3px; background: transparent; z-index: 99; }
+        .progress-bar-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--green), var(--cyan));
+            transition: width 0.15s ease-out;
+            box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
+        }
+
+        /* ── Main Layout Grid ── */
+        .main-container {
+            position: relative; z-index: 1; max-width: 1380px; margin: 0 auto;
+            padding: 32px 36px 80px; display: grid; grid-template-columns: 290px 1fr; gap: 32px;
+        }
+
+        /* ── Sidebar (Table of Contents) ── */
+        .sidebar {
+            position: sticky; top: 90px; height: fit-content; max-height: calc(100vh - 108px); overflow-y: auto;
+            background: rgba(10, 16, 24, 0.7); backdrop-filter: blur(16px);
+            border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 20px;
+            min-width: 260px; flex-shrink: 0;
+        }
+        .sidebar::-webkit-scrollbar { width: 3px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 3px; }
+
+        .toc-header {
+            font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
+            color: var(--green); margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: nowrap;
+            padding-bottom: 10px; border-bottom: 1px solid var(--border);
+        }
+        .toc-header span:first-child { min-width: 130px; }
+
+        .toc-list { list-style: none; display: flex; flex-direction: column; gap: 3px; padding: 0; margin: 0; }
+
+        .toc-link {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px;
+            font-size: 12px; color: var(--text-secondary); text-decoration: none; border-radius: 8px;
+            transition: all .2s var(--ease); border-left: 2px solid transparent;
+        }
+        .toc-link span:first-child {
+            flex: 1; min-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .toc-link:hover { color: #fff; background: rgba(255,255,255,.03); }
+        .toc-link.active { color: #fff; background: rgba(74, 222, 128, 0.08); border-left-color: var(--green); font-weight: 600; }
+        .toc-num { font-size: 10px; font-family: 'JetBrains Mono', monospace; opacity: 0.6; flex-shrink: 0; margin-left: 6px; }
+
+        .sidebar-exec-btn {
+            margin-top: 18px; width: 100%; padding: 12px; border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: var(--radius-md); background: rgba(74, 222, 128, 0.06); color: var(--green);
+            font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all .2s var(--ease); text-decoration: none; font-family: inherit;
+        }
+        .sidebar-exec-btn:hover { background: linear-gradient(135deg, #16a34a, #4ade80); color: #050709; box-shadow: 0 4px 20px rgba(74, 222, 128, 0.25); }
+
+        /* ── Document Shell ── */
+        .doc-sheet {
+            background: rgba(10, 16, 24, 0.6); backdrop-filter: blur(12px);
+            border: 1px solid var(--border); border-radius: var(--radius-xl);
+            padding: 44px 52px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            position: relative; overflow: hidden;
+        }
+        /* Animated gradient accent on left edge */
+        .doc-sheet::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 100%;
+            background: linear-gradient(180deg, transparent, var(--green), var(--cyan), transparent);
+            background-size: 100% 200%;
+            animation: gradientBorderFlow 4s ease-in-out infinite;
+            opacity: 0.4;
+        }
+        @keyframes gradientBorderFlow {
+            0%,100% { background-position: 0% 0%; }
+            50% { background-position: 0% 100%; }
+        }
+
+        /* Formal Executive Header */
+        .doc-exec-header {
+            border-bottom: 1px solid var(--border); padding-bottom: 28px; margin-bottom: 32px;
+        }
+
+        .exec-status-row {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+        }
+
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 20px;
+            background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.18);
+            font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--green);
+        }
+        .status-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+        @keyframes statusPulse { 0%,100% { opacity: 1; box-shadow: 0 0 8px var(--green); } 50% { opacity: .5; box-shadow: 0 0 16px var(--green); } }
+
+        .doc-ref-id { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); }
+
+        .doc-main-title {
+            font-family: 'Outfit', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; line-height: 1.25;
+            background: linear-gradient(135deg, #fff 30%, #86efac 80%, #22d3ee);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .doc-sub-title { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; max-width: 720px; }
+
+        /* Search & Filter Bar */
+        .filter-search-bar {
+            display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 24px;
+            padding: 12px 18px; background: rgba(255,255,255,0.015); border: 1px solid var(--border); border-radius: var(--radius-lg); flex-wrap: wrap;
+        }
+
+        .search-input-wrap { position: relative; flex: 1; min-width: 220px; }
+        .search-input-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 15px; height: 15px; }
+        .clause-search-input {
+            width: 100%; padding: 8px 12px 8px 36px; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 8px; color: #fff; font-size: 12px; outline: none; transition: border-color .3s, box-shadow .3s;
+            font-family: inherit;
+        }
+        .clause-search-input:focus { border-color: rgba(74, 222, 128, 0.4); box-shadow: 0 0 0 3px rgba(74,222,128,.06); }
+
+        .filter-tags-row { display: flex; gap: 6px; }
+        .filter-tag-btn {
+            padding: 6px 12px; font-size: 11px; font-weight: 600; border-radius: 6px; border: 1px solid var(--border);
+            background: transparent; color: var(--text-secondary); cursor: pointer; transition: all .2s; font-family: inherit;
+        }
+        .filter-tag-btn.active, .filter-tag-btn:hover { background: rgba(74, 222, 128, 0.08); color: var(--green); border-color: rgba(74, 222, 128, 0.25); }
+
+        /* Metadata Grid */
+        .meta-exec-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;
+            margin-top: 16px; padding: 18px 20px; background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border); border-radius: var(--radius-lg);
+        }
+        .meta-item { display: flex; flex-direction: column; gap: 3px; }
+        .meta-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-muted); }
+        .meta-val { font-size: 13px; font-weight: 600; color: #fff; }
+        .meta-val.mono { font-family: 'JetBrains Mono', monospace; color: var(--cyan); }
+
+        /* Formal Legal Preamble */
+        .legal-preamble {
+            background: rgba(74, 222, 128, 0.03); border: 1px solid rgba(74, 222, 128, 0.15); border-left: 3.5px solid var(--green);
+            border-radius: var(--radius-md); padding: 20px 24px; font-size: 13px; color: #cbd5e1; line-height: 1.75; margin-bottom: 32px;
+        }
+
+        /* Formal Clauses List */
+        .sections-wrapper { display: flex; flex-direction: column; gap: 20px; }
+
+        .section-card {
+            background: rgba(14, 23, 38, 0.6); border: 1px solid var(--border); border-radius: var(--radius-lg);
+            padding: 24px 28px; transition: all .3s var(--ease); scroll-margin-top: 96px;
+        }
+        .section-card:hover { border-color: rgba(74, 222, 128, 0.15); background: rgba(19, 32, 58, 0.5); transform: translateY(-1px); box-shadow: 0 8px 24px -8px rgba(74,222,128,.06); }
+
+        .sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .sec-title-wrap { display: flex; align-items: center; gap: 12px; }
+        .sec-number {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--green);
+            padding: 4px 10px; border-radius: 6px; background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.15);
+        }
+        .sec-h { font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 700; color: #fff; }
+
+        .sec-body { font-size: 13px; color: #cbd5e1; line-height: 1.75; }
+        .sec-body p { margin-bottom: 8px; }
+        .sec-body p:last-child { margin-bottom: 0; }
+
+        /* ── Modern Custom Bulleted Lists ── */
+        .sec-list {
+            margin: 12px 0 6px 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .sec-list li {
+            position: relative;
+            padding-left: 22px;
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.65;
+            list-style: none;
+        }
+        .sec-list li::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 9px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+        }
+
+        /* Professional Notice Callout */
+        .notice-box {
+            display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; border-radius: var(--radius-md);
+            margin-top: 12px; font-size: 12px; line-height: 1.6;
+        }
+        .notice-warning { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); color: #fca5a5; }
+        .notice-info { background: rgba(34, 211, 238, 0.04); border: 1px solid rgba(34, 211, 238, 0.15); color: #99f6e4; }
+        .notice-icon { flex-shrink: 0; margin-top: 1px; }
+
+        /* ── Premium Schedule A & Declaration ── */
+        .schedule-card {
+            background: rgba(8, 14, 26, 0.8); backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 222, 128, 0.2); border-radius: var(--radius-xl);
+            padding: 34px; margin-top: 36px; scroll-margin-top: 96px; position: relative; overflow: hidden;
+        }
+        .schedule-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green), var(--cyan), transparent);
+            opacity: 0.6;
+        }
+
+        .schedule-header {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+            padding-bottom: 16px; border-bottom: 1px solid var(--border);
+        }
+        .schedule-title { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .schedule-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 4px; background: rgba(74, 222, 128, 0.08); color: var(--green); border: 1px solid rgba(74, 222, 128, 0.18); }
+
+        .declaration-text { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.7; }
+
+        .checkbox-group { display: flex; flex-direction: column; gap: 12px; }
+
+        .custom-checkbox-label {
+            display: flex; align-items: flex-start; gap: 14px; font-size: 13px; color: #f1f5f9;
+            cursor: pointer; user-select: none; background: rgba(255, 255, 255, 0.015);
+            border: 1px solid var(--border); padding: 16px 18px; border-radius: var(--radius-lg);
+            transition: all .3s var(--ease);
+        }
+        .custom-checkbox-label:hover { background: rgba(74, 222, 128, 0.03); border-color: rgba(74, 222, 128, 0.15); transform: translateY(-1px); }
+
+        .custom-checkbox-label input[type="checkbox"] {
+            appearance: none; -webkit-appearance: none;
+            width: 20px; height: 20px; border: 1.5px solid var(--text-muted); border-radius: 6px;
+            outline: none; cursor: pointer; margin-top: 1px; flex-shrink: 0;
+            transition: all .3s var(--ease); position: relative; background: transparent;
+        }
+        .custom-checkbox-label input[type="checkbox"]:checked {
+            background: linear-gradient(135deg, #4ade80, #22d3ee); border-color: transparent;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+        .custom-checkbox-label input[type="checkbox"]:checked::after {
+            content: '✓'; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); color: #050709; font-size: 13px; font-weight: 900;
+        }
+
+        /* ── Premium Signature Execution Module ── */
+        .signature-exec-card {
+            background: rgba(8, 12, 22, 0.7); backdrop-filter: blur(16px);
+            border: 1px solid var(--border); border-radius: var(--radius-xl);
+            padding: 34px; margin-top: 24px; scroll-margin-top: 96px; position: relative; overflow: hidden;
+        }
+        .signature-exec-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(74, 222, 128, 0.04), transparent 70%);
+            pointer-events: none;
+        }
+
+        .sig-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 14px; position: relative; }
+        .sig-h {
+            font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: #fff;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .sig-h-icon {
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; background: rgba(74, 222, 128, 0.08); border: 1px solid rgba(74, 222, 128, 0.18);
+        }
+
+        .sig-mode-selector { display: flex; background: rgba(255, 255, 255, 0.03); padding: 4px; border-radius: 10px; gap: 3px; border: 1px solid var(--border); }
+        .sig-mode-btn {
+            padding: 8px 18px; font-size: 12px; font-weight: 700; border: none; background: transparent;
+            color: var(--text-muted); border-radius: 8px; cursor: pointer; transition: all .3s var(--ease); font-family: inherit;
+        }
+        .sig-mode-btn.active { background: linear-gradient(135deg, rgba(74, 222, 128, 0.12), rgba(34, 211, 238, 0.08)); color: #fff; border: 1px solid rgba(74, 222, 128, 0.2); }
+        .sig-mode-btn:hover:not(.active) { color: var(--text-secondary); }
+
+        /* ── Premium Canvas Pad ── */
+        .canvas-container {
+            position: relative;
+            background: linear-gradient(145deg, rgba(8, 14, 28, 0.9), rgba(6, 10, 20, 0.95));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px;
+            transition: all .4s var(--ease);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+        }
+        .canvas-container::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            border-radius: var(--radius-lg); opacity: 0;
+            background: linear-gradient(135deg, rgba(74,222,128,.04) 0%, transparent 50%);
+            transition: opacity .4s;
+        }
+        .canvas-container:hover { border-color: rgba(74, 222, 128, 0.2); }
+        .canvas-container:hover::before { opacity: 1; }
+        .canvas-container.active {
+            border-color: rgba(74, 222, 128, 0.35);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3), 0 0 24px rgba(74, 222, 128, 0.08), 0 4px 16px rgba(0,0,0,0.2);
+        }
+        .canvas-container.active::before { opacity: 1; }
+
+        canvas#sigCanvas { width: 100%; height: 180px; display: block; cursor: crosshair; touch-action: none; }
+
+        .canvas-hint {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: var(--text-muted); font-size: 13px; pointer-events: none;
+            display: flex; flex-direction: column; align-items: center; gap: 10px; user-select: none;
+            text-align: center;
+        }
+        .canvas-hint-icon {
+            width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            background: rgba(74, 222, 128, 0.06); border: 1px solid rgba(74, 222, 128, 0.12);
+        }
+        .canvas-hint-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+        .canvas-hint-sub { font-size: 10px; color: rgba(100, 116, 139, 0.7); }
+
+        .canvas-actions { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .canvas-security-label { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+        .canvas-security-label svg { color: var(--green); }
+
+        .btn-clear-sig {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: var(--text-secondary);
+            padding: 8px 16px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .btn-clear-sig:hover { background: rgba(239, 68, 68, 0.08); color: #fca5a5; border-color: rgba(239, 68, 68, 0.2); }
+
+        /* Typed Signature Mode */
+        .typed-mode-container { display: none; margin-bottom: 24px; }
+        .typed-sig-input {
+            width: 100%; padding: 14px 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+            border-radius: 10px; color: #fff; font-size: 14px; outline: none; margin-bottom: 14px; font-family: inherit;
+            transition: border-color .3s, box-shadow .3s;
+        }
+        .typed-sig-input:focus { border-color: rgba(74, 222, 128, 0.4); box-shadow: 0 0 0 3px rgba(74,222,128,.06); }
+
+        .typed-sig-display {
+            height: 140px;
+            background: linear-gradient(145deg, rgba(8, 14, 28, 0.9), rgba(6, 10, 20, 0.95));
+            border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius-lg);
+            display: flex; align-items: center; justify-content: center; font-family: 'Dancing Script', cursive;
+            font-size: 42px; color: var(--green); letter-spacing: 1px; padding: 10px; user-select: none;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+            text-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+        }
+
+        /* ── Premium Audit Trail ── */
+        .audit-trail-section {
+            padding-top: 24px; border-top: 1px solid var(--border); position: relative;
+        }
+        .audit-trail-section::before {
+            content: ''; position: absolute; top: -1px; left: 20%; right: 20%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(74,222,128,.3), transparent);
+        }
+        .audit-trail-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px;
+            color: var(--text-muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+        }
+        .audit-trail-label svg { color: var(--green); }
+        .audit-trail-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+            font-size: 11px;
+        }
+        .audit-box {
+            background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border);
+            padding: 14px 16px; border-radius: 10px; transition: all .2s;
+        }
+        .audit-box:hover { border-color: rgba(74,222,128,.12); background: rgba(74,222,128,.02); }
+        .audit-lbl { color: var(--text-muted); text-transform: uppercase; font-size: 9px; letter-spacing: .8px; font-weight: 700; margin-bottom: 4px; }
+        .audit-val { color: #fff; font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+        /* Validation status indicator */
+        .val-status-bar {
+            display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--amber);
+            margin-bottom: 14px; font-weight: 500;
+            padding: 14px 18px; border-radius: var(--radius-md);
+            background: rgba(245, 158, 11, 0.04); border: 1px solid rgba(245, 158, 11, 0.12);
+            transition: all .4s var(--ease);
+        }
+        .val-status-bar.valid {
+            color: var(--green);
+            background: rgba(74, 222, 128, 0.04); border-color: rgba(74, 222, 128, 0.15);
+        }
+
+        /* ── Submit Action Bar ── */
+        .action-bar {
+            margin-top: 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+        }
+
+        .btn-exec-submit {
+            display: inline-flex; align-items: center; gap: 10px; padding: 16px 36px;
+            background: linear-gradient(135deg, #16a34a, #4ade80); border: none; border-radius: var(--radius-md);
+            color: #050709; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit;
+            transition: all .3s var(--ease);
+            box-shadow: 0 8px 24px rgba(74, 222, 128, 0.25);
+            position: relative; overflow: hidden; letter-spacing: .2px;
+        }
+        .btn-exec-submit::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+        }
+        .btn-exec-submit:hover:not(:disabled)::before { animation: shimmerSweep .8s ease-out; }
+        @keyframes shimmerSweep { 0% { left: -100%; } 100% { left: 200%; } }
+        .btn-exec-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(74, 222, 128, 0.35); }
+        .btn-exec-submit:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; filter: grayscale(0.5); }
+        /* Pulsing glow on hover */
+        .btn-exec-submit::after {
+            content: ''; position: absolute; inset: -2px; border-radius: 14px; z-index: -1;
+            background: linear-gradient(135deg, rgba(74,222,128,.3), rgba(34,211,238,.3));
+            opacity: 0; transition: opacity .3s; filter: blur(8px);
+        }
+        .btn-exec-submit:hover:not(:disabled)::after { opacity: 1; animation: btnPulse 2s ease-in-out infinite; }
+        @keyframes btnPulse { 0%,100% { opacity: .5; } 50% { opacity: .2; } }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 1000; background: rgba(5, 7, 9, 0.88);
+            backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-card {
+            background: rgba(13, 20, 36, 0.95); backdrop-filter: blur(16px);
+            border: 1px solid rgba(74, 222, 128, 0.2); border-radius: var(--radius-xl);
+            width: 100%; max-width: 460px; padding: 40px 36px; text-align: center;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), 0 0 40px rgba(74,222,128,.08);
+        }
+        .modal-icon-badge {
+            width: 60px; height: 60px; border-radius: 18px;
+            background: linear-gradient(135deg, rgba(74,222,128,.12), rgba(34,211,238,.08));
+            border: 1px solid rgba(74,222,128,.25); display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; color: var(--green);
+        }
+        .modal-h { font-family: 'Outfit', sans-serif; font-size: 24px; color: #fff; margin-bottom: 8px; font-weight: 800; }
+        .modal-p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+        .modal-detail-card {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+            border-radius: 12px; padding: 18px; margin-bottom: 22px; font-size: 12px; text-align: left; color: #cbd5e1;
+        }
+        .modal-detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .modal-detail-row:last-child { margin-bottom: 0; }
+        .modal-action-btn {
+            width: 100%; padding: 15px; background: linear-gradient(135deg, #16a34a, #4ade80); border: none; border-radius: 10px;
+            color: #050709; font-weight: 800; font-size: 14px; cursor: pointer; font-family: inherit;
+            transition: all .3s var(--ease); position: relative; overflow: hidden; letter-spacing: .2px;
+            box-shadow: 0 8px 24px rgba(74,222,128,.25);
+        }
+        .modal-action-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+        }
+        .modal-action-btn:hover::before { animation: shimmerSweep .8s ease-out; }
+        .modal-action-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(74,222,128,.35); }
+
+        @media (max-width: 1100px) {
+            .main-container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .doc-sheet { padding: 28px; }
+            .top-nav { padding: 14px 20px; }
+            .stepper { display: none; }
+        }
+
+        @media (max-width: 540px) {
+            .doc-sheet { padding: 20px 16px; }
+            .schedule-card { padding: 20px; }
+            .signature-exec-card { padding: 20px; }
+            .sig-top-row { flex-direction: column; align-items: flex-start; }
+        }
+
+        /* Spin animation for loading states */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spin { animation: spin .8s linear infinite; }
+    </style>
+</head>
+
+<body>
+    <div class="bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="aurora"></div>
+    <div class="bg-grid"></div>
+    <div class="particles">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    </div>
+
+    <!-- Reading Progress Bar -->
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+
+    <!-- Corporate Navigation Bar -->
+    <header class="top-nav" id="topNav">
+        <a href="register.html" class="brand-logo">
+            <div class="brand-mark">
+                <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#4ade80"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/>
+                        </linearGradient>
+                        <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#4ade80"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
+                    <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
+                    <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
+                    <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
+                </svg>
+            </div>
+            <span class="brand-name">
+                Recycle Hub
+                <span class="brand-tag">Legal Vault</span>
+            </span>
+        </a>
+
+        <div class="stepper">
+            <div class="step-item completed">
+                <div class="step-badge">✓</div>
+                <span>Registration</span>
+            </div>
+            <div class="step-line done"></div>
+            <div class="step-item active">
+                <div class="step-badge">2</div>
+                <span>Execution & Terms</span>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <button class="btn-nav" onclick="window.print()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                Export PDF
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+
+        <!-- Table of Contents Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="toc-header">
+                <span>AGREEMENT CLAUSES</span>
+                <span class="toc-num" style="padding:2px 8px; border-radius:4px; background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.2); color:var(--green); opacity:1; font-weight:800; font-size:10px;">19</span>
+            </div>
+            <ul class="toc-list" id="tocList">
+                <li><a href="#sec-1" class="toc-link"><span>Purpose of Platform</span><span class="toc-num">S01</span></a></li>
+                <li><a href="#sec-2" class="toc-link"><span>Partner Eligibility</span><span class="toc-num">S02</span></a></li>
+                <li><a href="#sec-3" class="toc-link"><span>Account Registration</span><span class="toc-num">S03</span></a></li>
+                <li><a href="#sec-4" class="toc-link"><span>Title to Materials</span><span class="toc-num">S04</span></a></li>
+                <li><a href="#sec-5" class="toc-link"><span>Accepted Inventory</span><span class="toc-num">S05</span></a></li>
+                <li><a href="#sec-6" class="toc-link"><span>Prohibited Waste</span><span class="toc-num">S06</span></a></li>
+                <li><a href="#sec-7" class="toc-link"><span>Logistics & Dispatch</span><span class="toc-num">S07</span></a></li>
+                <li><a href="#sec-8" class="toc-link"><span>Quality Inspection</span><span class="toc-num">S08</span></a></li>
+                <li><a href="#sec-9" class="toc-link"><span>Commercial Settlement</span><span class="toc-num">S09</span></a></li>
+                <li><a href="#sec-10" class="toc-link"><span>Partner Conduct</span><span class="toc-num">S10</span></a></li>
+                <li><a href="#sec-11" class="toc-link"><span>Order Cancellation</span><span class="toc-num">S11</span></a></li>
+                <li><a href="#sec-12" class="toc-link"><span>Data Privacy</span><span class="toc-num">S12</span></a></li>
+                <li><a href="#sec-13" class="toc-link"><span>Intellectual Property</span><span class="toc-num">S13</span></a></li>
+                <li><a href="#sec-14" class="toc-link"><span>Account Suspension</span><span class="toc-num">S14</span></a></li>
+                <li><a href="#sec-15" class="toc-link"><span>Liability Limits</span><span class="toc-num">S15</span></a></li>
+                <li><a href="#sec-16" class="toc-link"><span>Force Majeure</span><span class="toc-num">S16</span></a></li>
+                <li><a href="#sec-17" class="toc-link"><span>Amendments</span><span class="toc-num">S17</span></a></li>
+                <li><a href="#sec-18" class="toc-link"><span>Jurisdiction</span><span class="toc-num">S18</span></a></li>
+                <li><a href="#sec-19" class="toc-link"><span>Official Notices</span><span class="toc-num">S19</span></a></li>
+                <li><a href="#schedule-a" class="toc-link" style="color:var(--green); font-weight:700;"><span>Schedule A: Sign</span><span class="toc-num">✍</span></a></li>
+            </ul>
+
+            <a href="#signature-module" class="sidebar-exec-btn">
+                <span>Jump to Execution</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </a>
+        </aside>
+
+        <!-- Document Main Sheet -->
+        <main class="doc-sheet">
+
+            <!-- Executive Header -->
+            <div class="doc-exec-header">
+                <div class="exec-status-row">
+                    <div class="status-pill">
+                        <div class="status-dot"></div>
+                        Master Sourcing Agreement
+                    </div>
+                    <div class="doc-ref-id">REF: AGR-RH-2026-SP • REV 3.2</div>
+                </div>
+
+                <h1 class="doc-main-title">Sourcing Partner Participation & Supply Agreement</h1>
+                <p class="doc-sub-title">This Master Services Agreement ("Agreement") governs the formal relationship between Recycle Hub Technologies Private Limited and the undersigned registered Sourcing Partner.</p>
+
+                <!-- Search and Filter Bar -->
+                <div class="filter-search-bar">
+                    <div class="search-input-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <input type="text" class="clause-search-input" id="clauseSearch" placeholder="Search agreement clauses (e.g. payment, pickup)..." oninput="filterClauses(this.value)" />
+                    </div>
+                    <div class="filter-tags-row">
+                        <button class="filter-tag-btn active" onclick="setCategoryFilter('all', this)">All</button>
+                        <button class="filter-tag-btn" onclick="setCategoryFilter('logistics', this)">Logistics</button>
+                        <button class="filter-tag-btn" onclick="setCategoryFilter('financial', this)">Payments</button>
+                        <button class="filter-tag-btn" onclick="setCategoryFilter('legal', this)">Legal</button>
+                    </div>
+                </div>
+
+                <div class="meta-exec-grid">
+                    <div class="meta-item">
+                        <span class="meta-label">Contracting Party</span>
+                        <span class="meta-val" id="partnerNameDisplay">Registered Sourcing Partner</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Effective Execution Date</span>
+                        <span class="meta-val" id="effectiveDate">August 6, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Security Protocol</span>
+                        <span class="meta-val mono">SHA-256 ENCRYPTED</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Governing Law</span>
+                        <span class="meta-val">Information Technology Act</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal Preamble -->
+            <div class="legal-preamble">
+                <strong>Important Legal Notice:</strong> Please review all provisions carefully prior to signing. By completing the digital signature execution block in Schedule A below, you affirm that you possess full legal authority to enter into this binding commercial contract on behalf of yourself or your registered business entity.
+            </div>
+
+            <!-- Sections Wrapper -->
+            <div class="sections-wrapper">
+
+                <div class="section-card" id="sec-1" data-cat="logistics">
+                    <div class="sec-head">
+                        <div class="sec-title-wrap">
+                            <span class="sec-number">SECTION 01</span>
+                            <h2 class="sec-h">Purpose and Scope of Platform Services</h2>
+                        </div>
+                    </div>
+                    <div class="sec-body">
+                        <p>Recycle Hub operates an enterprise technology infrastructure for sorting, cataloging, collecting, and channeling post-industrial and post-consumer recyclable raw materials to verified processing plants.</p>
+                        <ul class="sec-list">
+                            <li><strong>Inventory Listing:</strong> Sourcing Partners leverage Recycle Hub's platform to list verified recyclable inventory.</li>
+                            <li><strong>Logistics Dispatch:</strong> Schedule verified pickup windows with dedicated enterprise logistics fleets.</li>
+                            <li><strong>Digital Settlement:</strong> Receive direct digital payouts for compliant recyclable commodities upon weighment verification.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-2" data-cat="legal">
+                    <div class="sec-head">
+                        <div class="sec-title-wrap">
+                            <span class="sec-number">SECTION 02</span>
+                            <h2 class="sec-h">Partner Qualification & Eligibility</h2>
+                        </div>
+                    </div>
+                    <div class="sec-body">
+                        <p>To qualify as an active Sourcing Partner, the entity or individual warrants that:</p>
+                        <ul class="sec-list">
+                            <li>It possesses full legal capacity and regulatory permits to conduct commercial trade in recyclable commodities.</li>
+                            <li>All submitted business credentials, tax identification numbers, and contact details are authentic and up to date.</li>
+                            <li>It maintains continuous compliance with local environmental and municipal waste-handling regulations.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-3" data-cat="legal">
+                    <div class="sec-head">
+                        <div class="sec-title-wrap">
+                            <span class="sec-number">SECTION 03</span>
+                            <h2 class="sec-h">Account Credentials & Access Control</h2>
+                        </div>
+                    </div>
+                    <div class="sec-body">
+                        <p>Sourcing Partners are strictly responsible for maintaining access security over their account credentials:</p>
+                        <ul class="sec-list">
+                            <li><strong>Credential Security:</strong> Multi-factor authentication and access credentials must be kept confidential at all times.</li>
+                            <li><strong>Authorized Use:</strong> Any dispatch order or commercial transaction submitted under authenticated partner credentials shall be deemed authorized by the Partner.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-4" data-cat="legal">
+                    <div class="sec-head">
+                        <div class="sec-title-wrap">
+                            <span class="sec-number">SECTION 04</span>
+                            <h2 class="sec-h">Title, Legal Ownership & Warranties</h2>
+                        </div>
+                    </div>
+                    <div class="sec-body">
+                        <p>Ownership and title transfers are governed under the following explicit legal terms:</p>
+                        <ul class="sec-list">
+                            <li><strong>Warranty of Ownership:</strong> The Partner explicitly represents that all recyclable inventory presented is free of encumbrances, liens, or third-party disputes.</li>
+                            <li><strong>Title Transfer Node:</strong> Title to materials transfers to Recycle Hub upon physical inspection and digital weighment slip issuance.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-5" data-cat="logistics">
+                    <div class="sec-head">
+                        <div class="sec-title-wrap">
+                            <span class="sec-number">SECTION 05</span>
+                            <h2 class="sec-h">Accepted Material Specifications</h2>
+                        </div>
+                    </div>
+                    <div class="sec-body">
+                        <p>Recycle Hub accepts verified commodities adhering to regional quality grades:</p>
+                        <ul class="sec-list">
+                            <li><strong>Paper & Fiber:</strong> OCC corrugated cardboard, Kraft paper, and sorted graphic paper grades.</li>
+                            <li><strong>Polymers:</strong> Industrial HDPE, PET bottles/flakes, LDPE film, and rigid PP materials.</li>
+                            <li><strong>Metals:</strong> Ferrous scrap, aluminum alloys, copper, and segregated industrial metal scrap.</li>
+                            <li><strong>E-Waste:</strong> Segregated electronic components and circuit board assemblies.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-6" data-cat="legal">
+                    <div class="sec-head">
+                        <div class="sec-title-wrap">
+                            <span class="sec-number">SECTION 06</span>
+                            <h2 class="sec-h">Prohibited & Hazardous Substances</h2>
+                        </div>
+                    </div>
+                    <div class="sec-body">
+                        <p>Recycle Hub strictly prohibits consignment of restricted hazardous materials:</p>
+                        <ul class="sec-list">
+                            <li>Prohibited: Hazardous chemical residues, toxic solvents, or contaminated containers.</li>
+                            <li>Prohibited: Bio-medical waste, pharmaceutical residues, or infectious materials.</li>
+                            <li>Prohibited: Explosive compounds, pressurized gas cylinders, or radioactive components.</li>
+                        </ul>
+                        <div class="notice-box notice-warning">
+                            <svg class="notice-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <div><strong>Regulatory Compliance Note:</strong> Presentation of prohibited hazardous waste triggers immediate account freezing and statutory notification to environmental enforcement bodies.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-7" data-cat="logistics">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 07</span><h2 class="sec-h">Logistics, Dispatch & Scheduling</h2></div></div>
+                    <div class="sec-body">
+                        <p>Collection operations follow optimized logistics protocols:</p>
+                        <ul class="sec-list">
+                            <li><strong>Dispatch Scheduling:</strong> Timetables are assigned based on regional fleet density and pickup volume.</li>
+                            <li><strong>Site Access:</strong> The Partner agrees to provide safe, unimpeded access for heavy collection vehicles at the loading bay.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-8" data-cat="logistics">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 08</span><h2 class="sec-h">Quality Verification & Moisture Adjustments</h2></div></div>
+                    <div class="sec-body">
+                        <p>Quality inspections are conducted at physical loading nodes:</p>
+                        <ul class="sec-list">
+                            <li><strong>Grade Assessment:</strong> Field inspectors evaluate purity, contamination level, and moisture percentage.</li>
+                            <li><strong>Manifest Deductions:</strong> Deductions for excess moisture or non-recyclable contamination are transparently itemized on the digital manifest slip.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-9" data-cat="financial">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 09</span><h2 class="sec-h">Commercial Settlement & Payout Terms</h2></div></div>
+                    <div class="sec-body">
+                        <p>Financial settlements are executed automatically upon manifest confirmation:</p>
+                        <ul class="sec-list">
+                            <li><strong>Dynamic Pricing:</strong> Settlement rates map directly to index-benchmarked daily market commodity tariffs.</li>
+                            <li><strong>Fast Remittance:</strong> Payouts are transferred via NEFT/RTGS or UPI within 24 hours of manifest approval.</li>
+                        </ul>
+                        <div class="notice-box notice-info">
+                            <svg class="notice-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            <div><strong>Settlement Guarantee:</strong> All verified pickup manifests are backed by Recycle Hub's Automated Fast-Track Payment Guarantee.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-10" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 10</span><h2 class="sec-h">Partner Standards of Conduct</h2></div></div>
+                    <div class="sec-body">
+                        <ul class="sec-list">
+                            <li>Partners warrant fair dealing and professional communication with logistics operators and inspectors.</li>
+                            <li>Tampering with digital weighment scales or falsifying manifest weights is strictly prohibited.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-11" data-cat="logistics">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 11</span><h2 class="sec-h">Cancellation Policies</h2></div></div>
+                    <div class="sec-body">
+                        <ul class="sec-list">
+                            <li>Pickups may be canceled up to 2 hours prior to fleet dispatch without penalty.</li>
+                            <li>Frequent unannounced cancellations may incur nominal dispatch recovery fees.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-12" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 12</span><h2 class="sec-h">Data Protection & Privacy</h2></div></div>
+                    <div class="sec-body">
+                        <ul class="sec-list">
+                            <li>Partner operational logs and contact records are encrypted with AES-256 protocols.</li>
+                            <li>Transaction history is processed in accordance with national enterprise data security standards.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-13" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 13</span><h2 class="sec-h">Intellectual Property Rights</h2></div></div>
+                    <div class="sec-body">
+                        <p>All software platforms, pricing algorithms, brand marks, and dispatch systems remain the exclusive intellectual property of Recycle Hub Technologies Pvt. Ltd.</p>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-14" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 14</span><h2 class="sec-h">Term & Account Suspension</h2></div></div>
+                    <div class="sec-body">
+                        <ul class="sec-list">
+                            <li>Either party may terminate platform participation with 7 days written electronic notice.</li>
+                            <li>Immediate account suspension applies in instances of regulatory non-compliance, fraud, or safety breaches.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-15" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 15</span><h2 class="sec-h">Limitations of Liability</h2></div></div>
+                    <div class="sec-body">
+                        <p>In no event shall Recycle Hub be liable for indirect or consequential damages exceeding total platform service fees accumulated over the prior 30-day billing cycle.</p>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-16" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 16</span><h2 class="sec-h">Force Majeure</h2></div></div>
+                    <div class="sec-body">
+                        <p>Operational delays caused by natural disasters, severe weather events, transit blockades, or emergency statutory directives shall suspend performance obligations without penalty.</p>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-17" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 17</span><h2 class="sec-h">Contractual Amendments</h2></div></div>
+                    <div class="sec-body">
+                        <p>Contract revisions will be published on the legal vault portal with 14 days advance notification sent to registered partner accounts.</p>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-18" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 18</span><h2 class="sec-h">Governing Law & Dispute Resolution</h2></div></div>
+                    <div class="sec-body">
+                        <ul class="sec-list">
+                            <li>This Agreement is governed by the laws of India.</li>
+                            <li>Any unresolved commercial dispute shall be referred to sole arbitration under the Arbitration and Conciliation Act.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-card" id="sec-19" data-cat="legal">
+                    <div class="sec-head"><div class="sec-title-wrap"><span class="sec-number">SECTION 19</span><h2 class="sec-h">Official Notices</h2></div></div>
+                    <div class="sec-body">
+                        <p>Formal notices must be delivered electronically to <strong>legal@recyclehub.com</strong> or to the registered partner email on file.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Schedule A: Formal Execution & Declarations -->
+            <div class="schedule-card" id="schedule-a">
+                <div class="schedule-header">
+                    <div class="schedule-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        Schedule A — Formal Partner Declaration
+                    </div>
+                    <span class="schedule-badge">Mandatory Execution</span>
+                </div>
+                <p class="declaration-text">By checking the compliance boxes below, the Signatory confirms that they have read, understood, and accept all terms of this Master Sourcing Agreement.</p>
+
+                <div class="checkbox-group">
+                    <label class="custom-checkbox-label">
+                        <input type="checkbox" id="checkTerms" onchange="validateForm()" />
+                        <span>I confirm that I have read and agree to all provisions of the <strong>Master Sourcing Agreement</strong>.</span>
+                    </label>
+
+                    <label class="custom-checkbox-label">
+                        <input type="checkbox" id="checkPrivacy" onchange="validateForm()" />
+                        <span>I authorize the processing of organizational and operational data in accordance with the <strong>Recycle Hub Privacy Policy</strong>.</span>
+                    </label>
+
+                    <label class="custom-checkbox-label">
+                        <input type="checkbox" id="checkOwnership" onchange="validateForm()" />
+                        <span>I warrant that all materials supplied under this agreement are legally owned or authorized for commercial transfer.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Official Signature Execution Module -->
+            <div class="signature-exec-card" id="signature-module">
+                <div class="sig-top-row">
+                    <div class="sig-h">
+                        <div class="sig-h-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+                        </div>
+                        Digital Signature Execution
+                    </div>
+                    <div class="sig-mode-selector">
+                        <button class="sig-mode-btn active" id="tabDraw" onclick="switchSigMode('draw')">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px; vertical-align:middle;"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+                            Draw
+                        </button>
+                        <button class="sig-mode-btn" id="tabType" onclick="switchSigMode('type')">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px; vertical-align:middle;"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                            Type
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Draw Mode -->
+                <div id="drawModeWrap">
+                    <div class="canvas-container" id="canvasContainer">
+                        <canvas id="sigCanvas"></canvas>
+                        <div class="canvas-hint" id="canvasPlaceholder">
+                            <div class="canvas-hint-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.8"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+                            </div>
+                            <span class="canvas-hint-text">Draw your signature inside this panel</span>
+                            <span class="canvas-hint-sub">Use mouse, trackpad, or touch to sign</span>
+                        </div>
+                    </div>
+                    <div class="canvas-actions">
+                        <div class="canvas-security-label">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                            256-bit encrypted capture
+                        </div>
+                        <button type="button" class="btn-clear-sig" onclick="clearCanvas()">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Type Mode -->
+                <div class="typed-mode-container" id="typeModeWrap">
+                    <input type="text" class="typed-sig-input" id="typedNameInput" placeholder="Type your full legal name..." oninput="updateTypedPreview()" />
+                    <div class="typed-sig-display" id="typedPreview">Sign Here</div>
+                </div>
+
+                <!-- Audit Trail -->
+                <div class="audit-trail-section">
+                    <div class="audit-trail-label">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Cryptographic Audit Trail
+                    </div>
+                    <div class="audit-trail-grid">
+                        <div class="audit-box">
+                            <div class="audit-lbl">Signatory Identity</div>
+                            <div class="audit-val" id="sigMetaName">--</div>
+                        </div>
+                        <div class="audit-box">
+                            <div class="audit-lbl">Timestamp (UTC)</div>
+                            <div class="audit-val" id="sigMetaTime">--</div>
+                        </div>
+                        <div class="audit-box">
+                            <div class="audit-lbl">Certificate Hash</div>
+                            <div class="audit-val" id="sigMetaHash">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Status Indicator -->
+            <div class="val-status-bar" id="valStatusBar" style="margin-top:20px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span id="valStatusText">Please accept all 3 declarations and provide a digital signature to execute.</span>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <a href="register-sourcing.html" class="btn-nav" style="padding:12px 20px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                    Back to Registration
+                </a>
+
+                <button type="button" class="btn-exec-submit" id="btnAccept" disabled onclick="submitFinalRegistration()">
+                    Execute & Complete Registration
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-card">
+            <div class="modal-icon-badge">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h2 class="modal-h">Agreement Executed!</h2>
+            <p class="modal-p">Your Master Sourcing Agreement has been digitally signed and stored in the legal vault.</p>
+
+            <div class="modal-detail-card">
+                <div class="modal-detail-row">
+                    <span style="color:var(--text-muted);">Account Type:</span>
+                    <strong style="color:var(--green);" id="modalAccountType">Sourcing Partner</strong>
+                </div>
+                <div class="modal-detail-row">
+                    <span style="color:var(--text-muted);">Registered Email:</span>
+                    <strong style="color:#fff;" id="modalEmail">--</strong>
+                </div>
+                <div class="modal-detail-row">
+                    <span style="color:var(--text-muted);">Certificate Ref:</span>
+                    <strong style="color:var(--cyan); font-family:'JetBrains Mono';" id="modalCert">--</strong>
+                </div>
+            </div>
+
+            <button class="modal-action-btn" onclick="window.location.href='login.html'">
+                Proceed to Login Portal →
+            </button>
+        </div>
+    </div>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        let regData = null;
+        let sigMode = 'draw';
+        let certHash = '';
+
+        const canvas = document.getElementById('sigCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let hasDrawn = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const stored = sessionStorage.getItem('sourcingRegData');
+            if (stored) {
+                try {
+                    regData = JSON.parse(stored);
+                    if (regData.fullName) {
+                        document.getElementById('partnerNameDisplay').textContent = regData.fullName;
+                        document.getElementById('sigMetaName').textContent = regData.fullName;
+                        document.getElementById('typedNameInput').value = regData.fullName;
+                        updateTypedPreview();
+                    }
+                    if (regData.type) {
+                        const typeFormatted = regData.type.charAt(0).toUpperCase() + regData.type.slice(1) + ' Partner';
+                        document.getElementById('modalAccountType').textContent = typeFormatted;
+                    }
+                } catch(e) {
+                    console.error('Error parsing registration data', e);
+                }
+            }
+
+            const now = new Date();
+            document.getElementById('effectiveDate').textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('sigMetaTime').textContent = now.toISOString();
+
+            certHash = 'CERT-RH-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+            document.getElementById('sigMetaHash').textContent = certHash;
+
+            setTimeout(resizeCanvas, 50);
+            window.addEventListener('resize', resizeCanvas);
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', { clientX: touch.clientX, clientY: touch.clientY });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: false });
+
+            canvas.addEventListener('touchend', () => {
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            window.addEventListener('scroll', updateProgressAndTOC);
+
+            // ── GSAP Entry Animations ──
+            gsap.set('#topNav', { opacity: 0, y: -20 });
+            gsap.set('#sidebar', { opacity: 0, x: -30 });
+            gsap.set('.doc-sheet', { opacity: 0, y: 20 });
+
+            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+            tl.to('#topNav', { opacity: 1, y: 0, duration: .6 })
+              .to('#sidebar', { opacity: 1, x: 0, duration: .7 }, '-=.4')
+              .to('.doc-sheet', { opacity: 1, y: 0, duration: .8 }, '-=.5');
+
+            // Animate section cards as they come into view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        gsap.to(entry.target, { opacity: 1, y: 0, duration: .5, ease: 'power2.out' });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.section-card, .schedule-card, .signature-exec-card').forEach(card => {
+                gsap.set(card, { opacity: 0, y: 15 });
+                observer.observe(card);
+            });
+
+            // Orb parallax
+            document.addEventListener('mousemove', e => {
+                const x = e.clientX / window.innerWidth - .5;
+                const y = e.clientY / window.innerHeight - .5;
+                gsap.to('.orb-1', { x: x * 60, y: y * 60, duration: 2, ease: 'power2.out' });
+                gsap.to('.orb-2', { x: x * -40, y: y * -40, duration: 2, ease: 'power2.out' });
+                gsap.to('.orb-3', { x: x * 30, y: y * -30, duration: 2.5, ease: 'power2.out' });
+            });
+        });
+
+        function resizeCanvas() {
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            if (rect.width > 0) {
+                canvas.width = rect.width;
+                canvas.height = 180;
+                ctx.lineWidth = 2.4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = '#4ade80';
+            }
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            ctx.beginPath();
+            ctx.moveTo((e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY);
+            document.getElementById('canvasPlaceholder').style.display = 'none';
+            document.getElementById('canvasContainer').classList.add('active');
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            ctx.lineTo((e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY);
+            ctx.stroke();
+            hasDrawn = true;
+            validateForm();
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                ctx.closePath();
+            }
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasDrawn = false;
+            document.getElementById('canvasPlaceholder').style.display = 'flex';
+            document.getElementById('canvasContainer').classList.remove('active');
+            validateForm();
+        }
+
+        function switchSigMode(mode) {
+            sigMode = mode;
+            document.getElementById('tabDraw').classList.toggle('active', mode === 'draw');
+            document.getElementById('tabType').classList.toggle('active', mode === 'type');
+
+            if (mode === 'draw') {
+                document.getElementById('drawModeWrap').style.display = 'block';
+                document.getElementById('typeModeWrap').style.display = 'none';
+                setTimeout(resizeCanvas, 20);
+            } else {
+                document.getElementById('drawModeWrap').style.display = 'none';
+                document.getElementById('typeModeWrap').style.display = 'block';
+            }
+            validateForm();
+        }
+
+        function updateTypedPreview() {
+            const val = document.getElementById('typedNameInput').value.trim();
+            const preview = document.getElementById('typedPreview');
+            preview.textContent = val || 'Sign Here';
+            if (regData) {
+                document.getElementById('sigMetaName').textContent = val || regData.fullName;
+            }
+            validateForm();
+        }
+
+        function validateForm() {
+            const c1 = document.getElementById('checkTerms').checked;
+            const c2 = document.getElementById('checkPrivacy').checked;
+            const c3 = document.getElementById('checkOwnership').checked;
+
+            let sigValid = false;
+            if (sigMode === 'draw') {
+                sigValid = hasDrawn;
+            } else {
+                sigValid = document.getElementById('typedNameInput').value.trim().length >= 2;
+            }
+
+            const isValid = c1 && c2 && c3 && sigValid;
+            document.getElementById('btnAccept').disabled = !isValid;
+
+            const bar = document.getElementById('valStatusBar');
+            const txt = document.getElementById('valStatusText');
+
+            if (isValid) {
+                bar.className = 'val-status-bar valid';
+                txt.textContent = '✓ All declarations verified and signature captured. Ready to execute.';
+                bar.querySelector('svg').innerHTML = '<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>';
+            } else {
+                bar.className = 'val-status-bar';
+                bar.querySelector('svg').innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+                let missing = [];
+                if (!c1 || !c2 || !c3) missing.push('check all 3 declaration boxes');
+                if (!sigValid) missing.push('provide a digital signature');
+                txt.textContent = 'Action Required: Please ' + missing.join(' and ') + '.';
+            }
+        }
+
+        function filterClauses(query) {
+            const q = query.toLowerCase().trim();
+            document.querySelectorAll('.section-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(q) ? 'block' : 'none';
+            });
+        }
+
+        function setCategoryFilter(cat, btn) {
+            document.querySelectorAll('.filter-tag-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.section-card').forEach(card => {
+                if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function updateProgressAndTOC() {
+            const doc = document.documentElement;
+            const scrollTop = doc.scrollTop || document.body.scrollTop;
+            const scrollHeight = doc.scrollHeight - doc.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const sections = document.querySelectorAll('.section-card, .schedule-card, .signature-exec-card');
+            const tocLinks = document.querySelectorAll('.toc-link');
+
+            let currentId = '';
+            sections.forEach(sec => {
+                const top = sec.offsetTop - 120;
+                if (scrollTop >= top) {
+                    currentId = sec.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        async function submitFinalRegistration() {
+            const btn = document.getElementById('btnAccept');
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Processing & Executing...';
+
+            if (!regData) {
+                regData = {
+                    fullName: document.getElementById('sigMetaName').textContent || 'Sourcing Partner',
+                    email: 'partner@example.com',
+                    type: 'sourcing'
+                };
+            }
+
+            let signatureData = '';
+            if (sigMode === 'draw') {
+                signatureData = canvas.toDataURL('image/png');
+            } else {
+                signatureData = 'TYPED:' + document.getElementById('typedNameInput').value.trim();
+            }
+
+            const finalPayload = {
+                ...regData,
+                termsAgreed: true,
+                agreedAt: new Date().toISOString(),
+                certificateId: certHash,
+                signature: signatureData
+            };
+
+            try {
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(finalPayload)
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('modalEmail').textContent = finalPayload.email;
+                    document.getElementById('modalCert').textContent = certHash;
+
+                    const modal = document.getElementById('successModal');
+                    modal.style.display = 'flex';
+                    gsap.from(".modal-card", { scale: 0.9, opacity: 0, y: 15, duration: 0.4, ease: "power2.out" });
+
+                    sessionStorage.removeItem('sourcingRegData');
+                } else {
+                    alert(data.error || 'Registration failed.');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Execute & Complete Registration';
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Account registered! Redirecting to login.');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+  <script src="js/motion.js" defer></script>
+  <script src="js/rio-assistant.js" defer></script>
+</body>
+
+</html>

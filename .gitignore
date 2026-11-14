@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+node_modules
+
+# IDE & Editor files
+.claude/
+.vscode/
+.idea/
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Temporary test scripts (Optional)
+test-email.js

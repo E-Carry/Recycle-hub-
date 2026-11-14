@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Create a Recycle-Hub account — Choose your partner type" />
+  <title>Create Account | Recycle-Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/motion.css" />
+  <link rel="stylesheet" href="css/rio-assistant.css" />
+  <style>
+    html, body { height: 100%; }
+
+    /* ── Page Layout ── */
+    .page {
+      position: relative; z-index: 1; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 24px;
+    }
+
+    /* ── Hero Header ── */
+    .hero-header {
+      text-align: center;
+      margin-bottom: 52px;
+      will-change: transform, opacity;
+    }
+    .hero-header .logo-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin-bottom: 16px;
+    }
+    .hero-header h1 {
+      font-family: var(--font-display);
+      font-size: 42px; font-weight: 900; letter-spacing: -1.2px;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #ffffff 20%, #86efac 55%, #22d3ee 85%, #818cf8 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+    .hero-header .tagline {
+      font-size: 15px; color: var(--rh-text-muted); letter-spacing: .2px;
+      max-width: 460px; margin: 0 auto; line-height: 1.7;
+    }
+
+    /* ── Section Heading ── */
+    .section-head {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 700;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 8px;
+    }
+    .section-head p {
+      font-size: 14px; color: var(--rh-text-muted);
+      max-width: 400px; line-height: 1.7; margin: 0 auto;
+    }
+
+    /* ── Cards Row (NO divider) ── */
+    .cards-row {
+      display: flex; flex-direction: row; align-items: stretch;
+      justify-content: center;
+      gap: 32px; width: 100%; max-width: 880px;
+    }
+
+    /* ── Partner Card ── */
+    .partner-card {
+      flex: 1 1 400px; max-width: 420px;
+      background: rgba(255,255,255,.022);
+      border: 1.5px solid rgba(255,255,255,.06);
+      border-radius: var(--r-xl);
+      padding: 44px 36px 36px;
+      backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+      box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255,255,255,.05);
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: transform .5s var(--ease-out), box-shadow .5s, border-color .5s;
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column;
+      transform-style: preserve-3d;
+    }
+
+    /* Shimmer */
+    .partner-card::before {
+      content: ''; position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
+      z-index: 2;
+    }
+    .partner-card:hover::before { animation: rh-shimmer .8s ease-out; }
+
+    /* Inner glow */
+    .partner-card::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: var(--r-xl); opacity: 0;
+      transition: opacity .5s; pointer-events: none; z-index: 1;
+    }
+    .partner-card.sourcing::after {
+      background: radial-gradient(ellipse at 25% 15%, rgba(74,222,128,.1), transparent 65%);
+    }
+    .partner-card.industrial::after {
+      background: radial-gradient(ellipse at 25% 15%, rgba(34,211,238,.1), transparent 65%);
+    }
+    .partner-card:hover::after { opacity: 1; }
+
+    .partner-card.sourcing:hover {
+      border-color: rgba(74,222,128,.35);
+      box-shadow: var(--shadow-xl), var(--shadow-glow-green), inset 0 1px 0 rgba(255,255,255,.08);
+      transform: translateY(-10px);
+    }
+    .partner-card.industrial:hover {
+      border-color: rgba(34,211,238,.35);
+      box-shadow: var(--shadow-xl), var(--shadow-glow-cyan), inset 0 1px 0 rgba(255,255,255,.08);
+      transform: translateY(-10px);
+    }
+
+    /* ── Card Icon ── */
+    .card-icon-wrap {
+      width: 68px; height: 68px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px; position: relative; z-index: 3;
+      transition: transform .4s var(--ease-out);
+    }
+    .partner-card:hover .card-icon-wrap { transform: scale(1.08) rotate(-4deg); }
+
+    .card-icon-wrap::before {
+      content: ''; position: absolute; inset: -5px;
+      border-radius: 24px; opacity: 0; transition: opacity .4s;
+    }
+    .partner-card:hover .card-icon-wrap::before {
+      opacity: 1; animation: rh-iconPulse 2s ease-in-out infinite;
+    }
+    @keyframes rh-iconPulse {
+      0%,100% { transform: scale(1); opacity: .4; }
+      50% { transform: scale(1.12); opacity: .1; }
+    }
+
+    .sourcing .card-icon-wrap {
+      background: linear-gradient(135deg, rgba(74,222,128,.15), rgba(34,211,238,.08));
+      box-shadow: 0 8px 28px rgba(74,222,128,.22);
+    }
+    .sourcing .card-icon-wrap::before { border: 2px solid rgba(74,222,128,.25); }
+
+    .industrial .card-icon-wrap {
+      background: linear-gradient(135deg, rgba(34,211,238,.15), rgba(99,102,241,.08));
+      box-shadow: 0 8px 28px rgba(34,211,238,.22);
+    }
+    .industrial .card-icon-wrap::before { border: 2px solid rgba(34,211,238,.25); }
+
+    /* ── Card Body ── */
+    .card-body { position: relative; z-index: 3; flex: 1; display: flex; flex-direction: column; }
+
+    .card-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
+      text-transform: uppercase; padding: 5px 13px;
+      border-radius: var(--r-full); margin-bottom: 16px; width: fit-content;
+    }
+    .sourcing .card-tag {
+      background: rgba(74,222,128,.1); color: var(--rh-green);
+      border: 1px solid rgba(74,222,128,.15);
+    }
+    .industrial .card-tag {
+      background: rgba(34,211,238,.1); color: var(--rh-cyan);
+      border: 1px solid rgba(34,211,238,.15);
+    }
+
+    .card-body h3 {
+      font-family: var(--font-display);
+      font-size: 23px; font-weight: 700; margin-bottom: 10px; color: #fff;
+    }
+    .card-body p {
+      font-size: 13.5px; color: var(--rh-text-muted); line-height: 1.75; margin-bottom: 24px;
+    }
+
+    /* Features */
+    .features {
+      list-style: none; margin-bottom: 32px;
+      display: flex; flex-direction: column; gap: 11px; flex: 1;
+    }
+    .features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; color: #94a3b8;
+      transition: color .3s;
+    }
+    .partner-card:hover .features li { color: #cbd5e1; }
+
+    .f-icon {
+      width: 22px; height: 22px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .sourcing .f-icon { background: rgba(74,222,128,.1); }
+    .industrial .f-icon { background: rgba(34,211,238,.1); }
+
+    /* CTA */
+    .card-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; width: 100%; padding: 15px;
+      border: none; border-radius: var(--r-md);
+      font-size: 14px; font-weight: 700; font-family: var(--font-sans);
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: transform .3s var(--ease-out), box-shadow .3s;
+      z-index: 3; letter-spacing: .2px; color: #fff;
+    }
+    .card-btn::before {
+      content: ''; position: absolute;
+      top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+    }
+    .partner-card:hover .card-btn::before { animation: rh-shimmer 1s ease-out .2s; }
+    .card-btn:hover { transform: translateY(-2px); }
+
+    .sourcing .card-btn {
+      background: linear-gradient(135deg, #15803d, #4ade80);
+      box-shadow: 0 10px 30px -8px rgba(74,222,128,.4);
+    }
+    .industrial .card-btn {
+      background: linear-gradient(135deg, #155e75, #22d3ee);
+      box-shadow: 0 10px 30px -8px rgba(34,211,238,.35);
+    }
+
+    /* ── 3D Floating Elements ── */
+    .float-element {
+      position: absolute; pointer-events: none; z-index: 0;
+      border-radius: var(--r-sm);
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.04);
+      backdrop-filter: blur(8px);
+    }
+    .float-el-1 {
+      width: 80px; height: 60px; top: -25px; right: -15px;
+      animation: rh-float 7s ease-in-out infinite;
+      transform: rotate(12deg);
+    }
+    .float-el-2 {
+      width: 50px; height: 40px; bottom: 40px; left: -18px;
+      animation: rh-float 8s ease-in-out infinite;
+      animation-delay: -3s;
+      transform: rotate(-8deg);
+    }
+
+    /* ── Footer ── */
+    .page-footer {
+      margin-top: 48px; text-align: center;
+      font-size: 13px; color: var(--rh-text-muted);
+    }
+    .page-footer a {
+      color: var(--rh-indigo); text-decoration: none;
+      font-weight: 600; transition: color .3s; position: relative;
+    }
+    .page-footer a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1.5px; background: var(--rh-indigo);
+      transition: width .3s;
+    }
+    .page-footer a:hover { color: #fff; }
+    .page-footer a:hover::after { width: 100%; background: #fff; }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .cards-row { flex-direction: column; align-items: center; }
+      .partner-card { max-width: 100%; }
+      .hero-header h1 { font-size: 30px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Ambient background -->
+  <div class="rh-bg">
+    <div class="rh-orb rh-orb-1"></div>
+    <div class="rh-orb rh-orb-2"></div>
+    <div class="rh-orb rh-orb-3"></div>
+  </div>
+  <div class="rh-aurora"></div>
+  <div class="rh-grid"></div>
+  <canvas id="particleCanvas"></canvas>
+
+  <div class="page">
+
+    <!-- ── Hero Header ── -->
+    <div class="hero-header">
+      <div class="logo-row">
+        <div class="rh-brand-mark">
+          <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#4ade80"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/>
+              </linearGradient>
+              <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#4ade80"/>
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
+            <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
+            <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
+            <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
+            <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#4ade80" opacity="0.6"/>
+          </svg>
+        </div>
+      </div>
+      <h1>Join Recycle Hub</h1>
+      <p class="tagline">Choose the partnership that fits your organization and start making a sustainable impact today.</p>
+    </div>
+
+    <!-- ── Section Heading ── -->
+    <div class="section-head">
+      <h2>Select Your Partner Type</h2>
+      <p>Each type is designed for a specific role in the recycling supply chain.</p>
+    </div>
+
+    <!-- ── Partner Cards (NO "or" divider) ── -->
+    <div class="cards-row">
+
+      <!-- SOURCING PARTNER -->
+      <a href="register-sourcing.html" class="partner-card sourcing rh-tilt-card rh-shimmer-hover" id="sourcingCard">
+        <div class="float-element float-el-1"></div>
+        <div class="float-element float-el-2"></div>
+        <div class="card-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+            <path d="M8 12l2 2 4-4"/>
+            <path d="M7 3.34V5a3 3 0 003 3h0a2 2 0 012 2v0a2 2 0 004 0v0a2 2 0 012-2h0a3 3 0 003-3V3.34"/>
+            <path d="M12 17v5"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Sourcing Partner
+          </span>
+          <h3>Join as Sourcing Partner</h3>
+          <p>For businesses and collectors who supply, sort, and deliver recyclable raw materials to Recycle Hub.</p>
+          <ul class="features">
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              List and manage recyclable material inventory
+            </li>
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Connect with Recycle Hub as a verified Sourcing Partner
+            </li>
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Track Quick pickups or Scheduled pickups
+            </li>
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Access transparent pricing analytics
+            </li>
+          </ul>
+          <button class="card-btn rh-magnetic" type="button" id="sourcingBtn">
+            Get Started
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </a>
+
+      <!-- INDUSTRIAL PARTNER -->
+      <a href="register-industrial.html" class="partner-card industrial rh-tilt-card rh-shimmer-hover" id="industrialCard">
+        <div class="float-element float-el-1"></div>
+        <div class="float-element float-el-2"></div>
+        <div class="card-icon-wrap">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 20h20"/>
+            <path d="M5 20V8l5-4v16"/>
+            <path d="M10 20V4l5 4v12"/>
+            <path d="M15 20V8l5 4v8"/>
+            <path d="M2 20h20"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="card-tag">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Industrial Partner
+          </span>
+          <h3>Join as Industrial Partner</h3>
+          <p>For manufacturers and processing units that require a consistent, certified supply of recyclable materials.</p>
+          <ul class="features">
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Browse quality-verified recyclable material listings
+            </li>
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Connect with Recycle Hub as a verified Industrial Partner
+            </li>
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Track Quick delivery or Scheduled delivery
+            </li>
+            <li>
+              <span class="f-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Access Real time pricing on Recyclable materials
+            </li>
+          </ul>
+          <button class="card-btn rh-magnetic" type="button" id="industrialBtn">
+            Get Started
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- ── Footer Link ── -->
+    <div class="page-footer">
+      Already have an account? <a href="login.html">← Sign in</a>
+    </div>
+
+  </div>
+
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/interactions.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ── GSAP Entry Animations ──
+      gsap.set(".hero-header", { opacity: 0, y: 40, scale: 0.96 });
+      gsap.set(".section-head", { opacity: 0, y: 28 });
+      gsap.set(".partner-card.sourcing", { opacity: 0, x: -60, rotateY: 10 });
+      gsap.set(".partner-card.industrial", { opacity: 0, x: 60, rotateY: -10 });
+      gsap.set(".page-footer", { opacity: 0, y: 20 });
+
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.to(".hero-header", { opacity: 1, y: 0, scale: 1, duration: 0.9 })
+        .to(".section-head", { opacity: 1, y: 0, duration: 0.6 }, "-=0.5")
+        .to(".partner-card.sourcing", { opacity: 1, x: 0, rotateY: 0, duration: 1, ease: "back.out(1.4)" }, "-=0.3")
+        .to(".partner-card.industrial", { opacity: 1, x: 0, rotateY: 0, duration: 1, ease: "back.out(1.4)" }, "-=0.8")
+        .to(".page-footer", { opacity: 1, y: 0, duration: 0.5 }, "-=0.4");
+
+      // ── Feature items stagger on card hover ──
+      document.querySelectorAll('.partner-card').forEach(card => {
+        const items = card.querySelectorAll('.features li');
+        card.addEventListener('mouseenter', () => {
+          gsap.fromTo(items,
+            { x: -6, opacity: 0.5 },
+            { x: 0, opacity: 1, stagger: 0.04, duration: 0.3, ease: "power2.out" }
+          );
+        });
+      });
+    });
+  </script>
+  <script src="js/motion.js" defer></script>
+  <script src="js/rio-assistant.js" defer></script>
+</body>
+</html>

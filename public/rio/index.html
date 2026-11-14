@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rio AI - Smart Assistant &amp; Support Intelligence Platform</title>
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- GSAP Animation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <!-- v8.1 — Rio AI Premium Design -->
+  <link rel="stylesheet" href="styles.css?v=8.1">
+</head>
+<body>
+
+  <!-- Ambient Background & Cursor Spotlight -->
+  <div class="bg-ambient" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="cursor-spotlight" id="cursor-spotlight"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       APP HEADER
+  ═══════════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-avatar" title="Rio AI — Blue Macaw AI Assistant">
+        <img src="assets/rio_logo.png?v=8.1" alt="Rio AI Logo" class="rio-bird-avatar">
+      </div>
+      <div class="brand-info">
+        <h1>Rio AI <i class="fa-solid fa-sparkles" style="color: var(--cyan); font-size: 0.8rem;"></i></h1>
+        <p><i class="fa-solid fa-shield-halved" style="color:var(--emerald);"></i> Recycle Hub &bull; Neural Intelligence Engine</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-btn active" data-tab="chat">
+        <i class="fa-solid fa-comments"></i> Chat Workspace
+      </button>
+      <button class="nav-btn" data-tab="kb">
+        <i class="fa-solid fa-brain"></i> Knowledge Base Manager
+      </button>
+      <button class="nav-btn" data-tab="alerts">
+        <i class="fa-solid fa-triangle-exclamation"></i> Email Alerts
+        <span class="badge" id="alert-count-badge">0</span>
+      </button>
+      <button class="nav-btn" data-tab="voice">
+        <i class="fa-solid fa-microphone-lines"></i> Voice Settings
+      </button>
+      <button class="nav-btn" data-tab="embed">
+        <i class="fa-solid fa-code"></i> Integration Studio
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-secondary" id="btn-toggle-widget">
+        <i class="fa-solid fa-comments"></i> Open Widget
+      </button>
+    </div>
+  </header>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MAIN APP CONTAINER
+  ═══════════════════════════════════════════════════════════ -->
+  <main class="container">
+
+    <!-- ─────────────────── VIEW 1: CHAT WORKSPACE ─────────────────── -->
+    <section id="view-chat" class="view-section active">
+      <div class="chat-workspace">
+
+        <!-- Sidebar Controls -->
+        <aside class="sidebar-panel">
+
+          <!-- Voice Mode Indicator -->
+          <div class="sidebar-box">
+            <div class="sidebar-title">
+              <i class="fa-solid fa-waveform"></i> Voice Audio State
+            </div>
+            <div class="voice-status-card">
+              <div class="voice-status-dot" id="voice-dot"></div>
+              <div style="flex: 1;">
+                <p id="voice-status-text" style="font-size: 0.825rem; font-weight: 600;">Voice Idle</p>
+                <p style="font-size: 0.725rem; color: var(--text-muted);" id="voice-subtext">Click Mic or Speak to Rio</p>
+              </div>
+              <div class="soundwave paused" id="soundwave-anim">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <div style="margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+              <label class="form-label" style="margin:0;">Auto-Speak Voice</label>
+              <input type="checkbox" id="chk-auto-speak" checked style="accent-color: var(--accent-cyan);">
+            </div>
+          </div>
+
+          <!-- Customer Identity Context -->
+          <div class="sidebar-box">
+            <div class="sidebar-title">
+              <i class="fa-solid fa-user-check"></i> Customer Account Context
+            </div>
+            <div class="form-group" style="margin-bottom: 0.5rem;">
+              <label class="form-label">Customer Name</label>
+              <input type="text" id="cust-name-input" class="form-input" value="App Customer">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Customer Email</label>
+              <input type="email" id="cust-email-input" class="form-input" value="customer@recyclehub.app">
+            </div>
+          </div>
+
+          <!-- Quick FAQ Chips -->
+          <div class="sidebar-box">
+            <div class="sidebar-title">
+              <i class="fa-solid fa-bolt"></i> Quick FAQ Queries
+            </div>
+            <div class="quick-chips">
+              <button class="chip-btn" data-query="How do I book a recycling pickup?">
+                <span><i class="fa-solid fa-calendar-check" style="color:var(--indigo-light);"></i> Schedule Pickup</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+              <button class="chip-btn" data-query="What materials do you collect for recycling?">
+                <span><i class="fa-solid fa-recycle" style="color:var(--emerald);"></i> Recyclable Materials</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+              <button class="chip-btn" data-query="What payment methods are available?">
+                <span><i class="fa-solid fa-coins" style="color:var(--amber);"></i> Payments &amp; Pricing</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+              <button class="chip-btn" style="border-color: rgba(244,63,94,0.3); color: #fecdd3;" data-query="My payment failed and money was deducted!">
+                <span><i class="fa-solid fa-credit-card" style="color:var(--rose);"></i> Payment Issue</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+              <button class="chip-btn" style="border-color: rgba(245,158,11,0.3); color: #fef3c7;" data-query="The app crashed when I tried to log in, screen frozen.">
+                <span><i class="fa-solid fa-bug" style="color:var(--amber);"></i> Report Technical Bug</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- Main Chat Area -->
+        <div class="chat-container">
+          <div class="chat-header">
+            <div class="chat-user-info">
+              <div class="brand-avatar" style="width: 38px; height: 38px;">
+                <img src="assets/rio_logo.png?v=8.1" alt="Rio AI" class="rio-bird-avatar">
+              </div>
+              <div>
+                <h3 style="font-size: 0.95rem; font-weight: 600;">Rio AI Assistant</h3>
+                <p style="font-size:0.7rem;color:var(--text-tertiary);">Active &amp; Ready &bull; Knowledge Fed</p>
+              </div>
+              <span class="bot-badge">🟢 Online &bull; 100 FAQs Loaded &bull; v3.0</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-manual-alert" class="btn-report">
+                <i class="fa-solid fa-flag"></i> Report Problem
+              </button>
+              <button class="btn-icon" id="btn-clear-chat" title="Clear Conversation">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Messages Container -->
+          <div class="messages-list" id="messages-list">
+            <!-- Messages rendered dynamically via JS -->
+          </div>
+
+          <!-- Input Bar -->
+          <div class="chat-input-area">
+            <div class="input-box">
+              <input type="text" id="chat-input" class="chat-input"
+                     placeholder="Type a query or report an issue to Rio AI..." autocomplete="off">
+              <div class="input-controls">
+                <button class="mic-btn" id="btn-mic" title="Speak to Rio AI (Voice Input)">
+                  <i class="fa-solid fa-microphone"></i>
+                </button>
+                <button class="send-btn" id="btn-send" title="Send Message">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+            <div class="input-hint">
+              <i class="fa-solid fa-lightbulb" style="color:var(--amber);"></i>
+              <span>Tip: Ask any question from the knowledge base, or describe a problem to trigger automatic email alerting.</span>
+              <span style="margin-left:auto;" id="voice-mode-indicator">
+                <i class="fa-solid fa-volume-high"></i> Voice Output Enabled
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ─────────────────── VIEW 2: KNOWLEDGE BASE MANAGER ─────────────────── -->
+    <section id="view-kb" class="view-section">
+      <div class="panel-grid">
+
+        <!-- Feed Form Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-plus-circle"></i> Feed Data to Rio AI
+            </div>
+            <span class="tag-pill">Neural Feed Engine</span>
+          </div>
+
+          <form id="kb-feed-form" style="display: flex; flex-direction: column; gap: 1rem;">
+            <input type="hidden" id="kb-edit-id" value="">
+
+            <div class="form-group">
+              <label class="form-label">Customer Question / Intent</label>
+              <input type="text" id="kb-question" class="form-input"
+                     placeholder="e.g. How do I request a bin replacement?" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Rio AI Exact Response Answer</label>
+              <textarea id="kb-answer" class="form-textarea"
+                        placeholder="Enter the official response that Rio AI should give..." required></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="kb-category" class="form-select">
+                  <option value="General Information">General Information</option>
+                  <option value="Registration & Account">Registration &amp; Account</option>
+                  <option value="Accepted Materials">Accepted Materials</option>
+                  <option value="Pickup Service">Pickup Service</option>
+                  <option value="Pricing & Payment">Pricing &amp; Payment</option>
+                  <option value="Industries & Buyers">Industries &amp; Buyers</option>
+                  <option value="Complaints & Support">Complaints &amp; Support</option>
+                  <option value="AI Assistant & Sustainability">AI &amp; Sustainability</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tags / Keywords (comma separated)</label>
+                <input type="text" id="kb-tags" class="form-input" placeholder="pickup, schedule, booking">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+              <button type="submit" class="btn-primary" style="flex: 1;" id="kb-save-btn">
+                <i class="fa-solid fa-floppy-disk"></i> Feed &amp; Save Knowledge
+              </button>
+              <button type="button" class="btn-secondary" id="kb-cancel-btn" style="display: none;">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Knowledge Library Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-database"></i> Fed Knowledge Library
+              (<span id="kb-total-count">0</span>)
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-secondary" id="btn-export-kb" title="Export JSON">
+                <i class="fa-solid fa-download"></i>
+              </button>
+              <label class="btn-secondary" style="cursor: pointer;" title="Import JSON">
+                <i class="fa-solid fa-upload"></i>
+                <input type="file" id="input-import-kb" accept=".json" style="display: none;">
+              </label>
+              <button class="btn-secondary" id="btn-reset-kb" title="Reset to Default 100 FAQs">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <input type="text" id="kb-search-input" class="form-input"
+                   placeholder="Search questions or keywords..." style="flex: 1;">
+            <select id="kb-filter-cat" class="form-select" style="width: 200px;">
+              <option value="ALL">All Categories</option>
+              <option value="General Information">General Information</option>
+              <option value="Registration & Account">Registration &amp; Account</option>
+              <option value="Accepted Materials">Accepted Materials</option>
+              <option value="Pickup Service">Pickup Service</option>
+              <option value="Pricing & Payment">Pricing &amp; Payment</option>
+              <option value="Industries & Buyers">Industries &amp; Buyers</option>
+              <option value="Complaints & Support">Complaints &amp; Support</option>
+              <option value="AI Assistant & Sustainability">AI &amp; Sustainability</option>
+            </select>
+          </div>
+
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Question &amp; Category</th>
+                  <th>Fed Answer</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="kb-table-body">
+                <!-- KB entries rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ─────────────────── VIEW 3: EMAIL ALERTS & PROBLEM FLAGGING ─────────────────── -->
+    <section id="view-alerts" class="view-section">
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+        <!-- Email Config Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-envelope-circle-check"></i> Email Alert Dispatcher Settings
+            </div>
+            <span class="tag-pill" style="background: rgba(16,185,129,0.15); color: var(--accent-emerald);">
+              Auto Problem Flagging Active
+            </span>
+          </div>
+
+          <form id="email-config-form"
+                style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: end;">
+            <div class="form-group">
+              <label class="form-label">Developer Recipient Email (Target Inbox)</label>
+              <input type="email" id="cfg-admin-email" class="form-input"
+                     value="recycle.hub.pvt.ltd@gmail.com" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Gateway Provider</label>
+              <select id="cfg-email-provider" class="form-select">
+                <option value="formsubmit" selected>FormSubmit Direct Real Delivery</option>
+                <option value="gmail_script">Gmail API (Google Apps Script Relay)</option>
+                <option value="simulation">Interactive Live Inspector (Simulated)</option>
+                <option value="emailjs">EmailJS Service API</option>
+                <option value="webhook">Custom Backend Webhook POST URL</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="display: flex; gap: 0.5rem;">
+              <button type="submit" class="btn-primary" style="flex: 1;">
+                <i class="fa-solid fa-check"></i> Save Settings
+              </button>
+              <button type="button" class="btn-secondary" id="btn-test-email-dispatch"
+                      title="Send Diagnostic Report">
+                <i class="fa-solid fa-paper-plane"></i> Test
+              </button>
+            </div>
+          </form>
+
+          <!-- Provider Extra Fields -->
+          <div id="provider-extra-fields"
+               style="padding-top: 1rem; border-top: 1px dashed var(--border-color); margin-top: 0.5rem;">
+            <div class="form-group" id="fields-gmail-script">
+              <label class="form-label">Google Apps Script Web App URL (Gmail API Relay)</label>
+              <input type="url" id="cfg-gmail-script-url" class="form-input"
+                     placeholder="https://script.google.com/macros/s/AKfycbx.../exec">
+              <p style="font-size: 0.725rem; color: var(--text-muted); margin-top: 0.3rem;">
+                <i class="fa-solid fa-circle-info" style="color:var(--cyan);"></i>
+                <strong>Gmail API Setup:</strong> See the Integration Studio tab for the Google Apps Script
+                code to relay emails to <code>recycle.hub.pvt.ltd@gmail.com</code>.
+              </p>
+            </div>
+
+            <div style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" id="fields-emailjs">
+              <div class="form-group">
+                <label class="form-label">EmailJS Service ID</label>
+                <input type="text" id="cfg-emailjs-service" class="form-input" placeholder="service_xxxx">
+              </div>
+              <div class="form-group">
+                <label class="form-label">EmailJS Template ID</label>
+                <input type="text" id="cfg-emailjs-template" class="form-input" placeholder="template_xxxx">
+              </div>
+              <div class="form-group">
+                <label class="form-label">EmailJS Public Key</label>
+                <input type="text" id="cfg-emailjs-key" class="form-input" placeholder="public_xxxx">
+              </div>
+            </div>
+
+            <div class="form-group" id="fields-webhook" style="display: none;">
+              <label class="form-label">Webhook POST Endpoint URL</label>
+              <input type="url" id="cfg-webhook-url" class="form-input"
+                     placeholder="https://api.yourdomain.com/v1/alerts/webhook">
+            </div>
+          </div>
+        </div>
+
+        <!-- Incidents Log + Email Inspector -->
+        <div class="panel-grid">
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-list-check"></i> Flagged Incidents History
+                (<span id="alert-log-count">0</span>)
+              </div>
+              <button class="btn-danger" id="btn-clear-alert-logs"
+                      style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                <i class="fa-solid fa-trash"></i> Clear Logs
+              </button>
+            </div>
+
+            <div class="data-table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Severity &amp; Time</th>
+                    <th>Category &amp; Problem Query</th>
+                    <th>Status / Action</th>
+                  </tr>
+                </thead>
+                <tbody id="alert-logs-tbody">
+                  <!-- Log entries rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Email Inspector Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-envelope-open-text"></i> Dispatched Email Payload Inspector
+              </div>
+              <span class="tag-pill" id="inspector-status-badge">Select an Incident</span>
+            </div>
+
+            <div id="inspector-empty-state"
+                 style="padding: 3rem 1rem; text-align: center; color: var(--text-muted);">
+              <i class="fa-solid fa-envelope-circle-check"
+                 style="font-size: 2.5rem; color: var(--text-dim); margin-bottom: 1rem;"></i>
+              <p>No email alert selected. Click "Inspect Email" on any flagged incident to view the
+                dispatched email content.</p>
+            </div>
+
+            <div id="inspector-content" style="display: none; flex-direction: column; gap: 1rem;">
+              <div style="background: rgba(10,14,26,0.6); padding: 0.75rem 1rem;
+                           border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+                           font-size: 0.85rem;">
+                <p><strong>To:</strong> <span id="insp-to" style="color: var(--accent-cyan);"></span></p>
+                <p><strong>Subject:</strong>
+                  <span id="insp-subject" style="color: #fff; font-weight: 600;"></span></p>
+                <p><strong>Dispatched At:</strong>
+                  <span id="insp-time" style="color: var(--text-muted);"></span></p>
+              </div>
+              <div>
+                <label class="form-label" style="margin-bottom: 0.35rem;">Exact Dispatched Mail Text</label>
+                <div class="email-preview-box" id="insp-text-body"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ─────────────────── VIEW 4: VOICE SETTINGS ─────────────────── -->
+    <section id="view-voice" class="view-section">
+      <div class="panel-grid">
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-sliders"></i> Voice Synthesis Controls
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Selected Neural Voice</label>
+              <select id="voice-select" class="form-select">
+                <option value="">Loading system voices...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Speech Speed (Rate):
+                <span id="lbl-voice-rate">1.0x</span></label>
+              <input type="range" id="voice-rate" min="0.5" max="1.8" step="0.1" value="1.0"
+                     style="accent-color: var(--accent-cyan);">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Voice Pitch:
+                <span id="lbl-voice-pitch">1.0</span></label>
+              <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="1.0"
+                     style="accent-color: var(--accent-cyan);">
+            </div>
+
+            <button class="btn-primary" id="btn-test-voice-speech">
+              <i class="fa-solid fa-volume-high"></i> Test Rio AI Voice Output
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-microphone-lines"></i> Speech Recognition Sandbox
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; height: 100%;
+                       justify-content: center; text-align: center;">
+            <div style="padding: 2rem; background: rgba(10,14,26,0.5); border-radius: var(--radius-md);
+                         border: 1px dashed var(--border-color);">
+              <i class="fa-solid fa-microphone" id="voice-sandbox-icon"
+                 style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 1rem;"></i>
+              <h4 id="voice-sandbox-status" style="margin-bottom: 0.5rem;">
+                Click Start to Test Microphone Input
+              </h4>
+              <p id="voice-sandbox-result"
+                 style="font-style: italic; color: var(--text-muted); font-size: 0.9rem;">
+                "Your recognized spoken words will appear here in real-time..."
+              </p>
+            </div>
+
+            <button class="btn-secondary" id="btn-toggle-mic-sandbox">
+              <i class="fa-solid fa-microphone"></i> Start Voice Test
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ─────────────────── VIEW 5: EMBED CODE & INTEGRATION STUDIO ─────────────────── -->
+    <section id="view-embed" class="view-section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-cubes-stacked"></i> Web Application Integration Studio
+          </div>
+          <span class="tag-pill">Ready to Embed</span>
+        </div>
+
+        <p style="color: var(--text-muted);">
+          Integrate <strong style="color:var(--text-primary);">Rio AI</strong> into any external website
+          or web application (React, Next.js, Vue, HTML/JS) using our lightweight embed widget.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+
+          <!-- Option 1: HTML Script Tag -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--cyan); margin-bottom: 0.75rem;">
+              <i class="fa-solid fa-code" style="font-size:0.8rem;"></i>
+              Option 1 &mdash; HTML Script Tag (Any HTML / PHP / WordPress)
+            </h4>
+            <div class="code-block">
+              <button class="copy-code-btn" data-copy="code-script">
+                <i class="fa-regular fa-copy"></i> Copy
+              </button>
+              <pre id="code-script">&lt;!-- Rio AI Embed Widget --&gt;
+&lt;script src="http://localhost:3000/rio-widget.js"
+  data-name="Rio AI"
+  data-primary-color="#00f2fe"
+  data-position="bottom-right"&gt;
+&lt;/script&gt;</pre>
+            </div>
+          </div>
+
+          <!-- Option 2: React Component -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--cyan); margin-bottom: 0.75rem;">
+              <i class="fa-brands fa-react" style="font-size:0.8rem;"></i>
+              Option 2 &mdash; JavaScript ES6 / React Component Integration
+            </h4>
+            <div class="code-block">
+              <button class="copy-code-btn" data-copy="code-react">
+                <i class="fa-regular fa-copy"></i> Copy
+              </button>
+              <pre id="code-react">import React, { useEffect } from 'react';
+
+export const RioAiWidget = () => {
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'http://localhost:3000/rio-widget.js';
+    script.async = true;
+    script.setAttribute('data-name', 'Rio AI');
+    document.body.appendChild(script);
+    return () => { document.body.removeChild(script); };
+  }, []);
+  return null;
+};</pre>
+            </div>
+          </div>
+
+          <!-- Option 3: Gmail API Relay -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--cyan); margin-bottom: 0.75rem;">
+              <i class="fa-brands fa-google" style="font-size:0.8rem;"></i>
+              Option 3 &mdash; Gmail API Relay via Google Apps Script
+              &rarr; recycle.hub.pvt.ltd@gmail.com
+            </h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+              Copy this script into
+              <a href="https://script.google.com" target="_blank" style="color: var(--cyan);">
+                script.google.com
+              </a>, click <strong>Deploy &rsaquo; Web App</strong>
+              (Execute as: <em>Me</em>, Access: <em>Anyone</em>), and paste the Web App URL in Email Settings.
+            </p>
+            <div class="code-block">
+              <button class="copy-code-btn" data-copy="code-gmail">
+                <i class="fa-regular fa-copy"></i> Copy
+              </button>
+              <pre id="code-gmail">function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  var targetEmail = "recycle.hub.pvt.ltd@gmail.com";
+
+  MailApp.sendEmail({
+    to: targetEmail,
+    subject: data.subject || "[Rio AI] Problem Alert",
+    body: data.body,
+    htmlBody: data.htmlBody
+  });
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ status: "success", recipient: targetEmail })
+  ).setMimeType(ContentService.MimeType.JSON);
+}</pre>
+            </div>
+          </div>
+
+          <!-- Live Widget Notice -->
+          <div style="background: rgba(34,211,238,0.05); border: 1px solid rgba(34,211,238,0.2);
+                       padding: 1.25rem; border-radius: var(--radius-md);">
+            <h4 style="color: #fff; margin-bottom: 0.5rem; display:flex; align-items:center; gap:0.5rem;">
+              <i class="fa-solid fa-circle-play" style="color: var(--cyan);"></i> Live Web Widget Test
+            </h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+              Click the floating <strong style="color:var(--cyan);">Rio AI</strong> button in the
+              bottom-right corner of this page to experience the exact customer chat widget experience.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FLOATING RIO AI WIDGET DRAWER (Bottom Right)
+  ═══════════════════════════════════════════════════════════ -->
+  <button class="rio-widget-launcher" id="rio-widget-launcher" title="Open Rio AI Chat Assistant">
+    <img src="assets/rio_logo.png?v=8.1" alt="Rio AI"
+         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+  </button>
+
+  <div class="rio-widget-drawer" id="rio-widget-drawer">
+    <div class="chat-header">
+      <div class="chat-user-info">
+        <div class="brand-avatar" style="width: 32px; height: 32px;">
+          <img src="assets/rio_logo.png?v=8.1" alt="Rio AI" class="rio-bird-avatar">
+        </div>
+        <div>
+          <h4 style="font-size: 0.875rem; font-weight: 600;">Rio AI Support</h4>
+          <p style="font-size: 0.7rem; color: var(--accent-emerald);">
+            <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Online &bull; Ready
+          </p>
+        </div>
+      </div>
+      <button class="btn-icon" id="btn-close-widget" style="width: 28px; height: 28px;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Widget Messages List -->
+    <div class="messages-list" id="widget-messages-list" style="padding: 1rem; gap: 0.85rem;">
+      <!-- Shared with main chat state -->
+    </div>
+
+    <!-- Widget Input Bar -->
+    <div class="chat-input-area" style="padding: 0.75rem 1rem;">
+      <div class="input-box">
+        <input type="text" id="widget-chat-input" class="chat-input"
+               placeholder="Ask Rio AI..." autocomplete="off">
+        <button class="send-btn" id="widget-btn-send" style="width: 32px; height: 32px;">
+          <i class="fa-solid fa-paper-plane" style="font-size: 0.85rem;"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCRIPTS — v8.1
+  ═══════════════════════════════════════════════════════════ -->
+  <script src="knowledge-base.js?v=8.1"></script>
+  <script src="email-alert.js?v=8.1"></script>
+  <script src="voice-engine.js?v=8.1"></script>
+  <script src="rio-engine.js?v=8.1"></script>
+  <script src="app.js?v=8.1"></script>
+
+</body>
+</html>

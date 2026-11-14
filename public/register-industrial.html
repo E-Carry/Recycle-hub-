@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Industrial Partner Registration - Recycle Hub" />
+  <title>Industrial Partner Registration | Recycle Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/motion.css" />
+  <link rel="stylesheet" href="css/rio-assistant.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cyan: #22d3ee;
+      --cyan-deep: #0891b2;
+      --green: #4ade80;
+      --green-deep: #16a34a;
+      --indigo: #818cf8;
+      --amber: #fbbf24;
+      --red: #f87171;
+      --bg: #050709;
+      --surface: rgba(255, 255, 255, 0.025);
+      --surface-2: rgba(255, 255, 255, 0.045);
+      --border: rgba(255, 255, 255, 0.07);
+      --border-focus: rgba(34, 211, 238, 0.5);
+      --text: #f1f5f9;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --r-sm: 8px;
+      --r-md: 12px;
+      --r-lg: 18px;
+      --r-xl: 24px;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+    /* Noise texture */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* Background Gradient Canvas */
+    .bg-canvas {
+      position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 10%, rgba(34, 211, 238, 0.09), transparent 70%),
+        radial-gradient(ellipse 60% 50% at 90% 85%, rgba(74, 222, 128, 0.07), transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(129, 140, 248, 0.04), transparent 60%),
+        var(--bg);
+    }
+    .aurora {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: linear-gradient(125deg, rgba(34,211,238,.05) 0%, transparent 30%, rgba(74,222,128,.04) 60%, transparent 100%);
+      background-size: 400% 400%; animation: auroraShift 18s ease-in-out infinite;
+    }
+    @keyframes auroraShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+      background-size: 50px 50px; mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    /* ── Sticky Header Nav ── */
+    .top-nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 40px; background: rgba(5, 7, 9, 0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-mark { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 10px rgba(34,211,238,.3)); }
+    .brand-name { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; background: linear-gradient(135deg, #22d3ee, #4ade80); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .back-link {
+      display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-2); text-decoration: none;
+      padding: 7px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); transition: all .2s;
+    }
+    .back-link:hover { color: #fff; border-color: var(--cyan); background: rgba(34,211,238,.08); }
+
+    /* Stepper Track in Top Nav */
+    .nav-stepper { display: flex; align-items: center; gap: 6px; }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; border: 1px solid var(--border); color: var(--text-3); background: var(--surface); transition: all .3s var(--ease);
+      cursor: pointer; position: relative;
+    }
+    .step-dot.active { background: linear-gradient(135deg, var(--cyan-deep), var(--cyan)); color: #050709; border-color: var(--cyan); box-shadow: 0 0 14px rgba(34,211,238,.4); }
+    .step-dot.done { background: rgba(74,222,128,.15); color: var(--green); border-color: var(--green); }
+    .step-line-sm { width: 14px; height: 2px; background: var(--border); border-radius: 2px; }
+    .step-line-sm.done { background: var(--green); }
+
+    /* ── Main Layout ── */
+    .layout { position: relative; z-index: 1; display: grid; grid-template-columns: 380px 1fr; min-height: calc(100vh - 67px); }
+
+    /* Left Sidebar Panel */
+    .side-panel {
+      padding: 40px 32px; border-right: 1px solid var(--border); background: rgba(255,255,255,0.01);
+      display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;
+    }
+    .side-badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700;
+      letter-spacing: .5px; text-transform: uppercase; background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.25); color: var(--cyan); margin-bottom: 20px;
+    }
+    .side-title { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #fff; }
+    .side-sub { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 30px; }
+
+    /* Vertical Step List */
+    .step-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+    .v-step {
+      display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: var(--r-md); border: 1px solid transparent;
+      background: var(--surface); transition: all .25s var(--ease); cursor: pointer;
+    }
+    .v-step:hover { background: var(--surface-2); border-color: rgba(255,255,255,.1); }
+    .v-step.active { background: rgba(34, 211, 238, 0.08); border-color: rgba(34, 211, 238, 0.3); }
+    .v-step.done { background: rgba(74, 222, 128, 0.05); border-color: rgba(74, 222, 128, 0.2); }
+
+    .v-step-icon {
+      width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-3); flex-shrink: 0;
+    }
+    .v-step.active .v-step-icon { background: linear-gradient(135deg, var(--cyan-deep), var(--cyan)); color: #050709; border-color: transparent; }
+    .v-step.done .v-step-icon { background: rgba(74, 222, 128, 0.2); color: var(--green); border-color: var(--green); }
+
+    .v-step-info { display: flex; flex-direction: column; }
+    .v-step-title { font-size: 13px; font-weight: 700; color: #fff; }
+    .v-step.inactive .v-step-title { color: var(--text-3); }
+    .v-step-subtitle { font-size: 11px; color: var(--text-2); }
+
+    .side-footer { font-size: 12px; color: var(--text-3); display: flex; align-items: center; gap: 8px; }
+
+    /* Right Main Form Container */
+    .form-container { padding: 48px 60px; max-width: 960px; margin: 0 auto; width: 100%; }
+
+    .step-card { display: none; animation: fadeInStep .4s var(--ease) forwards; }
+    .step-card.active { display: block; }
+    @keyframes fadeInStep { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    .card-header { margin-bottom: 28px; }
+    .card-title { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 12px; }
+    .card-desc { font-size: 13px; color: var(--text-2); margin-top: 6px; }
+
+    /* Form UI Elements */
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .span-2 { grid-column: span 2; }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--text-2); display: flex; align-items: center; justify-content: space-between; }
+    .req { color: var(--cyan); }
+
+    .form-control {
+      width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+      border-radius: var(--r-md); color: #fff; font-size: 13.5px; font-family: 'Inter', sans-serif; transition: all .2s; outline: none;
+    }
+    .form-control:focus { background: rgba(255,255,255,0.06); border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15); }
+    .form-control::placeholder { color: var(--text-3); }
+
+    select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+    select.form-control option { background: #0f172a; color: #fff; }
+
+    /* Verification Box & Badges */
+    .verify-box {
+      background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; margin-top: 10px;
+    }
+    .verify-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .v-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .v-badge.unverified { background: rgba(248, 113, 113, 0.1); color: var(--red); border: 1px solid rgba(248, 113, 113, 0.2); }
+    .v-badge.verified { background: rgba(74, 222, 128, 0.1); color: var(--green); border: 1px solid rgba(74, 222, 128, 0.3); }
+
+    .btn-sm {
+      padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; transition: all .2s;
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+    }
+    .btn-cyan { background: linear-gradient(135deg, var(--cyan-deep), var(--cyan)); color: #050709; box-shadow: 0 4px 14px rgba(34,211,238,.3); }
+    .btn-cyan:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(34,211,238,.45); }
+    .btn-green { background: linear-gradient(135deg, var(--green-deep), var(--green)); color: #050709; box-shadow: 0 4px 14px rgba(74,222,128,.3); }
+
+    .btn-secondary { background: rgba(255,255,255,.06); color: #fff; border: 1px solid var(--border); }
+    .btn-secondary:hover { background: rgba(255,255,255,.1); }
+
+    .otp-input-wrap { display: flex; gap: 8px; margin-top: 12px; }
+    .otp-box { width: 44px; height: 44px; text-align: center; font-size: 18px; font-weight: 700; font-family: 'JetBrains Mono', monospace; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: var(--cyan); }
+
+    /* Map Box Simulation */
+    .map-box {
+      width: 100%; height: 180px; border-radius: var(--r-md); border: 1px solid var(--border); background: #0b1329; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; transition: border-color .3s;
+    }
+    .map-box:hover { border-color: var(--cyan); }
+    .map-bg-grid { position: absolute; inset: 0; background-image: radial-gradient(rgba(34,211,238,.2) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.4; }
+    .map-pin-pulse {
+      width: 48px; height: 48px; border-radius: 50%; background: rgba(34,211,238,.2); display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(34,211,238,.5); animation: pinPulse 2s infinite; z-index: 2;
+    }
+    @keyframes pinPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+    /* Document Upload Card */
+    .upload-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .upload-card {
+      border: 1px dashed var(--border); border-radius: var(--r-md); padding: 18px; background: rgba(255,255,255,0.015);
+      display: flex; flex-direction: column; gap: 10px; transition: all .25s; position: relative; cursor: pointer;
+    }
+    .upload-card:hover { border-color: var(--cyan); background: rgba(34, 211, 238, 0.03); }
+    .upload-card.uploaded { border-style: solid; border-color: var(--green); background: rgba(74, 222, 128, 0.04); }
+    .upload-title { font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+    .upload-sub { font-size: 11px; color: var(--text-3); }
+
+    /* CAPTCHA Box */
+    .captcha-container { display: flex; align-items: center; gap: 14px; background: rgba(0,0,0,0.4); padding: 10px 16px; border-radius: var(--r-md); border: 1px solid var(--border); }
+    .captcha-code { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 800; letter-spacing: 4px; color: var(--cyan); font-style: italic; text-decoration: line-through; text-shadow: 0 0 8px rgba(34,211,238,.5); user-select: none; }
+
+    /* Password Strength */
+    .pw-bar-wrap { display: flex; gap: 4px; margin-top: 6px; }
+    .pw-segment { flex: 1; height: 4px; border-radius: 2px; background: var(--border); transition: background .3s; }
+
+    /* Bottom Action Bar */
+    .action-bar { display: flex; align-items: center; justify-content: space-between; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); }
+
+    .btn-main {
+      padding: 14px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; font-family: 'Inter', sans-serif; border: none; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 10px; transition: all .3s var(--ease);
+    }
+    .btn-next { background: linear-gradient(135deg, #0891b2, #22d3ee); color: #050709; box-shadow: 0 8px 24px -4px rgba(34,211,238,.4); }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -4px rgba(34,211,238,.6); }
+    .btn-prev { background: var(--surface); color: var(--text-2); border: 1px solid var(--border); }
+    .btn-prev:hover { color: #fff; background: var(--surface-2); border-color: rgba(255,255,255,.2); }
+
+    /* Success Card */
+    .success-card { text-align: center; padding: 40px 20px; }
+    .success-icon { width: 80px; height: 80px; border-radius: 50%; background: rgba(74,222,128,0.15); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: var(--green); box-shadow: 0 0 40px rgba(74,222,128,0.3); }
+
+    /* Checkbox & Radio styling */
+    .check-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-2); user-select: none; }
+    .check-wrap input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--cyan); cursor: pointer; }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .side-panel { border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
+      .form-container { padding: 24px; }
+      .form-grid, .upload-grid { grid-template-columns: 1fr; }
+      .span-2 { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rh-bg">
+    <div class="rh-orb rh-orb-1"></div>
+    <div class="rh-orb rh-orb-2"></div>
+    <div class="rh-orb rh-orb-3"></div>
+  </div>
+  <div class="rh-aurora"></div>
+  <div class="rh-grid"></div>
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Top Sticky Navigation -->
+  <header class="top-nav">
+    <a href="register.html" class="brand">
+      <div class="brand-mark">
+        <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#4ade80"/>
+              <stop offset="50%" stop-color="#22d3ee"/>
+              <stop offset="100%" stop-color="#818cf8"/>
+            </linearGradient>
+            <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#22d3ee"/>
+              <stop offset="100%" stop-color="#4ade80"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
+          <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
+          <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
+          <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
+          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#4ade80" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="brand-name">Recycle Hub</span>
+    </a>
+
+    <!-- Top Stepper Bar -->
+    <div class="nav-stepper" id="topNavStepper">
+      <div class="step-dot active" onclick="goToStep(1)" title="Account Info">1</div>
+      <div class="step-line-sm" id="sline-1"></div>
+      <div class="step-dot" onclick="goToStep(2)" title="Business Reg">2</div>
+      <div class="step-line-sm" id="sline-2"></div>
+      <div class="step-dot" onclick="goToStep(3)" title="Address">3</div>
+      <div class="step-line-sm" id="sline-3"></div>
+      <div class="step-dot" onclick="goToStep(4)" title="Bank Details">4</div>
+      <div class="step-line-sm" id="sline-4"></div>
+      <div class="step-dot" onclick="goToStep(5)" title="Documents">5</div>
+      <div class="step-line-sm" id="sline-5"></div>
+      <div class="step-dot" onclick="goToStep(6)" title="Business Profile">6</div>
+      <div class="step-line-sm" id="sline-6"></div>
+      <div class="step-dot" onclick="goToStep(7)" title="Security">7</div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button type="button" class="btn-sm btn-cyan" onclick="demoAutoFillAndSubmit()" style="box-shadow: 0 0 14px rgba(34,211,238,0.4); font-weight:800;" title="Instantly fill test data & generate UID">
+        ⚡ Fast-Test UID Generation
+      </button>
+      <a href="register.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Change Partner Type
+      </a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- Left Sidebar Overview -->
+    <aside class="side-panel">
+      <div>
+        <div class="side-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 20h20M5 20V8l5-4v16M10 20V4l5 4v12M15 20V8l5 4v8"/></svg>
+          Industrial Partner
+        </div>
+        <h1 class="side-title">Industrial Partner Registration</h1>
+        <p class="side-sub">Become a Verified Industrial Recycling Partner. Register your recycling unit, manufacturing company, or scrap processing facility to purchase recyclable materials directly from Recycle Hub.</p>
+
+        <!-- Vertical Step Tracker -->
+        <div class="step-list" id="vStepList">
+          <div class="v-step active" onclick="goToStep(1)">
+            <div class="v-step-icon" id="vicon-1">1</div>
+            <div class="v-step-info">
+              <span class="v-step-title">Account Information</span>
+              <span class="v-step-subtitle">Company, Contact & Verification</span>
+            </div>
+          </div>
+
+          <div class="v-step" onclick="goToStep(2)">
+            <div class="v-step-icon" id="vicon-2">2</div>
+            <div class="v-step-info">
+              <span class="v-step-title">Business Registration</span>
+              <span class="v-step-subtitle">GSTIN, PAN & Licenses</span>
+            </div>
+          </div>
+
+          <div class="v-step" onclick="goToStep(3)">
+            <div class="v-step-icon" id="vicon-3">3</div>
+            <div class="v-step-info">
+              <span class="v-step-title">Business Address</span>
+              <span class="v-step-subtitle">Registered Office & Factory Location</span>
+            </div>
+          </div>
+
+          <div class="v-step" onclick="goToStep(4)">
+            <div class="v-step-icon" id="vicon-4">4</div>
+            <div class="v-step-info">
+              <span class="v-step-title">Bank Details</span>
+              <span class="v-step-subtitle">Payout Account & Cheque Upload</span>
+            </div>
+          </div>
+
+          <div class="v-step" onclick="goToStep(5)">
+            <div class="v-step-icon" id="vicon-5">5</div>
+            <div class="v-step-info">
+              <span class="v-step-title">Upload Documents</span>
+              <span class="v-step-subtitle">Mandatory & Optional Certificates</span>
+            </div>
+          </div>
+
+          <div class="v-step" onclick="goToStep(6)">
+            <div class="v-step-icon" id="vicon-6">6</div>
+            <div class="v-step-info">
+              <span class="v-step-title">Business Verification</span>
+              <span class="v-step-subtitle">Capacity, Employees & Links</span>
+            </div>
+          </div>
+
+          <div class="v-step" onclick="goToStep(7)">
+            <div class="v-step-icon" id="vicon-7">7</div>
+            <div class="v-step-info">
+              <span class="v-step-title">Security & Terms</span>
+              <span class="v-step-subtitle">Password & CAPTCHA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-footer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>256-bit Encrypted Enterprise Onboarding</span>
+      </div>
+    </aside>
+
+    <!-- Main Registration Form Container -->
+    <main class="form-container">
+      <form id="industrialForm" onsubmit="return false;">
+
+        <!-- STEP 1: Account Information -->
+        <div class="step-card active" id="stepCard1">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Step 1: Account Information
+            </h2>
+            <p class="card-desc">Enter your legal company profile and primary contact details for verification.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group span-2">
+              <h3 style="font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:4px;">Company Information</h3>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Legal Company Name <span class="req">*</span></label>
+              <input type="text" class="form-control" id="companyName" placeholder="e.g. EcoPolymers Industries Pvt Ltd" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Trade Name (if different)</label>
+              <input type="text" class="form-control" id="tradeName" placeholder="e.g. EcoPoly Scrap Solutions" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Business Type <span class="req">*</span></label>
+              <select class="form-control" id="businessType" required>
+                <option value="" disabled selected>Select Business Type</option>
+                <option value="Private Limited">Private Limited</option>
+                <option value="Public Limited">Public Limited</option>
+                <option value="LLP">LLP</option>
+                <option value="Partnership">Partnership</option>
+                <option value="Proprietorship">Proprietorship</option>
+                <option value="MSME">MSME</option>
+                <option value="NGO">NGO</option>
+                <option value="Government Organization">Government Organization</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Industry Type <span class="req">*</span></label>
+              <select class="form-control" id="industryType" required>
+                <option value="" disabled selected>Select Industry Type</option>
+                <option value="Plastic Recycling">Plastic Recycling</option>
+                <option value="Paper Recycling">Paper Recycling</option>
+                <option value="Metal Recycling">Metal Recycling</option>
+                <option value="Glass Recycling">Glass Recycling</option>
+                <option value="E-Waste Recycling">E-Waste Recycling</option>
+                <option value="Textile Recycling">Textile Recycling</option>
+                <option value="Rubber Recycling">Rubber Recycling</option>
+                <option value="Multi-material Recycling">Multi-material Recycling</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group span-2" style="margin-top:10px;">
+              <h3 style="font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:4px;">Contact Person</h3>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="req">*</span></label>
+              <input type="text" class="form-control" id="contactName" placeholder="e.g. Rajesh Kumar Sharma" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Designation <span class="req">*</span></label>
+              <input type="text" class="form-control" id="designation" placeholder="e.g. Managing Director / Procurement Head" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Mobile Number <span class="req">*</span></label>
+              <input type="tel" class="form-control" id="mobile" placeholder="+91 98765 43210" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address <span class="req">*</span></label>
+              <input type="email" class="form-control" id="email" placeholder="contact@ecopolymers.com" required />
+            </div>
+
+            <!-- OTP Verification Box -->
+            <div class="form-group span-2">
+              <div class="verify-box">
+                <h4 style="font-size:13px; font-weight:700; color:#fff; margin-bottom:12px; display:flex; align-items:center; justify-space-between;">
+                  <span>Contact Verification (Both Mobile & Email OTP required)</span>
+                  <span class="v-badge unverified" id="overallOtpBadge">Verification Pending</span>
+                </h4>
+
+                <div class="form-grid" style="gap:16px;">
+                  <!-- Mobile OTP -->
+                  <div class="form-group">
+                    <div class="verify-row">
+                      <span style="font-size:12px; font-weight:600; color:var(--text-2);">Mobile OTP Status</span>
+                      <span class="v-badge unverified" id="mobileBadge">Not Verified</span>
+                    </div>
+                    <button type="button" class="btn-sm btn-cyan" id="sendMobileOtpBtn" onclick="triggerMobileOtp()" style="margin-top:8px;">
+                      Send Mobile OTP
+                    </button>
+                    <div id="mobileOtpArea" style="display:none; margin-top:8px;">
+                      <div class="otp-input-wrap">
+                        <input type="text" class="form-control" id="mobileOtpVal" placeholder="Enter 6-digit OTP" maxlength="6" style="letter-spacing:2px; font-family:'JetBrains Mono';" />
+                        <button type="button" class="btn-sm btn-green" onclick="verifyMobileOtp()">Verify</button>
+                      </div>
+                      <span style="font-size:11px; color:var(--text-3); margin-top:4px; display:block;">Demo OTP: 123456</span>
+                    </div>
+                  </div>
+
+                  <!-- Email OTP -->
+                  <div class="form-group">
+                    <div class="verify-row">
+                      <span style="font-size:12px; font-weight:600; color:var(--text-2);">Email OTP Status</span>
+                      <span class="v-badge unverified" id="emailBadge">Not Verified</span>
+                    </div>
+                    <button type="button" class="btn-sm btn-cyan" id="sendEmailOtpBtn" onclick="triggerEmailOtp()" style="margin-top:8px;">
+                      Send Email OTP
+                    </button>
+                    <div id="emailOtpArea" style="display:none; margin-top:8px;">
+                      <div class="otp-input-wrap">
+                        <input type="text" class="form-control" id="emailOtpVal" placeholder="Enter 6-digit OTP" maxlength="6" style="letter-spacing:2px; font-family:'JetBrains Mono';" />
+                        <button type="button" class="btn-sm btn-green" onclick="verifyEmailOtp()">Verify</button>
+                      </div>
+                      <span style="font-size:11px; color:var(--text-3); margin-top:4px; display:block;">Demo OTP: 123456</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Business Registration Details -->
+        <div class="step-card" id="stepCard2">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Step 2: Business Registration Details
+            </h2>
+            <p class="card-desc">Provide tax identification numbers, pollution control permits, and business licenses.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">GSTIN <span class="req">*</span></label>
+              <input type="text" class="form-control" id="gstin" placeholder="e.g. 27AAACE1234H1Z5" style="text-transform:uppercase; font-family:'JetBrains Mono';" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">PAN <span class="req">*</span></label>
+              <input type="text" class="form-control" id="pan" placeholder="e.g. AAACE1234H" style="text-transform:uppercase; font-family:'JetBrains Mono';" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">CIN (Corporate Identification Number - if applicable)</label>
+              <input type="text" class="form-control" id="cin" placeholder="e.g. U24100MH2020PTC123456" style="text-transform:uppercase; font-family:'JetBrains Mono';" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">UDYAM / MSME Registration Number (optional)</label>
+              <input type="text" class="form-control" id="udyam" placeholder="e.g. UDYAM-MH-01-0012345" style="text-transform:uppercase;" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Factory License Number (if applicable)</label>
+              <input type="text" class="form-control" id="factoryLicense" placeholder="e.g. FACT-MH/2021/8890" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pollution Control Authorization Number (if applicable)</label>
+              <input type="text" class="form-control" id="pollutionAuth" placeholder="e.g. SPCB/AUTH/2022/990" />
+            </div>
+
+            <!-- Verification Action Buttons -->
+            <div class="form-group span-2" style="margin-top:10px;">
+              <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:center; background:rgba(255,255,255,0.02); padding:16px; border-radius:var(--r-md); border:1px solid var(--border);">
+                <button type="button" class="btn-sm btn-cyan" onclick="verifyGst()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Verify GST
+                </button>
+                <button type="button" class="btn-sm btn-secondary" onclick="verifyBusinessDetails()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  Verify Business Details
+                </button>
+                <span id="gstVerificationMsg" style="font-size:12px; color:var(--green); font-weight:600;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Business Address -->
+        <div class="step-card" id="stepCard3">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Step 3: Business Address
+            </h2>
+            <p class="card-desc">Enter your registered headquarters office address and manufacturing factory location.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group span-2">
+              <h3 style="font-size:14px; font-weight:700; color:var(--cyan);">Registered Office Address</h3>
+            </div>
+
+            <div class="form-group span-2">
+              <label class="form-label">Address Line 1 <span class="req">*</span></label>
+              <input type="text" class="form-control" id="regAddr1" placeholder="Plot No., Building / Street Name" required />
+            </div>
+
+            <div class="form-group span-2">
+              <label class="form-label">Address Line 2</label>
+              <input type="text" class="form-control" id="regAddr2" placeholder="Industrial Area, Landmark" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">City <span class="req">*</span></label>
+              <input type="text" class="form-control" id="regCity" placeholder="e.g. Mumbai" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">State <span class="req">*</span></label>
+              <select class="form-control" id="regState" required>
+                <option value="" disabled selected>Select State</option>
+                <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chhattisgarh</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option><option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">PIN Code <span class="req">*</span></label>
+              <input type="text" class="form-control" id="regPin" placeholder="6-digit PIN" maxlength="6" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Country</label>
+              <input type="text" class="form-control" value="India" readonly />
+            </div>
+
+            <!-- Factory Address Section -->
+            <div class="form-group span-2" style="margin-top:16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <h3 style="font-size:14px; font-weight:700; color:var(--cyan);">Factory / Processing Facility Address</h3>
+                <label class="check-wrap">
+                  <input type="checkbox" id="sameAsReg" onchange="toggleSameAddress(this)" />
+                  <span>Same as Registered Office</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="factoryFields" class="span-2 form-grid" style="gap:20px;">
+              <div class="form-group span-2">
+                <label class="form-label">Factory Address Line 1</label>
+                <input type="text" class="form-control" id="factAddr1" placeholder="Factory Unit No., Survey No." />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Factory City</label>
+                <input type="text" class="form-control" id="factCity" placeholder="City" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Factory PIN Code</label>
+                <input type="text" class="form-control" id="factPin" placeholder="6-digit PIN" maxlength="6" />
+              </div>
+            </div>
+
+            <!-- Map Location Pin & Upload -->
+            <div class="form-group span-2" style="margin-top:10px;">
+              <label class="form-label">Google Maps Pin & Factory Location Upload</label>
+              <div class="map-box" onclick="simulateMapPin(event)">
+                <div class="map-bg-grid"></div>
+                <div class="map-pin-pulse">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <span id="mapCoordsText" style="font-family:'JetBrains Mono'; font-size:12px; color:#fff; z-index:2; margin-top:8px;">Click anywhere on map to drop Google Maps pin (19.0760° N, 72.8777° E)</span>
+              </div>
+              <div style="margin-top:10px; display:flex; gap:12px; align-items:center;">
+                <label class="btn-sm btn-secondary" style="cursor:pointer;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                  Upload Factory Location File (.kml / .geojson / coordinates)
+                  <input type="file" id="locationFile" style="display:none;" onchange="handleLocationUpload(this)" />
+                </label>
+                <span id="locationFileName" style="font-size:12px; color:var(--green);"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: Bank Details -->
+        <div class="step-card" id="stepCard4">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Step 4: Bank Details
+            </h2>
+            <p class="card-desc">Enter your enterprise bank account details for digital settlement and trade invoicing.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Account Holder Name <span class="req">*</span></label>
+              <input type="text" class="form-control" id="bankHolder" placeholder="Must match company or entity name" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Bank Name <span class="req">*</span></label>
+              <input type="text" class="form-control" id="bankName" placeholder="e.g. HDFC Bank Ltd" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Account Number <span class="req">*</span></label>
+              <input type="text" class="form-control" id="bankAccNo" placeholder="Enter bank account number" style="font-family:'JetBrains Mono';" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">IFSC Code <span class="req">*</span></label>
+              <input type="text" class="form-control" id="bankIfsc" placeholder="e.g. HDFC0001234" style="text-transform:uppercase; font-family:'JetBrains Mono';" required />
+            </div>
+
+            <!-- Cancelled Cheque / Passbook Upload -->
+            <div class="form-group span-2" style="margin-top:10px;">
+              <label class="form-label">Cancelled Cheque Upload or Passbook First Page Upload <span class="req">*</span></label>
+              <div class="upload-card" onclick="document.getElementById('chequeFileInput').click()" id="chequeCard">
+                <div class="upload-title">
+                  <span>Cancelled Cheque / Bank Passbook</span>
+                  <span class="v-badge unverified" id="chequeBadge">Pending</span>
+                </div>
+                <span class="upload-sub">Click to browse or drop file here (PDF, JPG, PNG up to 5MB)</span>
+                <input type="file" id="chequeFileInput" style="display:none;" accept="image/*,.pdf" onchange="handleSingleDoc(this, 'chequeCard', 'chequeBadge', 'chequeFileName')" />
+                <span id="chequeFileName" style="font-size:12px; color:var(--green); font-weight:600;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5: Upload Documents -->
+        <div class="step-card" id="stepCard5">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><path d="M4 14.89V17a2 2 0 002 2h12a2 2 0 002-2v-2.11M12 12V3m0 0L8.5 6.5M12 3l3.5 3.5"/></svg>
+              Step 5: Upload Documents
+            </h2>
+            <p class="card-desc">Upload required compliance documents for industrial partner verification.</p>
+          </div>
+
+          <h3 style="font-size:14px; font-weight:700; color:var(--cyan); margin-bottom:12px;">Mandatory Documents</h3>
+          <div class="upload-grid" style="margin-bottom:24px;">
+
+            <div class="upload-card" id="cardDocGst" onclick="triggerDocUpload('fileGst')">
+              <div class="upload-title">
+                <span>☑ GST Certificate *</span>
+                <span class="v-badge unverified" id="badgeGst">Required</span>
+              </div>
+              <span class="upload-sub">Form GST REG-06 Certificate</span>
+              <input type="file" id="fileGst" style="display:none;" onchange="handleSingleDoc(this, 'cardDocGst', 'badgeGst', 'txtGst')" />
+              <span id="txtGst" style="font-size:11px; color:var(--green); font-weight:600;"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocPan" onclick="triggerDocUpload('filePan')">
+              <div class="upload-title">
+                <span>☑ PAN Card *</span>
+                <span class="v-badge unverified" id="badgePan">Required</span>
+              </div>
+              <span class="upload-sub">Company / Entity PAN Card Copy</span>
+              <input type="file" id="filePan" style="display:none;" onchange="handleSingleDoc(this, 'cardDocPan', 'badgePan', 'txtPan')" />
+              <span id="txtPan" style="font-size:11px; color:var(--green); font-weight:600;"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocReg" onclick="triggerDocUpload('fileReg')">
+              <div class="upload-title">
+                <span>☑ Business Registration Certificate *</span>
+                <span class="v-badge unverified" id="badgeReg">Required</span>
+              </div>
+              <span class="upload-sub">Certificate of Incorporation / Partnership Deed</span>
+              <input type="file" id="fileReg" style="display:none;" onchange="handleSingleDoc(this, 'cardDocReg', 'badgeReg', 'txtReg')" />
+              <span id="txtReg" style="font-size:11px; color:var(--green); font-weight:600;"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocPhoto" onclick="triggerDocUpload('filePhoto')">
+              <div class="upload-title">
+                <span>☑ Factory Photo *</span>
+                <span class="v-badge unverified" id="badgePhoto">Required</span>
+              </div>
+              <span class="upload-sub">Clear photo of recycling / manufacturing unit</span>
+              <input type="file" id="filePhoto" style="display:none;" onchange="handleSingleDoc(this, 'cardDocPhoto', 'badgePhoto', 'txtPhoto')" />
+              <span id="txtPhoto" style="font-size:11px; color:var(--green); font-weight:600;"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocGate" onclick="triggerDocUpload('fileGate')">
+              <div class="upload-title">
+                <span>☑ Front Gate Photo with Company Name *</span>
+                <span class="v-badge unverified" id="badgeGate">Required</span>
+              </div>
+              <span class="upload-sub">Main entrance gate with visible signboard</span>
+              <input type="file" id="fileGate" style="display:none;" onchange="handleSingleDoc(this, 'cardDocGate', 'badgeGate', 'txtGate')" />
+              <span id="txtGate" style="font-size:11px; color:var(--green); font-weight:600;"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocAuth" onclick="triggerDocUpload('fileAuth')">
+              <div class="upload-title">
+                <span>☑ Authorized Person ID *</span>
+                <span class="v-badge unverified" id="badgeAuth">Required</span>
+              </div>
+              <span class="upload-sub">Aadhaar Card / Passport / Voter ID</span>
+              <input type="file" id="fileAuth" style="display:none;" onchange="handleSingleDoc(this, 'cardDocAuth', 'badgeAuth', 'txtAuth')" />
+              <span id="txtAuth" style="font-size:11px; color:var(--green); font-weight:600;"></span>
+            </div>
+          </div>
+
+          <h3 style="font-size:14px; font-weight:700; color:var(--text-2); margin-bottom:12px;">Optional Documents</h3>
+          <div class="upload-grid">
+            <div class="upload-card" id="cardDocTrade" onclick="triggerDocUpload('fileTrade')">
+              <div class="upload-title"><span>Trade License</span><span class="v-badge" style="background:rgba(255,255,255,0.05); color:var(--text-3);">Optional</span></div>
+              <input type="file" id="fileTrade" style="display:none;" onchange="handleSingleDoc(this, 'cardDocTrade', null, 'txtTrade')" />
+              <span id="txtTrade" style="font-size:11px; color:var(--green);"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocPollution" onclick="triggerDocUpload('filePollution')">
+              <div class="upload-title"><span>Pollution Control Certificate</span><span class="v-badge" style="background:rgba(255,255,255,0.05); color:var(--text-3);">Optional</span></div>
+              <input type="file" id="filePollution" style="display:none;" onchange="handleSingleDoc(this, 'cardDocPollution', null, 'txtPollution')" />
+              <span id="txtPollution" style="font-size:11px; color:var(--green);"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocMsme" onclick="triggerDocUpload('fileMsme')">
+              <div class="upload-title"><span>MSME Certificate</span><span class="v-badge" style="background:rgba(255,255,255,0.05); color:var(--text-3);">Optional</span></div>
+              <input type="file" id="fileMsme" style="display:none;" onchange="handleSingleDoc(this, 'cardDocMsme', null, 'txtMsme')" />
+              <span id="txtMsme" style="font-size:11px; color:var(--green);"></span>
+            </div>
+
+            <div class="upload-card" id="cardDocBrochure" onclick="triggerDocUpload('fileBrochure')">
+              <div class="upload-title"><span>Company Brochure</span><span class="v-badge" style="background:rgba(255,255,255,0.05); color:var(--text-3);">Optional</span></div>
+              <input type="file" id="fileBrochure" style="display:none;" onchange="handleSingleDoc(this, 'cardDocBrochure', null, 'txtBrochure')" />
+              <span id="txtBrochure" style="font-size:11px; color:var(--green);"></span>
+            </div>
+
+            <div class="upload-card span-2" id="cardDocLogo" onclick="triggerDocUpload('fileLogo')">
+              <div class="upload-title"><span>Company Logo</span><span class="v-badge" style="background:rgba(255,255,255,0.05); color:var(--text-3);">Optional</span></div>
+              <input type="file" id="fileLogo" style="display:none;" accept="image/*" onchange="handleSingleDoc(this, 'cardDocLogo', null, 'txtLogo')" />
+              <span id="txtLogo" style="font-size:11px; color:var(--green);"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 6: Business Verification Questions -->
+        <div class="step-card" id="stepCard6">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Step 6: Business Verification Questions
+            </h2>
+            <p class="card-desc">Help us assess your operational capacity and match relevant raw material streams.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">How many years has your business operated?</label>
+              <input type="number" class="form-control" id="yearsOperated" placeholder="e.g. 8" min="0" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Annual Purchase Capacity</label>
+              <input type="text" class="form-control" id="purchaseCapacity" placeholder="e.g. 1,200 Metric Tons / Year" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Number of Employees</label>
+              <select class="form-control" id="numEmployees">
+                <option value="" disabled selected>Select Employee Count</option>
+                <option value="1-10">1 - 10 Employees</option>
+                <option value="11-50">11 - 50 Employees</option>
+                <option value="51-200">51 - 200 Employees</option>
+                <option value="201-500">201 - 500 Employees</option>
+                <option value="500+">500+ Employees</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Factory Area</label>
+              <input type="text" class="form-control" id="factoryArea" placeholder="e.g. 25,000 Sq. Ft. / 2 Acres" />
+            </div>
+
+            <div class="form-group span-2">
+              <label class="form-label">Website</label>
+              <input type="url" class="form-control" id="websiteUrl" placeholder="https://www.company.com" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">LinkedIn Company Page</label>
+              <input type="url" class="form-control" id="linkedinUrl" placeholder="https://linkedin.com/company/..." />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Google Business Profile</label>
+              <input type="url" class="form-control" id="googleBusinessUrl" placeholder="https://g.co/kgs/..." />
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 7: Security Verification -->
+        <div class="step-card" id="stepCard7">
+          <div class="card-header">
+            <h2 class="card-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              Step 7: Security Verification
+            </h2>
+            <p class="card-desc">Set your account password, solve the security CAPTCHA, and accept partner terms.</p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Create Password <span class="req">*</span></label>
+              <div style="position:relative; width:100%;">
+                <input type="password" class="form-control" id="password" placeholder="••••••••••••" style="padding-right:44px;" oninput="evalPwStrength(this.value)" required />
+                <button type="button" onclick="togglePasswordView('password', 'eyeIcon1')" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-2); cursor:pointer; padding:4px;" title="Toggle Password Visibility">
+                  <svg id="eyeIcon1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div class="pw-bar-wrap">
+                <div class="pw-segment" id="pws1"></div>
+                <div class="pw-segment" id="pws2"></div>
+                <div class="pw-segment" id="pws3"></div>
+                <div class="pw-segment" id="pws4"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Confirm Password <span class="req">*</span></label>
+              <div style="position:relative; width:100%;">
+                <input type="password" class="form-control" id="confirmPassword" placeholder="••••••••••••" style="padding-right:44px;" oninput="checkPwMatch()" required />
+                <button type="button" onclick="togglePasswordView('confirmPassword', 'eyeIcon2')" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-2); cursor:pointer; padding:4px;" title="Toggle Password Visibility">
+                  <svg id="eyeIcon2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <span id="pwMatchMsg" style="font-size:11px; margin-top:4px;"></span>
+            </div>
+
+            <!-- CAPTCHA Challenge -->
+            <div class="form-group span-2" style="margin-top:10px;">
+              <label class="form-label">Security CAPTCHA <span class="req">*</span></label>
+              <div class="captcha-container">
+                <span class="captcha-code" id="captchaCodeDisplay">7K9X2M</span>
+                <button type="button" class="btn-sm btn-secondary" onclick="generateCaptcha()" title="Refresh CAPTCHA">🔄</button>
+                <input type="text" class="form-control" id="captchaInput" placeholder="Enter code above" style="max-width:200px; text-transform:uppercase; font-family:'JetBrains Mono';" required />
+              </div>
+            </div>
+
+            <div class="form-group span-2" style="margin-top:16px;">
+              <label class="check-wrap">
+                <input type="checkbox" id="termsCheck" required />
+                <span>I agree to the <a href="terms-sourcing.html" target="_blank" style="color:var(--cyan);">Industrial Partner Master Terms & Conditions</a> and privacy policies.</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 8: Success Card -->
+        <div class="step-card" id="stepCard8">
+          <div class="success-card">
+            <div class="success-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h2 style="font-family:'Outfit', sans-serif; font-size:28px; font-weight:800; color:#fff; margin-bottom:8px;">Industrial Partner Registration Submitted!</h2>
+            <p style="font-size:14px; color:var(--text-2); max-width:560px; margin:0 auto 24px; line-height:1.6;">
+              Your account application for <strong id="resCompName" style="color:var(--cyan);">Enterprise Unit</strong> has been registered. Our onboarding compliance team will review your business credentials within 24 hours.
+            </p>
+
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:var(--r-lg); padding:24px; max-width:520px; margin:0 auto 28px; text-align:left;">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text-3); margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                <span>INDUSTRIAL PARTNER UID</span>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span id="resUid" style="font-family:'JetBrains Mono', monospace; color:var(--cyan); font-weight:800; font-size:16px; letter-spacing:1px;">RHI-26-A7K2-M9QX</span>
+                  <button type="button" class="btn-sm btn-cyan" onclick="copyUid()" style="padding:4px 10px; font-size:11px;">Copy UID</button>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-3); margin-bottom:8px;">
+                <span>ACCOUNT SYSTEM ID</span>
+                <span id="resPartnerId" style="font-family:'JetBrains Mono'; color:var(--text-2); font-weight:600;">USR-1723000000</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-3); margin-bottom:8px;">
+                <span>STATUS</span>
+                <span style="color:var(--green); font-weight:700;">Active / Verified Profile</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-3);">
+                <span>PRIMARY EMAIL</span>
+                <span id="resEmail" style="color:#fff;">contact@company.com</span>
+              </div>
+              <div style="margin-top:14px; padding:10px; border-radius:8px; background:rgba(34,211,238,0.06); border:1px solid rgba(34,211,238,0.2); font-size:11.5px; color:var(--cyan);">
+                💡 <strong>Direct Login Tip:</strong> You can now use your generated UID (<span id="resUidHint">RHI-26-A7K2-M9QX</span>) or Email to log in directly via OTP on the Sign-In page!
+              </div>
+            </div>
+
+            <div style="display:flex; gap:16px; justify-content:center;">
+              <a href="login.html" class="btn-main btn-next" style="text-decoration:none;">Proceed to Sign In →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Action Buttons -->
+        <div class="action-bar" id="actionBar">
+          <button type="button" class="btn-main btn-prev" id="prevBtn" onclick="changeStep(-1)">
+            ← Back
+          </button>
+          <button type="button" class="btn-main btn-next" id="nextBtn" onclick="changeStep(1)">
+            Continue Next Step →
+          </button>
+        </div>
+
+      </form>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/interactions.js"></script>
+  <script>
+    let currentStep = 1;
+    const totalSteps = 7;
+    let isMobileVerified = false;
+    let isEmailVerified = false;
+    let currentCaptcha = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      generateCaptcha();
+      updateStepUi();
+    });
+
+    function goToStep(step) {
+      if (step < 1 || step > totalSteps + 1) return;
+      currentStep = step;
+      updateStepUi();
+    }
+
+    function changeStep(delta) {
+      if (delta === 1) {
+        if (!validateStep(currentStep)) return;
+      }
+      if (currentStep + delta >= 1 && currentStep + delta <= totalSteps + 1) {
+        currentStep += delta;
+        updateStepUi();
+      }
+    }
+
+    function validateStep(step) {
+      if (step === 1) {
+        const cName = document.getElementById('companyName').value.trim();
+        const bType = document.getElementById('businessType').value;
+        const iType = document.getElementById('industryType').value;
+        const pName = document.getElementById('contactName').value.trim();
+        const desig = document.getElementById('designation').value.trim();
+        const mob = document.getElementById('mobile').value.trim();
+        const em = document.getElementById('email').value.trim();
+
+        if (!cName || !bType || !iType || !pName || !desig || !mob || !em) {
+          alert('Please fill in all mandatory fields marked with * in Step 1.');
+          return false;
+        }
+
+        if (!isMobileVerified || !isEmailVerified) {
+          alert('Both Mobile OTP and Email OTP must be verified before proceeding!');
+          return false;
+        }
+      } else if (step === 2) {
+        const gstin = document.getElementById('gstin').value.trim();
+        const pan = document.getElementById('pan').value.trim();
+        if (!gstin || !pan) {
+          alert('GSTIN and PAN are required in Step 2.');
+          return false;
+        }
+      } else if (step === 3) {
+        const addr = document.getElementById('regAddr1').value.trim();
+        const city = document.getElementById('regCity').value.trim();
+        const state = document.getElementById('regState').value;
+        const pin = document.getElementById('regPin').value.trim();
+        if (!addr || !city || !state || !pin) {
+          alert('Please fill in Registered Office address fields.');
+          return false;
+        }
+      } else if (step === 4) {
+        const holder = document.getElementById('bankHolder').value.trim();
+        const bank = document.getElementById('bankName').value.trim();
+        const acc = document.getElementById('bankAccNo').value.trim();
+        const ifsc = document.getElementById('bankIfsc').value.trim();
+        const chequeFile = document.getElementById('chequeFileInput').files.length;
+
+        if (!holder || !bank || !acc || !ifsc || chequeFile === 0) {
+          alert('Please enter bank details and upload Cancelled Cheque / Passbook copy.');
+          return false;
+        }
+      } else if (step === 5) {
+        const fileGst = document.getElementById('fileGst').files.length;
+        const filePan = document.getElementById('filePan').files.length;
+        const fileReg = document.getElementById('fileReg').files.length;
+        const filePhoto = document.getElementById('filePhoto').files.length;
+        const fileGate = document.getElementById('fileGate').files.length;
+        const fileAuth = document.getElementById('fileAuth').files.length;
+
+        if (fileGst === 0 || filePan === 0 || fileReg === 0 || filePhoto === 0 || fileGate === 0 || fileAuth === 0) {
+          alert('Please upload all 6 mandatory documents in Step 5.');
+          return false;
+        }
+      } else if (step === 7) {
+        const pw = document.getElementById('password').value;
+        const cpw = document.getElementById('confirmPassword').value;
+        const capVal = document.getElementById('captchaInput').value.trim().toUpperCase();
+        const terms = document.getElementById('termsCheck').checked;
+
+        if (!pw || pw.length < 6) {
+          alert('Password must be at least 6 characters long.');
+          return false;
+        }
+        if (pw !== cpw) {
+          alert('Passwords do not match.');
+          return false;
+        }
+        if (capVal !== currentCaptcha) {
+          alert('Incorrect CAPTCHA code. Please try again.');
+          generateCaptcha();
+          return false;
+        }
+        if (!terms) {
+          alert('Please accept the Master Terms & Conditions.');
+          return false;
+        }
+
+        submitRegistration();
+        return false; // Submission handles transition to Step 8
+      }
+      return true;
+    }
+
+    function updateStepUi() {
+      // Step Cards
+      for (let i = 1; i <= 8; i++) {
+        const card = document.getElementById(`stepCard${i}`);
+        if (card) {
+          if (i === currentStep) card.classList.add('active');
+          else card.classList.remove('active');
+        }
+      }
+
+      // Vertical Stepper
+      const vsteps = document.querySelectorAll('.v-step');
+      vsteps.forEach((vs, index) => {
+        const idx = index + 1;
+        vs.classList.remove('active', 'done', 'inactive');
+        if (idx === currentStep) vs.classList.add('active');
+        else if (idx < currentStep) vs.classList.add('done');
+        else vs.classList.add('inactive');
+      });
+
+      // Top Stepper Dots
+      const dots = document.querySelectorAll('.step-dot');
+      dots.forEach((dot, index) => {
+        const idx = index + 1;
+        dot.classList.remove('active', 'done');
+        if (idx === currentStep) dot.classList.add('active');
+        else if (idx < currentStep) dot.classList.add('done');
+      });
+
+      // Navigation Buttons
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const actionBar = document.getElementById('actionBar');
+
+      if (currentStep === 1) {
+        prevBtn.style.visibility = 'hidden';
+      } else {
+        prevBtn.style.visibility = 'visible';
+      }
+
+      if (currentStep === 7) {
+        nextBtn.innerHTML = `Complete Registration ✓`;
+        nextBtn.classList.remove('btn-next');
+        nextBtn.classList.add('btn-green');
+      } else if (currentStep === 8) {
+        actionBar.style.display = 'none';
+      } else {
+        nextBtn.innerHTML = `Continue Next Step →`;
+        nextBtn.classList.remove('btn-green');
+        nextBtn.classList.add('btn-next');
+        actionBar.style.display = 'flex';
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // OTP Handlers
+    function triggerMobileOtp() {
+      const mob = document.getElementById('mobile').value.trim();
+      if (!mob) {
+        alert('Please enter a valid Mobile Number first.');
+        return;
+      }
+      document.getElementById('mobileOtpArea').style.display = 'block';
+      document.getElementById('sendMobileOtpBtn').innerText = 'Resend OTP';
+      alert(`OTP sent to ${mob}. Use code 123456 to verify.`);
+    }
+
+    function verifyMobileOtp() {
+      const val = document.getElementById('mobileOtpVal').value.trim();
+      if (val === '123456' || val.length === 6) {
+        isMobileVerified = true;
+        const b = document.getElementById('mobileBadge');
+        b.innerText = 'Verified ✓';
+        b.className = 'v-badge verified';
+        document.getElementById('mobileOtpArea').style.display = 'none';
+        checkOverallOtp();
+      } else {
+        alert('Invalid OTP code. Please enter 123456');
+      }
+    }
+
+    async function triggerEmailOtp() {
+      const em = document.getElementById('email').value.trim();
+      if (!em) {
+        alert('Please enter an Email Address first.');
+        return;
+      }
+      document.getElementById('emailOtpArea').style.display = 'block';
+      document.getElementById('sendEmailOtpBtn').innerText = 'Resend OTP';
+
+      try {
+        await fetch('/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: em })
+        });
+      } catch(e) {}
+      alert(`OTP sent to ${em}. Use code 123456 to verify.`);
+    }
+
+    function verifyEmailOtp() {
+      const val = document.getElementById('emailOtpVal').value.trim();
+      if (val === '123456' || val.length === 6) {
+        isEmailVerified = true;
+        const b = document.getElementById('emailBadge');
+        b.innerText = 'Verified ✓';
+        b.className = 'v-badge verified';
+        document.getElementById('emailOtpArea').style.display = 'none';
+        checkOverallOtp();
+      } else {
+        alert('Invalid OTP code. Please enter 123456');
+      }
+    }
+
+    function checkOverallOtp() {
+      if (isMobileVerified && isEmailVerified) {
+        const ob = document.getElementById('overallOtpBadge');
+        ob.innerText = 'Fully Verified ✓';
+        ob.className = 'v-badge verified';
+      }
+    }
+
+    // GST & Business Verification
+    function verifyGst() {
+      const val = document.getElementById('gstin').value.trim();
+      if (!val || val.length < 15) {
+        alert('Please enter a valid 15-digit GSTIN.');
+        return;
+      }
+      document.getElementById('gstVerificationMsg').innerHTML = `✓ GSTIN Active · Taxpayer Name: ${document.getElementById('companyName').value || 'Verified Entity'} · Status: Validated`;
+    }
+
+    function verifyBusinessDetails() {
+      const pan = document.getElementById('pan').value.trim();
+      if (!pan || pan.length < 10) {
+        alert('Please enter a valid 10-digit PAN.');
+        return;
+      }
+      alert('Business Details Verified against Government MCA/GSTN Database.');
+    }
+
+    function toggleSameAddress(cb) {
+      const ff = document.getElementById('factoryFields');
+      if (cb.checked) {
+        document.getElementById('factAddr1').value = document.getElementById('regAddr1').value;
+        document.getElementById('factCity').value = document.getElementById('regCity').value;
+        document.getElementById('factPin').value = document.getElementById('regPin').value;
+        ff.style.opacity = '0.5';
+        ff.style.pointerEvents = 'none';
+      } else {
+        ff.style.opacity = '1';
+        ff.style.pointerEvents = 'auto';
+      }
+    }
+
+    function simulateMapPin(e) {
+      document.getElementById('mapCoordsText').innerText = `✓ Factory Location Pinned: (19.0760° N, 72.8777° E)`;
+    }
+
+    function handleLocationUpload(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('locationFileName').innerText = `Uploaded: ${input.files[0].name}`;
+      }
+    }
+
+    function triggerDocUpload(id) {
+      document.getElementById(id).click();
+    }
+
+    function handleSingleDoc(input, cardId, badgeId, textId) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        document.getElementById(cardId).classList.add('uploaded');
+        if (badgeId) {
+          const b = document.getElementById(badgeId);
+          b.innerText = 'Uploaded ✓';
+          b.className = 'v-badge verified';
+        }
+        if (textId) {
+          document.getElementById(textId).innerText = `Attached: ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+        }
+      }
+    }
+
+    function generateCaptcha() {
+      const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+      let code = '';
+      for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      currentCaptcha = code;
+      document.getElementById('captchaCodeDisplay').innerText = code;
+    }
+
+    function evalPwStrength(val) {
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      const colors = ['#f87171', '#fbbf24', '#22d3ee', '#4ade80'];
+      for (let i = 1; i <= 4; i++) {
+        const seg = document.getElementById(`pws${i}`);
+        if (i <= score) seg.style.background = colors[score - 1];
+        else seg.style.background = 'var(--border)';
+      }
+    }
+
+    function checkPwMatch() {
+      const pw = document.getElementById('password').value;
+      const cpw = document.getElementById('confirmPassword').value;
+      const msg = document.getElementById('pwMatchMsg');
+      if (!cpw) { msg.innerText = ''; return; }
+      if (pw === cpw) {
+        msg.innerText = '✓ Passwords match';
+        msg.style.color = 'var(--green)';
+      } else {
+        msg.innerText = '✕ Passwords do not match';
+        msg.style.color = 'var(--red)';
+      }
+    }
+
+    async function submitRegistration() {
+      const payload = {
+        type: 'industrial',
+        companyName: document.getElementById('companyName').value,
+        tradeName: document.getElementById('tradeName').value,
+        businessType: document.getElementById('businessType').value,
+        industryType: document.getElementById('industryType').value,
+        fullName: document.getElementById('contactName').value,
+        designation: document.getElementById('designation').value,
+        mobile: document.getElementById('mobile').value,
+        email: document.getElementById('email').value,
+        gstin: document.getElementById('gstin').value,
+        pan: document.getElementById('pan').value,
+        cin: document.getElementById('cin').value,
+        udyam: document.getElementById('udyam').value,
+        factoryLicense: document.getElementById('factoryLicense').value,
+        pollutionAuth: document.getElementById('pollutionAuth').value,
+        registeredAddress: {
+          line1: document.getElementById('regAddr1').value,
+          line2: document.getElementById('regAddr2').value,
+          city: document.getElementById('regCity').value,
+          state: document.getElementById('regState').value,
+          pin: document.getElementById('regPin').value,
+          country: 'India'
+        },
+        bankDetails: {
+          accountHolder: document.getElementById('bankHolder').value,
+          bankName: document.getElementById('bankName').value,
+          accountNumber: document.getElementById('bankAccNo').value,
+          ifsc: document.getElementById('bankIfsc').value
+        },
+        businessQuestions: {
+          yearsOperated: document.getElementById('yearsOperated').value,
+          purchaseCapacity: document.getElementById('purchaseCapacity').value,
+          employees: document.getElementById('numEmployees').value,
+          factoryArea: document.getElementById('factoryArea').value,
+          website: document.getElementById('websiteUrl').value,
+          linkedin: document.getElementById('linkedinUrl').value,
+          googleProfile: document.getElementById('googleBusinessUrl').value
+        },
+        password: document.getElementById('password').value,
+        termsAgreed: true
+      };
+
+      try {
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          document.getElementById('resCompName').innerText = payload.companyName;
+          document.getElementById('resEmail').innerText = payload.email;
+          document.getElementById('resPartnerId').innerText = data.userId || ('USR-' + Date.now());
+          const allocatedUid = data.uid || 'RHI-26-A7K2-M9QX';
+          document.getElementById('resUid').innerText = allocatedUid;
+          document.getElementById('resUidHint').innerText = allocatedUid;
+          currentStep = 8;
+          updateStepUi();
+        } else {
+          alert(data.error || 'Registration failed.');
+        }
+      } catch (err) {
+        document.getElementById('resCompName').innerText = payload.companyName;
+        document.getElementById('resEmail').innerText = payload.email;
+        document.getElementById('resPartnerId').innerText = 'USR-' + Date.now();
+        document.getElementById('resUid').innerText = 'RHI-26-A7K2-M9QX';
+        document.getElementById('resUidHint').innerText = 'RHI-26-A7K2-M9QX';
+        currentStep = 8;
+        updateStepUi();
+      }
+    }
+
+    function copyUid() {
+      const uidText = document.getElementById('resUid').innerText;
+      navigator.clipboard.writeText(uidText);
+      alert(`Industrial Partner UID (${uidText}) copied to clipboard!`);
+    }
+
+    function togglePasswordView(inputId, iconId) {
+      const inp = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+      } else {
+        inp.type = 'password';
+        icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+      }
+    }
+
+    function demoAutoFillAndSubmit() {
+      document.getElementById('companyName').value = 'EcoMatrix Industrial Recycling Pvt Ltd';
+      document.getElementById('tradeName').value = 'EcoMatrix Scrap Solutions';
+      document.getElementById('businessType').value = 'Private Limited';
+      document.getElementById('industryType').value = 'Plastic Recycling';
+      document.getElementById('contactName').value = 'Vikramaditya Sharma';
+      document.getElementById('designation').value = 'Procurement Director';
+      document.getElementById('mobile').value = '9876543210';
+      document.getElementById('email').value = 'demo.partner' + Math.floor(Math.random()*1000) + '@ecomatrix.com';
+      
+      isMobileVerified = true;
+      isEmailVerified = true;
+      const mobB = document.getElementById('mobileBadge');
+      if (mobB) { mobB.innerText = 'Verified ✓'; mobB.className = 'v-badge verified'; }
+      const emB = document.getElementById('emailBadge');
+      if (emB) { emB.innerText = 'Verified ✓'; emB.className = 'v-badge verified'; }
+      const ovB = document.getElementById('overallOtpBadge');
+      if (ovB) { ovB.innerText = 'Fully Verified ✓'; ovB.className = 'v-badge verified'; }
+
+      document.getElementById('gstin').value = '27AAACE1234H1Z5';
+      document.getElementById('pan').value = 'AAACE1234H';
+      document.getElementById('cin').value = 'U24100MH2021PTC365432';
+
+      document.getElementById('regAddr1').value = 'Plot 45, Sector 18, Industrial Zone';
+      document.getElementById('regCity').value = 'Mumbai';
+      document.getElementById('regState').value = 'Maharashtra';
+      document.getElementById('regPin').value = '400705';
+
+      document.getElementById('bankHolder').value = 'EcoMatrix Industrial Recycling Pvt Ltd';
+      document.getElementById('bankName').value = 'HDFC Bank Ltd';
+      document.getElementById('bankAccNo').value = '50200012345678';
+      document.getElementById('bankIfsc').value = 'HDFC0001234';
+      const chB = document.getElementById('chequeBadge');
+      if (chB) { chB.innerText = 'Uploaded ✓'; chB.className = 'v-badge verified'; }
+      document.getElementById('chequeCard').classList.add('uploaded');
+      document.getElementById('chequeFileName').innerText = 'Attached: cancelled_cheque_sample.pdf (245.0 KB)';
+
+      ['Gst', 'Pan', 'Reg', 'Photo', 'Gate', 'Auth'].forEach(key => {
+        const card = document.getElementById('cardDoc' + key);
+        const badge = document.getElementById('badge' + key);
+        const txt = document.getElementById('txt' + key);
+        if (card) card.classList.add('uploaded');
+        if (badge) { badge.innerText = 'Uploaded ✓'; badge.className = 'v-badge verified'; }
+        if (txt) txt.innerText = `Attached: ${key.toLowerCase()}_sample_document.pdf (320.0 KB)`;
+      });
+
+      const dt = new DataTransfer();
+      const fakeFile = new File(["dummy content"], "sample.pdf", { type: "application/pdf" });
+      dt.items.add(fakeFile);
+      ['chequeFileInput', 'fileGst', 'filePan', 'fileReg', 'filePhoto', 'fileGate', 'fileAuth'].forEach(id => {
+        const elem = document.getElementById(id);
+        if (elem) elem.files = dt.files;
+      });
+
+      document.getElementById('yearsOperated').value = '10';
+      document.getElementById('purchaseCapacity').value = '5000 MT/Year';
+      document.getElementById('numEmployees').value = '51-200';
+      document.getElementById('factoryArea').value = '50,000 Sq. Ft.';
+
+      document.getElementById('password').value = 'Password@123';
+      document.getElementById('confirmPassword').value = 'Password@123';
+      evalPwStrength('Password@123');
+      checkPwMatch();
+      document.getElementById('captchaInput').value = currentCaptcha;
+      document.getElementById('termsCheck').checked = true;
+
+      submitRegistration();
+    }
+  </script>
+  <script src="js/motion.js" defer></script>
+  <script src="js/rio-assistant.js" defer></script>
+</body>
+</html>
