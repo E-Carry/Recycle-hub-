@@ -15,7 +15,8 @@ const UIDS_FILE = path.join(DATA_DIR, 'uids.json');
 const ADMIN_DATA_FILE = path.join(DATA_DIR, 'admin-data.json');
 
 const ADMIN_EMAIL = 'recycle.hub.pvt.ltd@gmail.com';
-const ADMIN_PASSWORD = 'admin123';
+// Set ADMIN_PASSWORD in .env for any deployment; the fallback is the public demo password.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 const getUsers = () => {
     try {
@@ -197,7 +198,7 @@ app.post('/login', (req, res) => {
             }
         }
 
-        if (password && password !== ADMIN_PASSWORD) {
+        if (password !== ADMIN_PASSWORD) {
             return res.status(401).json({ error: 'Invalid Admin password. Please check your credentials.' });
         }
 
