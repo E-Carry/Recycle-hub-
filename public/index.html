@@ -21,7 +21,7 @@
       font-family: var(--font-display); font-weight: 900; letter-spacing: -1.5px;
       font-size: clamp(36px, 6vw, 64px); line-height: 1.05; margin: 18px 0 16px; color: var(--rh-text);
     }
-    .hero h1 span { background: linear-gradient(135deg, #4ade80, #22d3ee); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero h1 span { background: linear-gradient(135deg, #34d399, #2dd4bf); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { color: var(--rh-text-2); font-size: 17px; line-height: 1.6; max-width: 600px; margin: 0 auto 32px; }
     .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
     .cta a { width: auto; padding: 15px 28px; text-decoration: none; }
@@ -32,13 +32,14 @@
     .card p { color: var(--rh-text-2); font-size: 14px; line-height: 1.6; margin: 0; flex: 1; }
     .card .rh-badge { align-self: flex-start; }
     .card .go { color: var(--rh-green); font-weight: 700; font-size: 13.5px; }
-    .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(74,222,128,.1); color: var(--rh-green); }
-    .ico.c { background: rgba(34,211,238,.1); color: var(--rh-cyan); }
+    .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(52,211,153,.1); color: var(--rh-green); }
+    .ico.c { background: rgba(45,212,191,.1); color: var(--rh-cyan); }
     .ico svg { width: 22px; height: 22px; }
     h2 { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--rh-text); margin: 64px 0 20px; text-align: center; }
     footer { margin-top: 64px; text-align: center; color: var(--rh-text-3); font-size: 13px; }
     footer a { color: var(--rh-text-2); }
   </style>
+  <link rel="stylesheet" href="css/theme.css" />
 </head>
 <body>
 <div class="rh-bg">
@@ -57,17 +58,17 @@
         <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="logoGrad1" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#4ade80"/><stop offset="50%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#818cf8"/>
+              <stop offset="0%" stop-color="#34d399"/><stop offset="50%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#818cf8"/>
             </linearGradient>
             <linearGradient id="logoGrad2" x1="100" y1="0" x2="0" y2="100" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#4ade80"/>
+              <stop offset="0%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#34d399"/>
             </linearGradient>
           </defs>
           <circle cx="50" cy="50" r="46" stroke="url(#logoGrad1)" stroke-width="3" fill="none" opacity="0.3"/>
           <path d="M50 12 L62 32 L54 32 L54 42 C54 46 52 48 48 48 L38 48 L38 40 L46 40 C48 40 48 38 48 36 L48 32 L40 32 Z" fill="url(#logoGrad1)" opacity="0.9"/>
           <path d="M82 62 L62 74 L62 66 L52 66 C48 66 46 64 46 60 L46 50 L54 50 L54 58 C54 60 56 60 58 60 L62 60 L62 52 Z" fill="url(#logoGrad2)" opacity="0.9"/>
           <path d="M20 62 L28 42 L34 48 L40 40 C42 38 46 38 48 40 L56 48 L50 54 L44 48 C42 46 40 48 40 50 L36 56 L42 60 Z" fill="url(#logoGrad1)" opacity="0.75"/>
-          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#4ade80" opacity="0.6"/>
+          <path d="M46 50 C46 42 52 38 58 42 C52 42 50 46 50 50 C50 54 48 58 44 58 C48 56 46 52 46 50Z" fill="#34d399" opacity="0.6"/>
         </svg>
       </div>
       <span class="rh-brand-name">Recycle Hub</span>
@@ -119,6 +120,7 @@
 
 <script src="js/particles.js"></script>
 <script src="js/interactions.js"></script>
+<script src="js/ux.js" defer></script>
 <script src="js/motion.js" defer></script>
 <script src="js/rio-assistant.js" defer></script>
 </body>

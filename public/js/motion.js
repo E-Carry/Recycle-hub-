@@ -85,7 +85,7 @@
   function onAdded(nodes) {
     const rows = [], cards = [];
     nodes.forEach((n) => {
-      if (n.nodeType !== 1 || n.closest('.rio')) return;
+      if (n.nodeType !== 1 || n.closest('.rio') || n.classList.contains('rh-skel')) return;
       if (n.matches('tr') && n.closest('tbody')) rows.push(n);
       else n.querySelectorAll && n.querySelectorAll('tbody tr').forEach((r) => rows.push(r));
       if (n.matches(CARD)) cards.push(n);
@@ -152,8 +152,51 @@
     b.addEventListener('pointerleave', up, { once: true });
   }, { passive: true });
 
+
+  /* Sliding active indicator (Framer layoutId-style): one pill per nav
+     group glides between items instead of the highlight blinking across. */
+  const NAV = '.nav-btn, .nav-link, .tab-btn';
+  const hosts = new Map(); // host -> indicator
+  function setupNav() {
+    const groups = new Map();
+    document.querySelectorAll(NAV).forEach((el) => {
+      if (el.closest('.rio, .rh-cmdk')) return;
+      const h = el.parentElement;
+      groups.set(h, (groups.get(h) || []).concat(el));
+    });
+    groups.forEach((els, host) => {
+      if (els.length < 2 || hosts.has(host)) return;
+      host.classList.add('rh-ind-host');
+      if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+      els.forEach((el) => el.classList.add('rh-ind-item'));
+      const ind = document.createElement('i');
+      ind.className = 'rh-ind';
+      ind.setAttribute('aria-hidden', 'true');
+      host.insertBefore(ind, host.firstChild);
+      hosts.set(host, ind);
+      place(host, false);
+    });
+  }
+  function place(host, animate) {
+    const ind = hosts.get(host);
+    const a = host.querySelector(':scope > .rh-ind-item.active');
+    if (!a || !a.offsetWidth) { ind.style.opacity = '0'; return; }
+    const items = host.querySelectorAll(':scope > .rh-ind-item');
+    ind.classList.toggle('h', items.length > 1 && items[0].offsetTop === items[1].offsetTop);
+    const was = ind.style.opacity === '1';
+    ind.style.transition = animate && was
+      ? `transform .62s ${SPRING}, width .62s ${SPRING}, height .62s ${SPRING}` : 'opacity .2s ease';
+    ind.style.transform = `translate(${a.offsetLeft}px, ${a.offsetTop}px)`;
+    ind.style.width = a.offsetWidth + 'px';
+    ind.style.height = a.offsetHeight + 'px';
+    ind.style.opacity = '1';
+  }
+  let rz;
+  addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => hosts.forEach((_, h) => place(h, false)), 120); });
+
   function init() {
     stagger(document.body);
+    setupNav();
     document.querySelectorAll(METRIC).forEach(countUp);
 
     new MutationObserver((muts) => {
@@ -161,6 +204,7 @@
       muts.forEach((m) => {
         if (m.type === 'attributes') {
           const el = m.target;
+          if (el.classList.contains('rh-ind-item') && hosts.has(el.parentElement)) place(el.parentElement, true);
           if (el.matches(SECTION) && el.classList.contains('active') && !(m.oldValue || '').split(/\s+/).includes('active')) onSectionShown(el);
           return;
         }

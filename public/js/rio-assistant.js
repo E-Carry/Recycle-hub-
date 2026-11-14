@@ -24,8 +24,21 @@
   })();
   const isAdmin = !!(user.isAdmin || user.type === 'admin');
 
+  // Rio mark: emerald->teal orb, white leaf, orbiting spark. Gradient ids must be unique per instance.
+  let markN = 0;
+  const mark = (cls) => {
+    const g = 'rioG' + (++markN);
+    return `<svg class="rio-mark ${cls}" viewBox="0 0 40 40" aria-hidden="true">
+      <defs><linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#14b8a6"/></linearGradient></defs>
+      <circle class="rio-mark-orb" cx="20" cy="20" r="18" fill="url(#${g})"/>
+      <circle cx="20" cy="20" r="17.25" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+      <path class="rio-mark-leaf" d="M12.5 26.5C12 18 17 12.5 27.5 12.5 27.5 22 22 27 14 27.2" fill="#fff"/>
+      <path d="M12.5 27.5 22 18" stroke="#0d9488" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+      <g class="rio-mark-spark"><path d="M31 6.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="#fff"/></g>
+    </svg>`;
+  };
+
   const ic = {
-    chat: '<svg class="rio-ic-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5.1A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>',
     x: '<svg class="rio-ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
@@ -38,7 +51,7 @@
     <div class="rio-hint" role="status">Need help? Ask Rio AI</div>
     <section class="rio-panel" role="dialog" aria-label="Rio AI assistant" aria-hidden="true">
       <header class="rio-head">
-        <img class="rio-ava" src="/rio/assets/rio_logo.png" alt="" loading="lazy">
+        <span class="rio-ava">${mark('')}</span>
         <div>
           <div class="rio-title">Rio AI</div>
           <div class="rio-status">Recycle Hub assistant</div>
@@ -55,7 +68,7 @@
         <button class="rio-send" type="submit" title="Send" disabled>${ic.send}</button>
       </form>
     </section>
-    <button class="rio-launch" aria-label="Open Rio AI assistant" aria-expanded="false">${ic.chat}${ic.x}</button>`;
+    <button class="rio-launch" aria-label="Open Rio AI assistant" aria-expanded="false">${mark('rio-ic-chat')}${ic.x}</button>`;
 
   const $ = (s) => root.querySelector(s);
   const panel = $('.rio-panel'), body = $('.rio-body'), chips = $('.rio-chips');
@@ -72,18 +85,61 @@
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
 
-  function render(m) {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const copyIc = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>';
+
+  function copy(text) {
+    const plain = String(text).replace(/\*\*/g, '');
+    const done = () => window.rhToast && window.rhToast('Copied to clipboard', 'success', 1800);
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(plain).then(done, () => fallback(plain, done));
+    fallback(plain, done);
+  }
+  function fallback(plain, done) {
+    const t = document.createElement('textarea');
+    t.value = plain; t.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(t); t.select();
+    const ok = document.execCommand('copy'); t.remove();
+    if (ok) done(); else console.error('[Rio] copy failed');
+  }
+
+  // Word-by-word reveal; an unclosed ** mid-reveal would render literally, so drop it.
+  function typewrite(el, m) {
+    const words = String(m.text).split(/(\s+)/);
+    let i = 0;
+    return new Promise((done) => {
+      const tick = () => {
+        i = Math.min(words.length, i + 2);
+        let part = words.slice(0, i).join('');
+        if ((part.match(/\*\*/g) || []).length % 2) part = part.replace(/\*\*(?!.*\*\*)/, '');
+        el.firstChild.innerHTML = fmt(part);
+        body.scrollTop = body.scrollHeight;
+        if (i < words.length) setTimeout(tick, 28); else done();
+      };
+      tick();
+    });
+  }
+
+  function render(m, animate) {
     const el = document.createElement('div');
     el.className = 'rio-msg ' + m.who + (m.alert ? ' alert' : '');
-    el.innerHTML = fmt(m.text) + (m.time ? `<span class="rio-time">${fmt(m.time)}</span>` : '');
+    el.innerHTML = '<span class="rio-txt"></span>' + (m.time ? `<span class="rio-time">${fmt(m.time)}</span>` : '');
+    if (m.who === 'bot') {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'rio-copy'; b.title = 'Copy'; b.setAttribute('aria-label', 'Copy reply');
+      b.innerHTML = copyIc; b.onclick = () => copy(m.text);
+      el.appendChild(b);
+    }
     body.appendChild(el);
     body.scrollTop = body.scrollHeight;
+    if (animate && !reduced && m.who === 'bot') return typewrite(el, m);
+    el.firstChild.innerHTML = fmt(m.text);
+    return Promise.resolve();
   }
-  function push(m) { history.push(m); save(); render(m); }
+  function push(m, animate) { history.push(m); save(); return render(m, animate); }
 
-  function renderChips() {
+  function renderChips(list = CHIPS) {
     chips.innerHTML = '';
-    CHIPS.forEach((q, i) => {
+    list.forEach((q, i) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'rio-chip'; b.textContent = q;
       b.style.animationDelay = (0.05 * i + 0.15) + 's';
@@ -142,7 +198,7 @@
     text = text.trim();
     if (!text || busy) return;
     busy = true; input.value = ''; send.disabled = true;
-    chips.innerHTML = '';
+    chips.innerHTML = ''; root.classList.add('thinking');
     const prior = history.slice(-8);
     push({ who: 'user', text });
 
@@ -160,12 +216,18 @@
       // Alerts keep the engine's reply: it carries the incident reference.
       const reply = res.flaggedAlert ? null : await llm(text, prior);
       typing.remove();
-      push({ who: 'bot', alert: !!res.flaggedAlert, text: reply || res.botMsg.text, time: res.botMsg.time });
+      root.classList.remove('thinking');
+      await push({ who: 'bot', alert: !!res.flaggedAlert, text: reply || res.botMsg.text, time: res.botMsg.time }, true);
+      const hit = window.rioKB && window.rioKB.findBestMatch(text);
+      const asked = history.filter((h) => h.who === 'user').map((h) => h.text);
+      const next = window.rhUX && hit ? window.rhUX.followUps(window.rioKB.getAll(), hit.entry, asked, 3) : [];
+      if (next.length) renderChips(next);
     } catch (err) {
       typing.remove();
       console.error('[Rio]', err);
       push({ who: 'bot', alert: true, text: `Sorry, I couldn't reach the assistant engine (${err.message}). Please try again, or email **recycle.hub.pvt.ltd@gmail.com**.` });
     } finally {
+      root.classList.remove('thinking');
       busy = false;
       send.disabled = !input.value.trim();
     }
@@ -179,7 +241,7 @@
     hint.classList.remove('on');
     if (open) {
       if (!body.childElementCount) {
-        if (history.length) history.forEach(render); else greet();
+        if (history.length) history.forEach((m) => render(m)); else greet();
         if (history.length <= 1) renderChips();
       }
       setTimeout(() => input.focus(), 250);
@@ -197,7 +259,14 @@
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && root.classList.contains('open')) { setOpen(false); launch.focus(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === '/') { e.preventDefault(); setOpen(!root.classList.contains('open')); }
   });
+
+  // Used by the command palette: open Rio, optionally asking q straight away.
+  window.rioOpen = (q) => {
+    setOpen(true);
+    if (q && q.trim()) ask(q);
+  };
 
   function mount() {
     document.body.appendChild(root);

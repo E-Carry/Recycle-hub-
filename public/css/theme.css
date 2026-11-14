@@ -1,0 +1,328 @@
+/* ══════════════════════════════════════════════════════════════
+   RECYCLE HUB — theme layer ("refined dark eco")
+   Linked last on every page. Remaps each page's own variables onto one
+   palette, quiets the decorative glow, and styles the shared UX layer
+   (toasts, command palette, skeletons, nav indicator).
+   :root:root beats the pages' inline :root blocks regardless of order.
+   ══════════════════════════════════════════════════════════════ */
+
+:root:root {
+  /* One palette */
+  --t-bg: #07090b;
+  --t-bg-2: #0b0f12;
+  --t-panel: #0e1316;
+  --t-panel-2: #131a1e;
+  --t-line: rgba(255,255,255,.075);
+  --t-line-2: rgba(255,255,255,.13);
+  --t-text: #e8edf0;
+  --t-text-2: #9aa5ae;
+  --t-text-3: #66727b;
+  --t-em: #10b981;
+  --t-em-hi: #34d399;
+  --t-em-soft: rgba(16,185,129,.12);
+  --t-teal: #2dd4bf;
+  --t-sky: #0ea5e9;
+  --t-sky-hi: #38bdf8;
+  --t-amber: #f5b544;
+  --t-red: #f26d6d;
+  --t-ease: cubic-bezier(.22,1,.36,1);
+  --t-spring: cubic-bezier(.34,1.4,.64,1);
+  --t-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 12px 32px -16px rgba(0,0,0,.7);
+
+  /* design-system.css */
+  --rh-green: var(--t-em-hi);
+  --rh-green-deep: #059669;
+  --rh-green-dim: var(--t-em-soft);
+  --rh-cyan: var(--t-teal);
+  --rh-amber: var(--t-amber);
+  --rh-red: var(--t-red);
+  --rh-bg: var(--t-bg);
+  --rh-bg-elevated: var(--t-bg-2);
+  --rh-surface: rgba(255,255,255,.025);
+  --rh-surface-2: rgba(255,255,255,.045);
+  --rh-surface-3: rgba(255,255,255,.07);
+  --rh-border: var(--t-line);
+  --rh-border-hover: var(--t-line-2);
+  --rh-text: var(--t-text);
+  --rh-text-2: var(--t-text-2);
+  --rh-text-3: var(--t-text-3);
+  --rh-text-muted: var(--t-text-3);
+  --shadow-glow-green: 0 0 0 1px rgba(16,185,129,.18), 0 8px 24px -12px rgba(16,185,129,.35);
+  --shadow-glow-cyan: 0 0 0 1px rgba(45,212,191,.18), 0 8px 24px -12px rgba(45,212,191,.3);
+
+  /* admin / register-* pages */
+  --green: var(--t-em-hi);
+  --cyan: var(--t-teal);
+  --amber: var(--t-amber);
+  --red: var(--t-red);
+  --bg: var(--t-bg);
+  --surface: rgba(255,255,255,.025);
+  --surface-2: rgba(255,255,255,.05);
+  --border: var(--t-line);
+  --border-hover: var(--t-line-2);
+  --text: var(--t-text);
+  --text-2: var(--t-text-2);
+  --text-3: var(--t-text-3);
+  --ease: var(--t-ease);
+
+  /* terms-sourcing */
+  --emerald: var(--t-em);
+  --emerald-glow: rgba(16,185,129,.22);
+  --surface-sheet: var(--t-bg-2);
+  --surface-card: var(--t-panel);
+  --surface-hover: var(--t-panel-2);
+  --border-strong: rgba(52,211,153,.28);
+  --text-primary: var(--t-text);
+  --text-secondary: var(--t-text-2);
+
+  /* sourcing dashboard */
+  --bg-sourcing: var(--t-bg);
+  --surface-src: rgba(14,19,22,.82);
+  --surface-src-hover: rgba(20,27,31,.9);
+  --border-src: var(--t-line);
+  --border-src-strong: rgba(52,211,153,.32);
+  --text-muted: var(--t-text-2);
+  --text-sub: var(--t-text-3);
+  --glow-emerald: 0 0 0 1px rgba(16,185,129,.16), 0 10px 30px -14px rgba(16,185,129,.35);
+  --spring-ease: var(--t-ease);
+
+  /* industrial dashboard: same neutrals, calm sky accent */
+  --cobalt-600: #0284c7;
+  --cobalt-500: var(--t-sky);
+  --cobalt-400: #7dd3fc;
+  --cyan-bright: var(--t-teal);
+  --slate-900: var(--t-bg);
+  --slate-800: var(--t-bg-2);
+  --slate-700: #1b2329;
+  --surface-ind: rgba(255,255,255,.025);
+  --surface-ind-hover: rgba(56,189,248,.06);
+  --border-ind: var(--t-line);
+  --border-ind-strong: rgba(56,189,248,.32);
+  --glow-cobalt: 0 0 0 1px rgba(14,165,233,.18), 0 10px 30px -14px rgba(14,165,233,.4);
+
+  color-scheme: dark;
+  accent-color: var(--t-em);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+/* Phones pan the visual viewport sideways when the fixed Rio launcher widens layout overflow; clip (not hidden) keeps sticky working. */
+html { overflow-x: clip; }
+
+html body {
+  background-color: var(--t-bg);
+  color: var(--t-text);
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  letter-spacing: -.005em;
+}
+html h1, html h2, html h3 { letter-spacing: -.02em; text-wrap: balance; }
+html p { text-wrap: pretty; }
+
+/* Numbers that update should not jitter in width. */
+.metric-val, .stat-val, .stat-value, .calc-quote-box, td, .price, .amount, .rh-num {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection { background: rgba(16,185,129,.3); color: #fff; }
+
+/* ── Ambient decoration: present, not loud ────────────────── */
+html #particleCanvas { opacity: .38; }
+html .rh-orb, html .orb { opacity: .32; filter: blur(110px) saturate(.8); }
+html .rh-aurora, html .aurora { opacity: .35; }
+html .bg-grid, html .rh-grid, html .bg-grid-ind {
+  opacity: .5;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+          mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+html .particle { opacity: .35; }
+
+/* ── Surfaces ─────────────────────────────────────────────── */
+html .card, html .stat-card, html .metric-card, html .section-card,
+html .glass-panel, html .rh-glass, html .step-card, html .store-card, html .product-card {
+  border-color: var(--t-line);
+  box-shadow: var(--t-shadow);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  html .card, html .stat-card, html .metric-card, html .store-card, html .product-card {
+    transition: translate .5s var(--t-spring), border-color .25s ease, box-shadow .35s ease, background-color .25s ease;
+  }
+  html .card:hover, html .stat-card:hover, html .metric-card:hover, html .store-card:hover, html .product-card:hover {
+    translate: 0 -3px;
+    border-color: var(--t-line-2);
+    box-shadow: 0 1px 0 rgba(255,255,255,.05) inset, 0 22px 44px -20px rgba(0,0,0,.85);
+  }
+}
+
+/* ── Controls ─────────────────────────────────────────────── */
+html .form-control, html .field-input, html .modal-input, html .calc-input,
+html input[type="text"], html input[type="email"], html input[type="password"],
+html input[type="tel"], html input[type="number"], html input[type="search"], html select, html textarea {
+  transition: border-color .2s ease, box-shadow .25s ease, background-color .2s ease;
+}
+html .form-control:focus, html .field-input:focus, html .modal-input:focus, html .calc-input:focus,
+html input:focus-visible, html select:focus-visible, html textarea:focus-visible {
+  border-color: rgba(52,211,153,.55);
+  box-shadow: 0 0 0 4px rgba(16,185,129,.14);
+  outline: none;
+}
+html button:focus-visible, html a:focus-visible, html [role="button"]:focus-visible {
+  outline: 2px solid var(--t-em-hi);
+  outline-offset: 2px;
+}
+
+/* Tables: quieter header, crisp rows */
+html thead th {
+  color: var(--t-text-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+html tbody tr { transition: background-color .15s ease; }
+html tbody tr:hover { background-color: rgba(255,255,255,.028); }
+
+/* Modals: real backdrop, elevated sheet */
+html .modal-overlay { background: rgba(3,5,6,.62); -webkit-backdrop-filter: blur(10px) saturate(1.1); backdrop-filter: blur(10px) saturate(1.1); }
+html .modal-box, html .modal-card {
+  border: 1px solid var(--t-line-2);
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.06) inset;
+}
+
+/* ── Sliding nav indicator (driven by motion.js) ──────────── */
+.rh-ind-host > .rh-ind-item { position: relative; z-index: 1; }
+.rh-ind-host > .rh-ind-item.active { background: transparent !important; box-shadow: none !important; border-color: transparent !important; }
+.rh-ind-host > .rh-ind-item.active::before, .rh-ind-host > .rh-ind-item.active::after { opacity: 0; }
+.rh-ind {
+  position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(16,185,129,.16), rgba(16,185,129,.08));
+  box-shadow: inset 0 0 0 1px rgba(52,211,153,.22), 0 6px 18px -10px rgba(16,185,129,.6);
+}
+.rh-ind::before {
+  content: ''; position: absolute; left: -1px; top: 22%; bottom: 22%; width: 3px;
+  border-radius: 0 3px 3px 0; background: var(--t-em-hi);
+}
+.rh-ind.h::before { left: 22%; right: 22%; top: auto; bottom: -1px; width: auto; height: 2px; border-radius: 2px 2px 0 0; }
+.rh-sky .rh-ind { background: linear-gradient(180deg, rgba(14,165,233,.16), rgba(14,165,233,.07)); box-shadow: inset 0 0 0 1px rgba(56,189,248,.24), 0 6px 18px -10px rgba(14,165,233,.6); }
+.rh-sky .rh-ind::before { background: var(--t-sky-hi); }
+
+/* ── Toasts ───────────────────────────────────────────────── */
+.rh-toasts {
+  position: fixed; z-index: 2147483000; top: 18px; left: 50%; translate: -50% 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: min(420px, calc(100vw - 24px)); pointer-events: none;
+}
+.rh-toast {
+  pointer-events: auto; position: relative; overflow: hidden;
+  display: grid; grid-template-columns: 20px 1fr auto; align-items: start; gap: 10px;
+  width: 100%; padding: 12px 12px 13px 14px; border-radius: 14px;
+  background: rgba(17,23,26,.92); color: var(--t-text);
+  border: 1px solid var(--t-line-2);
+  box-shadow: 0 18px 50px -18px rgba(0,0,0,.85), 0 1px 0 rgba(255,255,255,.06) inset;
+  -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+  font: 500 13.5px/1.45 var(--font-sans, Inter, system-ui, sans-serif);
+  animation: rh-toast-in .55s var(--t-spring) both;
+}
+.rh-toast.out { animation: rh-toast-out .25s ease-in both; }
+.rh-toast > svg { width: 20px; height: 20px; margin-top: 0; }
+.rh-toast.success > svg { color: var(--t-em-hi); }
+.rh-toast.error > svg { color: var(--t-red); }
+.rh-toast.info > svg { color: var(--t-sky-hi); }
+.rh-toast-msg { min-width: 0; overflow-wrap: anywhere; padding-top: 1px; }
+.rh-toast-x {
+  all: unset; cursor: pointer; width: 22px; height: 22px; display: grid; place-items: center;
+  border-radius: 6px; color: var(--t-text-3); font-size: 18px; line-height: 1;
+}
+.rh-toast-x:hover { color: var(--t-text); background: rgba(255,255,255,.07); }
+.rh-toast-bar {
+  position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; transform-origin: left;
+  animation: rh-toast-bar linear both; opacity: .7;
+}
+.rh-toast.success .rh-toast-bar { background: var(--t-em-hi); }
+.rh-toast.error .rh-toast-bar { background: var(--t-red); }
+.rh-toast.info .rh-toast-bar { background: var(--t-sky-hi); }
+.rh-toast.paused .rh-toast-bar { animation-play-state: paused; }
+@keyframes rh-toast-in { from { opacity: 0; transform: translateY(-14px) scale(.96); } }
+@keyframes rh-toast-out { to { opacity: 0; transform: translateY(-8px) scale(.97); } }
+@keyframes rh-toast-bar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* ── Command palette ──────────────────────────────────────── */
+.rh-cmdk {
+  position: fixed; inset: 0; z-index: 2147482000;
+  display: flex; justify-content: center; align-items: flex-start; padding: 12vh 14px 14px;
+  background: rgba(3,5,6,.55);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; visibility: hidden; transition: opacity .18s ease, visibility 0s linear .18s;
+}
+.rh-cmdk.on { opacity: 1; visibility: visible; transition: opacity .18s ease; }
+.rh-cmdk-box {
+  width: min(600px, 100%); max-height: min(520px, 76vh); display: flex; flex-direction: column;
+  border-radius: 18px; overflow: hidden;
+  background: rgba(14,19,22,.96); border: 1px solid var(--t-line-2);
+  box-shadow: 0 50px 120px -30px rgba(0,0,0,.95), 0 1px 0 rgba(255,255,255,.07) inset;
+  font-family: var(--font-sans, Inter, system-ui, sans-serif); color: var(--t-text);
+  transform: translateY(-10px) scale(.97); transition: transform .45s var(--t-spring);
+}
+.rh-cmdk.on .rh-cmdk-box { transform: none; }
+.rh-cmdk-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--t-line); }
+.rh-cmdk-head > svg { width: 18px; height: 18px; color: var(--t-text-3); flex: none; }
+html .rh-cmdk-input {
+  all: unset; flex: 1; min-width: 0; font-size: 15.5px; color: var(--t-text); caret-color: var(--t-em-hi);
+}
+html .rh-cmdk-input:focus, html .rh-cmdk-input:focus-visible { box-shadow: none; outline: none; }
+.rh-cmdk-input::placeholder { color: var(--t-text-3); }
+.rh-cmdk kbd {
+  font: 600 10.5px/1 var(--font-mono, ui-monospace, monospace); color: var(--t-text-2);
+  padding: 4px 6px; border-radius: 6px; background: rgba(255,255,255,.06); border: 1px solid var(--t-line);
+}
+.rh-cmdk-list { list-style: none; margin: 0; padding: 6px; overflow-y: auto; overscroll-behavior: contain; }
+.rh-cmdk-group { padding: 10px 10px 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--t-text-3); }
+.rh-cmdk-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 10px; border-radius: 10px; cursor: pointer;
+  font-size: 14px; color: var(--t-text-2); transition: background-color .12s ease, color .12s ease;
+}
+.rh-cmdk-item > svg { width: 17px; height: 17px; flex: none; color: var(--t-text-3); transition: color .12s ease; }
+.rh-cmdk-item > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rh-cmdk-item > em { font-style: normal; font-size: 11.5px; color: var(--t-text-3); }
+.rh-cmdk-item.sel { background: rgba(16,185,129,.11); color: var(--t-text); box-shadow: inset 0 0 0 1px rgba(52,211,153,.18); }
+.rh-cmdk-item.sel > svg { color: var(--t-em-hi); }
+.rh-cmdk-foot { display: flex; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--t-line); font-size: 11.5px; color: var(--t-text-3); }
+.rh-cmdk-foot span { display: inline-flex; align-items: center; gap: 4px; }
+@media (max-width: 520px) { .rh-cmdk-foot { display: none; } .rh-cmdk { padding-top: 8vh; } }
+
+.rh-kbtn {
+  display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 8px 0 11px;
+  border-radius: 10px; border: 1px solid var(--t-line); background: rgba(255,255,255,.03);
+  color: var(--t-text-2); font: 500 13px var(--font-sans, Inter, system-ui, sans-serif); cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background-color .2s ease;
+}
+.rh-kbtn:hover { border-color: var(--t-line-2); color: var(--t-text); background: rgba(255,255,255,.05); }
+.rh-kbtn svg { width: 15px; height: 15px; }
+.rh-kbtn kbd { font: 600 10.5px/1 var(--font-mono, ui-monospace, monospace); padding: 4px 6px; border-radius: 6px; background: rgba(255,255,255,.06); color: var(--t-text-3); }
+@media (max-width: 760px) { .rh-kbtn { display: none; } }
+
+/* ── Skeletons ────────────────────────────────────────────── */
+.rh-shimmer {
+  display: block; height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.09) 40%, rgba(255,255,255,.04) 80%) 0 0 / 300% 100%;
+  animation: rh-shimmer 1.4s ease-in-out infinite;
+}
+tr.rh-skel td { padding-top: 16px; padding-bottom: 16px; }
+tr.rh-skel td:first-child .rh-shimmer { width: 70%; }
+tr.rh-skel:nth-child(2n) td .rh-shimmer { width: 82%; }
+.rh-skel-line { padding: 10px 0; }
+.rh-skel-line:nth-child(2) .rh-shimmer { width: 86%; }
+.rh-skel-line:nth-child(3) .rh-shimmer { width: 64%; }
+.rh-skel-card { min-height: 112px; padding: 20px; border-radius: 16px; border: 1px solid var(--t-line); background: rgba(255,255,255,.02); }
+.rh-skel-card .rh-shimmer { height: 100%; min-height: 72px; border-radius: 10px; }
+@keyframes rh-shimmer { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rh-shimmer, .rh-toast, .rh-toast.out { animation: none; }
+  .rh-toast-bar { display: none; }
+  .rh-cmdk-box { transition: none; }
+}
+
+/* Dashboards: 36px gutters eat a fifth of a phone screen. */
+@media (max-width: 600px) {
+  html .view-content { padding: 20px 14px 48px; }
+}

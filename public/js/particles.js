@@ -30,11 +30,11 @@
   const theme = (canvas.dataset.theme || 'default').toLowerCase();
 
   let COLORS = [
-    'rgba(74,222,128,',   // green
-    'rgba(34,211,238,',   // cyan
+    'rgba(52,211,153,',   // green
+    'rgba(45,212,191,',   // cyan
     'rgba(129,140,248,',  // indigo
   ];
-  let connectionBase = 'rgba(74,222,128,';
+  let connectionBase = 'rgba(52,211,153,';
 
   if (theme.includes('source') || theme.includes('emerald')) {
     COLORS = [
@@ -54,12 +54,12 @@
     connectionBase = 'rgba(56,189,248,';
   } else if (theme.includes('admin')) {
     COLORS = [
-      'rgba(74,222,128,',  // green
-      'rgba(34,211,238,',  // cyan
+      'rgba(52,211,153,',  // green
+      'rgba(45,212,191,',  // cyan
       'rgba(251,191,36,',  // amber
       'rgba(129,140,248,', // violet
     ];
-    connectionBase = 'rgba(34,211,238,';
+    connectionBase = 'rgba(45,212,191,';
   }
 
   function resize() {
