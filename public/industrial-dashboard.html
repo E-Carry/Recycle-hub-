@@ -180,6 +180,8 @@
     }
     .row-btn:hover { background: #fff; }
     .row-btn svg { width: 14px; height: 14px; }
+    .row-acts { display: flex; flex-direction: column; align-items: stretch; gap: 6px; min-width: 132px; }
+    .row-acts .row-btn { justify-content: center; }
 
     /* Empty states */
     .empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 16px; text-align: center; color: var(--ink-2); }
@@ -632,7 +634,7 @@
                   <th class="num">GST (18%)</th>
                   <th class="num">Total</th>
                   <th>Dispatch status</th>
-                  <th>Invoice</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="industrialOrdersTable">
@@ -1198,6 +1200,36 @@ function renderCatalog() {
   }).join('');
 }
 
+/* reorder:start */
+// Order-form values for repeating a past order against today's catalog.
+function reorderPrefill(order, inventory) {
+  const item = (inventory || []).find(x => x.id === order.materialId);
+  if (!item) return { error: `${order.materialName || 'This lot'} is no longer listed in the catalog.` };
+  if (!(item.stockTons > 0)) return { error: `${item.name} is out of stock right now.` };
+  const want = +order.quantityTons || 0;
+  return {
+    itemId: item.id,
+    qty: Math.min(want, item.stockTons),
+    ship: order.shippingMode === 'self' ? 'self' : 'freight',
+    dest: order.deliveryDestination || '',
+    capped: want > item.stockTons,
+  };
+}
+/* reorder:end */
+
+function reorderById(id) {
+  const order = globalOrders.find(x => x.id === id);
+  if (!order) return;
+  const r = reorderPrefill(order, globalInventory);
+  if (r.error) return showToast(r.error);
+  openOrderModal(globalInventory.find(x => x.id === r.itemId));
+  $id('orderQty').value = r.qty;
+  $id('orderShipping').value = r.ship;
+  if (r.dest) $id('orderDestination').value = r.dest;
+  calculateOrderBreakdown();
+  showToast(r.capped ? `Only ${tons(r.qty)} t in stock, so the quantity was lowered. Prices are today's.` : `Copied from ${order.id}. Prices are today's; check before confirming.`);
+}
+
 function openOrderModalById(id) {
   const item = globalInventory.find(x => x.id === id);
   if (item) openOrderModal(item);
@@ -1327,7 +1359,7 @@ function renderOrdersTable() {
       <td class="num">+${usd((o.cgst || 0) + (o.sgst || 0) + (o.igst || 0))}</td>
       <td class="num strong">${usd(o.totalAmount)}</td>
       <td><span class="pill ${statusTone(o.deliveryStatus)}">${esc(o.deliveryStatus)}</span></td>
-      <td><button class="row-btn" onclick="openInvoiceModalById('${esc(o.id)}')">${ICON.doc} GST invoice</button></td>
+      <td class="row-acts"><button class="row-btn" onclick="openInvoiceModalById('${esc(o.id)}')">${ICON.doc} GST invoice</button><button class="row-btn" onclick="reorderById('${esc(o.id)}')">${ICON.bag} Reorder</button></td>
     </tr>
   `).join('');
 }
