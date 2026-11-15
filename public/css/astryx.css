@@ -160,7 +160,7 @@ html body .card-head { box-shadow: none; border-bottom-color: var(--ax-line); }
 
 /* Public-page details */
 html body .pv { background: var(--ax-surface); box-shadow: var(--ax-high); }
-html body .tick { background: var(--ax-surface); border-color: var(--ax-line); box-shadow: none; }
+html body #tick.tick { background: var(--ax-surface); border-color: var(--ax-line); box-shadow: none; }
 html body .upload-card:not(.uploaded) { background: var(--ax-muted); border: 1px dashed var(--ax-line-2); box-shadow: none; }
 html body .accept-dock { background: rgba(255,255,255,.95); backdrop-filter: blur(10px); border-top: 1px solid var(--ax-line); box-shadow: 0 -4px 16px -8px rgba(0,0,0,.10); }
 html body .toc-link:hover { background: var(--ax-hover); }

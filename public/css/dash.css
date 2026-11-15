@@ -1,0 +1,158 @@
+/* RECYCLE HUB -- dashboard skeuomorphism (admin, sourcing, industrial only).
+   Linked after astryx.css; same `html body` specificity, so order wins.
+   Language: raised paper cards, recessed wells and tracks, tactile keys that press in.
+   Gradients run top to bottom with no hard stop (no glossy midline). Light values here;
+   dark values live under html[data-theme=dark] at the bottom.
+   Undo: delete the <link> to this file in the three dashboards. */
+
+:root:root {
+  --dk-desk: #e9ebea;                                   /* page "desk" */
+  --dk-paper: linear-gradient(180deg, #ffffff 0%, #fbfbfa 100%);
+  --dk-edge: rgba(15, 23, 20, .10);                     /* card border */
+  --dk-edge-hi: rgba(255, 255, 255, .95);               /* top inner highlight */
+  --dk-raise: inset 0 1px 0 var(--dk-edge-hi), 0 1px 1px rgba(15,23,20,.04), 0 2px 4px rgba(15,23,20,.04), 0 10px 20px -12px rgba(15,23,20,.16);
+  --dk-raise-lg: inset 0 1px 0 var(--dk-edge-hi), 0 2px 4px rgba(15,23,20,.06), 0 24px 48px -16px rgba(15,23,20,.28);
+  --dk-well: #f6f7f6;
+  --dk-well-sh: inset 0 1px 2px rgba(15,23,20,.08), inset 0 0 0 1px rgba(15,23,20,.02);
+  --dk-key: linear-gradient(180deg, #ffffff 0%, #f3f4f3 100%);
+  --dk-key-edge: rgba(15,23,20,.14);
+  --dk-key-sh: inset 0 1px 0 #fff, 0 1px 1px rgba(15,23,20,.06), 0 1px 3px rgba(15,23,20,.05);
+  --dk-press: inset 0 1px 3px rgba(15,23,20,.16);
+  --dk-track: #e8eae9;
+  --dk-head: linear-gradient(180deg, #fafbfa 0%, #f2f4f3 100%);
+  --dk-chrome: linear-gradient(180deg, #f7f8f7 0%, #f0f2f1 100%);
+}
+
+html body { background: var(--dk-desk); }
+
+/* Chrome: sidebar sits in the desk, topbar is a shallow raised rail */
+html body .sidebar {
+  background: var(--dk-chrome);
+  border-right: 1px solid var(--dk-edge);
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.7);
+}
+html body .topbar {
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(250,251,250,.94));
+  border-bottom: 1px solid var(--dk-edge);
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,.8), 0 1px 3px rgba(15,23,20,.04);
+}
+/* The active item is drawn by a sliding indicator (theme.css .rh-ind); make it a raised chip */
+html body .sidebar .rh-ind:not(.h) {
+  background: var(--dk-key);
+  box-shadow: inset 0 1px 0 #fff, 0 0 0 1px var(--dk-edge), 0 1px 2px rgba(15,23,20,.08), 0 2px 6px -2px rgba(15,23,20,.10);
+}
+
+/* Raised paper surfaces */
+html body .card, html body .glass-panel, html body .metric-card, html body .rh-kpi, html body .rh-chart,
+html body .store-card, html body .trk-card, html body .stat-card, html body .product-card, html body .transport-card,
+html body .price-card, html body .partner-profile, html body .portal-bridge, html body .rh-ana {
+  background: var(--dk-paper);
+  border: 1px solid var(--dk-edge);
+  box-shadow: var(--dk-raise);
+}
+/* Nested surfaces sit flush on the paper */
+html body .glass-panel .metric-card, html body .card .card, html body .glass-panel .rh-kpi, html body .glass-panel .rh-chart,
+html body .card .rh-kpi, html body .card .rh-chart, html body .glass-panel .price-card, html body .rh-ana .rh-kpi, html body .rh-ana .rh-chart {
+  background: var(--dk-well); box-shadow: none; border-color: rgba(15,23,20,.06);
+}
+html body .modal-box, html body .modal-card, html body .rh-drawer, html body .rh-pop, html body .rio-panel {
+  border: 1px solid var(--dk-edge); box-shadow: var(--dk-raise-lg);
+}
+
+/* Embossed icon tiles: keep each tile's own colour, add a lit top and a shaded foot */
+html body .metric-icon, html body .stat-icon, html body .sec-ic, html body .transport-icon, html body .feed-icon,
+html body .empty-ic, html body .who-av, html body .partner-avatar, html body .admin-avatar, html body .wp-icon {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(15,23,20,.08), 0 1px 2px rgba(15,23,20,.10);
+}
+
+/* Recessed wells: inputs and value read-outs */
+html body .form-control, html body .modal-input, html body .calc-input, html body .search-box, html body .topbar-center input,
+html body .rh-f input, html body .rh-f select, html body .rh-f textarea, html body .rio-input {
+  background-color: var(--dk-well);
+  border: 1px solid var(--dk-key-edge);
+  box-shadow: var(--dk-well-sh);
+}
+html body .form-control:focus, html body .modal-input:focus, html body .calc-input:focus, html body .search-box:focus,
+html body .topbar-center input:focus, html body .rh-f input:focus, html body .rh-f select:focus, html body .rh-f textarea:focus, html body .rio-input:focus {
+  background-color: #fff;
+  border-color: var(--acc, #047857);
+  box-shadow: var(--dk-well-sh), 0 0 0 3px color-mix(in srgb, var(--acc, #047857) 18%, transparent);
+}
+html body .calc-quote-box { border-color: var(--dk-edge); background: var(--dk-edge); box-shadow: var(--dk-well-sh); }
+html body .quote-item { background: var(--dk-well); }
+html body .quote-item:last-child { background: color-mix(in srgb, var(--acc, #047857) 8%, #fff); }
+html body .code-block { box-shadow: var(--dk-well-sh); }
+
+/* Primary keys: brand colour, soft top-lit gradient, darker rim, press in on :active */
+html body .btn-primary, html body .btn-primary-solid, html body .btn-green, html body .rh-btn.pri, html body .btn-buy,
+html body .btn-procure, html body .btn-cyan, html body .rio-send {
+  background-color: var(--acc, #047857);
+  background-image: linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 100%);
+  border: 1px solid color-mix(in srgb, var(--acc, #047857) 72%, #000);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 1px 2px rgba(15,23,20,.18), 0 3px 8px -3px color-mix(in srgb, var(--acc, #047857) 55%, transparent);
+  text-shadow: 0 -1px 0 rgba(0,0,0,.14);
+  transition: background-image .15s ease, box-shadow .12s ease, transform .08s ease;
+}
+html body .btn-primary:hover, html body .btn-primary-solid:hover, html body .btn-green:hover, html body .rh-btn.pri:hover, html body .btn-buy:hover,
+html body .btn-procure:hover, html body .btn-cyan:hover, html body .rio-send:hover {
+  background-image: linear-gradient(180deg, rgba(255,255,255,.08) 0%, rgba(0,0,0,.06) 100%);
+}
+html body .btn-primary:active, html body .btn-primary-solid:active, html body .btn-green:active, html body .rh-btn.pri:active, html body .btn-buy:active,
+html body .btn-procure:active, html body .btn-cyan:active, html body .rio-send:active {
+  background-image: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.02) 100%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.24);
+  transform: translateY(1px);
+}
+html body .btn-red { border: 1px solid rgba(0,0,0,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 1px 1px rgba(15,23,20,.06); }
+
+/* Secondary keys: white keycaps */
+html body .btn-sm:not(.btn-green):not(.btn-cyan):not(.btn-primary):not(.btn-red), html body .btn-ghost, html body .row-btn, html body .shp,
+html body .rh-btn:not(.pri), html body .rh-bell, html body .rh-kbtn, html body .bridge-btn.out, html body .tb-menu, html body .nav-toggle, html body .modal-close, html body .rio-mic {
+  background-color: #fff;
+  background-image: var(--dk-key);
+  border: 1px solid var(--dk-key-edge);
+  border-bottom-color: rgba(15,23,20,.20);
+  box-shadow: var(--dk-key-sh);
+}
+html body .btn-sm:not(.btn-green):not(.btn-cyan):not(.btn-primary):not(.btn-red):hover, html body .btn-ghost:hover, html body .row-btn:hover, html body .shp:hover,
+html body .rh-btn:not(.pri):hover, html body .rh-bell:hover, html body .rh-kbtn:hover, html body .bridge-btn.out:hover, html body .modal-close:hover, html body .rio-mic:hover {
+  background-image: linear-gradient(180deg, #ffffff 0%, #eef0ef 100%);
+}
+html body .btn-sm:not(.btn-green):not(.btn-cyan):not(.btn-primary):not(.btn-red):active, html body .btn-ghost:active, html body .row-btn:active, html body .shp:active,
+html body .rh-btn:not(.pri):active, html body .rh-bell:active, html body .rh-kbtn:active, html body .bridge-btn.out:active, html body .modal-close:active, html body .rio-mic:active {
+  background-image: none; background-color: #eceeed; box-shadow: var(--dk-press); transform: translateY(1px);
+}
+
+/* Admin mode switch: recessed track, sliding raised thumb (.mode-pill) */
+html body .mode-switch { background: var(--dk-track); border: 1px solid rgba(15,23,20,.06); box-shadow: var(--dk-well-sh); }
+html body .mode-btn, html body .mode-btn.active { background: transparent; border-color: transparent; box-shadow: none; }
+html body .mode-btn.active { color: var(--ax-text); }
+html body .mode-pill { background: var(--dk-key); box-shadow: inset 0 1px 0 #fff, 0 0 0 1px rgba(15,23,20,.08), 0 1px 3px rgba(15,23,20,.14); }
+
+/* Filter pills: keycaps; the chosen one is pressed in and tinted */
+html body .filter-pill { background-image: var(--dk-key); border: 1px solid var(--dk-key-edge); box-shadow: var(--dk-key-sh); }
+html body .filter-pill.active {
+  background-image: none; background-color: color-mix(in srgb, var(--acc, #047857) 10%, #fff);
+  border-color: color-mix(in srgb, var(--acc, #047857) 45%, transparent);
+  color: var(--acc-hi, #035c42);
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--acc, #047857) 22%, transparent);
+}
+
+/* Tables: header strip like a ruled ledger */
+html body .data-table th, html body .table-wrap thead th, html body table th {
+  background: var(--dk-head);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 var(--dk-edge);
+}
+html body .table-wrap { box-shadow: var(--dk-raise); border-color: var(--dk-edge); }
+
+/* Badges and pills: a faint lit edge so they read as stamped, not painted */
+html body .badge, html body .pill, html body .tag, html body .cond-badge, html body .co2-chip, html body .status-chip, html body .trend-pill, html body .nav-badge, html body .nav-n {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 0 0 1px rgba(15,23,20,.04);
+}
+
+/* Rio launcher: one raised disc */
+html body .rio-launch { box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 2px 4px rgba(15,23,20,.18), 0 10px 24px -8px rgba(15,23,20,.35); }
+
+@media (prefers-reduced-motion: reduce) {
+  html body .btn-primary:active, html body .btn-green:active, html body .btn-buy:active, html body .row-btn:active, html body .btn-ghost:active { transform: none; }
+}
