@@ -74,3 +74,12 @@ test('history never opens with an assistant turn (strict chat templates)', async
   await chat({ ...req, history: [{ role: 'assistant', content: 'Hi! I am Rio' }, { role: 'user', content: 'q' }, { role: 'assistant', content: 'a' }] }, { env, fetch });
   assert.deepEqual(body.messages.map((m) => m.role), ['system', 'user', 'assistant', 'user']);
 });
+
+test('regen: true samples hotter so a retry can differ; default stays 0.3', async () => {
+  const temps = [];
+  const fetch = async (_, init) => { temps.push(JSON.parse(init.body).temperature); return ok('a')(); };
+  await chat(req, { env, fetch });
+  await chat({ ...req, regen: true }, { env, fetch });
+  await chat({ ...req, regen: 'yes' }, { env, fetch }); // only literal true counts
+  assert.deepEqual(temps, [0.3, 0.8, 0.3]);
+});

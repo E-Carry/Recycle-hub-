@@ -83,6 +83,7 @@
     .replace(/\n/g, '<br>');
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const regenIc = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>';
   const copyIc = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>';
 
   function copy(text) {
@@ -120,6 +121,7 @@
     const el = document.createElement('div');
     el.className = 'rio-msg ' + m.who + (m.alert ? ' alert' : '');
     el.innerHTML = '<span class="rio-txt"></span>' + (m.time ? `<span class="rio-time">${fmt(m.time)}</span>` : '');
+    body.querySelectorAll('.rio-regen').forEach((b) => b.remove()); // only the latest reply can be regenerated
     if (m.who === 'bot') {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'rio-copy'; b.title = 'Copy'; b.setAttribute('aria-label', 'Copy reply');
@@ -129,12 +131,25 @@
       v.type = 'button'; v.className = 'rio-copy rio-say'; v.title = 'Read aloud'; v.setAttribute('aria-label', 'Read reply aloud');
       v.innerHTML = ic.vol; v.onclick = () => say(m.text);
       el.appendChild(v);
+      if (m.llm) {
+        const g = document.createElement('button');
+        g.type = 'button'; g.className = 'rio-copy rio-regen'; g.title = 'Regenerate'; g.setAttribute('aria-label', 'Regenerate reply');
+        g.innerHTML = regenIc; g.onclick = () => regenerate(m, el);
+        el.appendChild(g);
+      }
     }
     body.appendChild(el);
     body.scrollTop = body.scrollHeight;
     if (animate && !reduced && m.who === 'bot') return typewrite(el, m);
     el.firstChild.innerHTML = fmt(m.text);
     return Promise.resolve();
+  }
+  // Drop the latest reply and answer the same question again, worded differently.
+  function regenerate(m, el) {
+    const q = history[history.length - 2];
+    if (busy || history[history.length - 1] !== m || !q || q.who !== 'user') return;
+    history.pop(); save(); el.remove();
+    return answer(q.text, history.slice(0, -1).slice(-8), { regen: true });
   }
   function push(m, animate) { history.push(m); save(); return render(m, animate); }
 
@@ -172,7 +187,7 @@
 
   // LLM reply via the server (key never reaches the browser). null = use the engine's answer.
   let llmOff = false;
-  async function llm(text, prior) {
+  async function llm(text, prior, regen) {
     if (llmOff) return null;
     const m = window.rioKB && window.rioKB.findBestMatch(text);
     try {
@@ -183,6 +198,7 @@
           message: text,
           facts: m ? [{ q: m.entry.question, a: m.entry.answer }] : [],
           history: prior.filter((h) => !h.alert).map((h) => ({ role: h.who === 'user' ? 'user' : 'assistant', content: h.text })),
+          regen: !!regen,
         }),
       });
       if (r.status === 503) llmOff = true; // not configured on this server
@@ -241,10 +257,14 @@
   async function ask(text, viaVoice) {
     text = String(text).trim();
     if (!text || busy) return;
-    busy = true; input.value = ''; send.disabled = true;
-    chips.innerHTML = ''; root.classList.add('thinking');
+    input.value = '';
     const prior = history.slice(-8);
     push({ who: 'user', text });
+    return answer(text, prior, { viaVoice });
+  }
+  async function answer(text, prior, { viaVoice, regen } = {}) {
+    busy = true; send.disabled = true;
+    chips.innerHTML = ''; root.classList.add('thinking');
 
     const typing = document.createElement('div');
     typing.className = 'rio-msg bot rio-typing';
@@ -258,12 +278,12 @@
         new Promise((r) => setTimeout(r, 450)), // let the typing dots read as "thinking"
       ]);
       // Alerts keep the engine's reply: it carries the incident reference.
-      const reply = res.flaggedAlert ? null : await llm(text, prior);
+      const reply = res.flaggedAlert ? null : await llm(text, prior, regen);
       typing.remove();
       root.classList.remove('thinking');
-      const answer = reply || res.botMsg.text;
-      if (viaVoice || speakOn) say(answer); // speak while the text types out
-      await push({ who: 'bot', alert: !!res.flaggedAlert, text: answer, time: res.botMsg.time }, true);
+      const out = reply || res.botMsg.text;
+      if (viaVoice || speakOn) say(out); // speak while the text types out
+      await push({ who: 'bot', alert: !!res.flaggedAlert, llm: !!reply, text: out, time: res.botMsg.time }, true);
       const hit = window.rioKB && window.rioKB.findBestMatch(text);
       const asked = history.filter((h) => h.who === 'user').map((h) => h.text);
       const next = window.rhUX && hit ? window.rhUX.followUps(window.rioKB.getAll(), hit.entry, asked, 3) : [];

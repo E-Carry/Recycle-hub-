@@ -181,3 +181,5 @@
 .rio-speak-toggle[aria-pressed="true"] .rio-mute { display: none; }
 .rio-speak-toggle[aria-pressed="true"] .rio-wave { display: inline; }
 .rio-say .rio-mute { display: none; }
+.rio-regen { top: 66px; }
+.rio-msg.bot:has(.rio-regen) { min-height: 94px; }

@@ -44,7 +44,7 @@ async function chat(input, { env = process.env, fetch = globalThis.fetch } = {})
         model: env.OPENROUTER_MODEL || 'google/gemma-4-31b-it:free',
         messages: messages(input),
         max_tokens: 400,
-        temperature: 0.3,
+        temperature: input.regen === true ? 0.8 : 0.3, // "Regenerate" asks for a different wording
       }),
       signal: AbortSignal.timeout(25000),
     });
