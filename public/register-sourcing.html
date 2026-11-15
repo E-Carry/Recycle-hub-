@@ -464,6 +464,12 @@ document.addEventListener('DOMContentLoaded', () => {
     inp.addEventListener('blur', () => { if (inp.value.trim()) setBad(inp, checkField(inp)); });
   });
   renderHelp();
+  rhDraft.bind({
+    form: $('sourcingRegForm'), key: 'rh-draft-sourcing',
+    skip: ['password', 'confirmPassword'], // togglePw flips these to type=text
+    step: () => step,
+    onRestore: d => { renderSummary(); if (d.step > 1 && d.step <= LAST) showStep(d.step); }
+  });
 });
 
 function togglePw(id, btn) {
@@ -538,6 +544,7 @@ document.getElementById('sourcingRegForm').addEventListener('submit', async e =>
   setTimeout(() => { $('page').classList.add('leaving'); setTimeout(goNext, 340); }, 350);
 });
 </script>
+  <script src="js/draft.js" defer></script>
   <script src="js/ux.js" defer></script>
   <script src="js/fx.js" defer></script>
   <script src="js/motion.js" defer></script>

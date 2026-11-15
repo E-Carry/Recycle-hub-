@@ -976,6 +976,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       generateCaptcha();
       updateStepUi();
+      rhDraft.bind({
+        form: document.getElementById('industrialForm'), key: 'rh-draft-industrial',
+        skip: ['password', 'confirmPassword', 'emailOtpVal', 'captchaInput', 'termsCheck', 'bankAccNo'],
+        step: () => currentStep,
+        onRestore: d => { if (d.step > 1 && d.step <= totalSteps) goToStep(d.step); }
+      });
     });
 
     function goToStep(step) {
@@ -1459,6 +1465,7 @@
         const data = await res.json();
 
         if (data.success) {
+          rhDraft.clear('rh-draft-industrial');
           document.getElementById('resCompName').innerText = payload.companyName;
           document.getElementById('resEmail').innerText = payload.email;
           document.getElementById('resPartnerId').innerText = data.userId;
@@ -1497,6 +1504,7 @@
     }
 
   </script>
+  <script src="js/draft.js" defer></script>
   <script src="js/ux.js" defer></script>
   <script src="js/fx.js" defer></script>
   <script src="js/motion.js" defer></script>

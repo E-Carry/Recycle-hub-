@@ -1037,7 +1037,7 @@
                     btn.removeAttribute('aria-busy');
                     modal.querySelector('.modal-action-btn').focus();
 
-                    sessionStorage.removeItem('sourcingRegData');
+                    sessionStorage.removeItem('sourcingRegData'); localStorage.removeItem('rh-draft-sourcing');
                 } else {
                     alert(data.error || 'Registration failed.');
                     btn.disabled = false;
