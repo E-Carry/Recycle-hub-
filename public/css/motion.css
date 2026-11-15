@@ -76,3 +76,11 @@ html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   body { animation: none !important; }
   .modal-overlay.show > .modal-box, .modal-overlay.show > .modal-card { animation: none; }
 }
+
+/* Logo: loop draws in on load, spins once on hover (transform-origin = hub) */
+.rh-logo { display: block; flex-shrink: 0; border-radius: 13px; box-shadow: 0 6px 18px -6px rgba(4, 120, 87, .45); }
+.rh-logo-loop { transform-origin: 24px 24px; transform-box: view-box; animation: rh-loop-in .9s cubic-bezier(.22, 1.2, .36, 1) both; }
+a:hover .rh-logo-loop, .rh-logo:hover .rh-logo-loop, .brand-box:hover .rh-logo-loop, .sidebar-logo:hover .rh-logo-loop { animation: rh-loop-spin .8s cubic-bezier(.65, 0, .35, 1); }
+@keyframes rh-loop-in { from { transform: rotate(-120deg) scale(.6); opacity: 0; } }
+@keyframes rh-loop-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .rh-logo-loop { animation: none !important; } }
