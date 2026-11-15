@@ -339,6 +339,132 @@
       #industrialInvoiceModal .modal-box > div > div[style*="width:280px"] { width: 100% !important; }
     }
 
+    /* ── Freight tracking: shipment list + detail (timeline, route, live vehicle) ── */
+    .trk { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 18px; align-items: start; }
+    .trk.is-empty { display: block; border: 1px dashed var(--ln); border-radius: 12px; }
+    .trk.is-empty .trk-list { display: block; max-height: none; overflow: visible; }
+    .trk-list { display: flex; flex-direction: column; gap: 8px; max-height: 640px; overflow: auto; padding: 2px; overscroll-behavior: contain; }
+    .trk-skel { display: block; height: 92px; border-radius: 12px; }
+    .shp {
+      position: relative; display: flex; flex-direction: column; gap: 6px; width: 100%; min-width: 0; padding: 12px 14px; text-align: left;
+      border: 1px solid var(--ln); border-radius: 12px; background: #fff; cursor: pointer;
+      transition: border-color .15s ease, background-color .15s ease, box-shadow .2s ease;
+    }
+    .shp:hover { border-color: var(--ln-2); background: var(--paper); }
+    .shp:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+    .shp[aria-pressed="true"] { border-color: var(--acc-line); background: var(--acc-soft); box-shadow: inset 3px 0 0 var(--acc); }
+    .shp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .shp-top .mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .shp-date { flex: none; font-size: 11.5px; color: var(--ink-3); }
+    .shp-mat { font-size: 13.5px; font-weight: 700; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .shp-meta { font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .shp .pill, .trk-head .pill { display: block; align-self: flex-start; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+    .shp .pill::before, .trk-head .pill::before { display: inline-block; margin-right: 6px; vertical-align: 1px; }
+    .shp-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+    .shp-bar i { height: 4px; border-radius: 999px; background: var(--ln); }
+    .shp-bar i.on { background: var(--acc); }
+    .shp-bar.done i.on { background: #047857; }
+    .shp-bar.halt i.on { background: #dc2626; }
+
+    .trk-detail { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .trk-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 14px; }
+    .trk-head h3 { font-size: 17px; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+    .trk-head .sub { margin-top: 2px; }
+    .trk-head-act { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .trk-card { min-width: 0; padding: 16px; border: 1px solid var(--ln); border-radius: 14px; background: #fff; }
+    .trk-k { font-size: 11px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* Timeline: horizontal track; the fill scales to --p (0..1). */
+    .tl { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; padding-top: 4px; }
+    .tl::before, .tl::after { content: ''; position: absolute; top: 15px; left: 10%; right: 10%; height: 3px; border-radius: 999px; background: var(--ln); }
+    .tl::after { background: var(--acc); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 1s var(--slide) .1s; }
+    .tl.done::after { background: #047857; }
+    .tl.halt::after { background: #dc2626; }
+    .tl-step { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; min-width: 0; padding: 0 4px; text-align: center; }
+    .tl-dot { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; border: 2px solid var(--ln-2); background: #fff; color: #fff; transition: background-color .3s ease, border-color .3s ease; }
+    .tl-dot svg { width: 13px; height: 13px; }
+    .tl-step.past .tl-dot { border-color: var(--acc); background: var(--acc); }
+    .tl.done .tl-step.past .tl-dot { border-color: #047857; background: #047857; }
+    .tl-step.now .tl-dot { position: relative; border-color: var(--acc); }
+    .tl-step.now .tl-dot::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--acc); }
+    .tl.halt .tl-step.now .tl-dot { border-color: #dc2626; }
+    .tl.halt .tl-step.now .tl-dot::before { background: #dc2626; }
+    .tl-lbl { font-size: 12.5px; font-weight: 600; line-height: 1.3; color: var(--ink-3); }
+    .tl-step.past .tl-lbl, .tl-step.now .tl-lbl { color: var(--ink); }
+    .tl-sub { font-size: 11.5px; line-height: 1.35; color: var(--ink-3); overflow-wrap: anywhere; }
+
+    /* Route: origin → destination, truck rides the fill (--rp, 0..1). */
+    .route { display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, 1.4fr) minmax(0, 1fr); align-items: center; gap: 14px; }
+    .route-end { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .route-end.to { text-align: right; }
+    .route-end b { font-size: 13.5px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+    .route-line { position: relative; height: 34px; }
+    .route-line::before { content: ''; position: absolute; top: 50%; left: 6px; right: 6px; height: 0; border-top: 2px dashed var(--ln-2); }
+    .route-fill { position: absolute; top: calc(50% - 1.5px); left: 6px; right: 6px; height: 3px; border-radius: 999px; background: var(--acc); transform-origin: left; transform: scaleX(var(--rp, 0)); transition: transform 1.1s var(--slide) .15s; }
+    .route-line.done .route-fill { background: #047857; }
+    .route-pin { position: absolute; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1.5px var(--ln-2); background: var(--ln-2); }
+    .route-pin.a { left: 0; background: var(--acc); box-shadow: 0 0 0 1.5px var(--acc); }
+    .route-pin.b { right: 0; }
+    .route-line.done .route-pin.b { background: #047857; box-shadow: 0 0 0 1.5px #047857; }
+    .route-truck { position: absolute; top: 50%; left: calc(6px + (100% - 12px) * var(--rp, 0)); width: 30px; height: 30px; margin: -15px 0 0 -15px; display: grid; place-items: center; border-radius: 50%; background: #fff; color: var(--acc); border: 1px solid var(--acc-line); box-shadow: 0 4px 12px -4px rgba(15,23,42,.25); transition: left 1.1s var(--slide) .15s; }
+    .route-truck svg { width: 15px; height: 15px; }
+    .route-line.done .route-truck { color: #047857; border-color: #a7f3d0; }
+
+    /* Live vehicle */
+    .veh-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin-bottom: 14px; }
+    .veh-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .veh-id .sec-ic { width: 34px; height: 34px; }
+    .veh-id b { display: block; font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
+    .veh-live { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+    .veh-live .live-pulse-dot { background: #047857; }
+    .veh-live .live-pulse-dot::after { background: #047857; }
+    .veh-live.stale .live-pulse-dot, .veh-live.stale .live-pulse-dot::after { background: #d97706; }
+    .veh-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .veh-stat { min-width: 0; padding: 10px 12px; border-radius: 10px; background: var(--paper); border: 1px solid var(--ln); }
+    .veh-val { margin-top: 2px; font-size: 19px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .veh-val small { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+    .veh-stat .meter { margin-top: 6px; }
+    .veh-note { margin-top: 12px; font-size: 12.5px; color: var(--ink-2); overflow-wrap: anywhere; }
+    .veh-note b { color: var(--ink); }
+    .veh-err { display: none; align-items: flex-start; gap: 8px; margin-top: 12px; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 500; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; overflow-wrap: anywhere; }
+    .veh-err.show { display: flex; }
+    .veh-off { font-size: 13px; color: var(--ink-2); }
+
+    @media (max-width: 960px) {
+      .trk { grid-template-columns: minmax(0, 1fr); }
+      /* Shipments become a swipeable strip above the detail. */
+      .trk-list { flex-direction: row; max-height: none; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+      .trk-list > * { flex: 0 0 240px; scroll-snap-align: start; }
+      .veh-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 600px) {
+      .trk-list > * { flex-basis: 78%; }
+      /* Timeline turns vertical: dot column + text, track runs down the left. */
+      .tl { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-top: 0; }
+      .tl::before, .tl::after { top: 12px; bottom: 12px; left: 11px; right: auto; width: 3px; height: auto; }
+      .tl::after { transform-origin: top; transform: scaleY(var(--p, 0)); }
+      .tl-step { flex-direction: row; align-items: flex-start; gap: 12px; text-align: left; padding: 0; }
+      .tl-dot { flex: none; }
+      .tl-step > div { padding-top: 2px; }
+      .route { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 12px; }
+      .route-line { grid-column: 1 / -1; grid-row: 2; }
+      .veh-val { font-size: 17px; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .trk-detail > * { animation: rise .45s var(--slide) both; }
+      .trk-detail > :nth-child(2) { animation-delay: 60ms; }
+      .trk-detail > :nth-child(3) { animation-delay: 120ms; }
+      .trk-detail > :nth-child(4) { animation-delay: 180ms; }
+      .shp { animation: rise .4s var(--slide) both; animation-delay: calc(var(--i, 0) * 40ms); }
+      .tl-step.now .tl-dot::after { content: ''; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--acc); animation: tl-ping 1.8s var(--slide) infinite; }
+      .tl.halt .tl-step.now .tl-dot::after { display: none; }
+      @keyframes tl-ping { from { transform: scale(1); opacity: .6; } to { transform: scale(1.9); opacity: 0; } }
+      .route-line.moving::before { border-top-style: solid; border-top-color: transparent; background: repeating-linear-gradient(90deg, var(--ln-2) 0 6px, transparent 6px 12px); height: 2px; margin-top: -1px; animation: march .8s linear infinite; }
+      @keyframes march { to { background-position: 12px 0; } }
+      .route-line.moving .route-truck svg { animation: bob .9s ease-in-out infinite; }
+      @keyframes bob { 50% { transform: translateY(-2px); } }
+    }
+
   </style>
   <link rel="stylesheet" href="css/theme.css" />
   <link rel="stylesheet" href="css/account.css">
@@ -516,7 +642,27 @@
         </div>
       </section>
 
-      <!-- ════ 2. RECYCLE HUB STORE VIEW ════ -->
+      <!-- ════ 2. FREIGHT TRACKING ════ -->
+      <section id="tab-tracking" class="view-section" aria-labelledby="trkTitle">
+        <div class="glass-panel" id="trackingPanel">
+          <div class="sec-head">
+            <span class="sec-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+            <div class="sec-tt">
+              <h2 id="trkTitle">Track shipments</h2>
+              <p>Every purchase order from confirmation to your receiving bay, with live EV freight telemetry.</p>
+            </div>
+            <div class="sec-act"><span class="tag acc" id="trkCount">Loading…</span></div>
+          </div>
+          <div class="trk" id="trkBody">
+            <div class="trk-list" id="trkList" aria-label="Shipments">
+              <span class="rh-shimmer trk-skel"></span><span class="rh-shimmer trk-skel"></span><span class="rh-shimmer trk-skel"></span>
+            </div>
+            <div class="trk-detail" id="trkDetail"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ 3. RECYCLE HUB STORE VIEW ════ -->
       <section id="tab-store" class="view-section">
         <div class="glass-panel">
           <div class="sec-head">
@@ -749,6 +895,28 @@ function statusTone(s) {
   if (/dispatch|route|transit|assigned|loading/.test(s)) return 'go';
   return 'wait';
 }
+/* ship-stage:start */
+// deliveryStatus -> 5-step timeline index. First matching rule wins, so the
+// narrow phrases ("out for delivery", "queue for dispatch") sit above the broad ones.
+// Unknown wording means the order exists and is paid: Confirmed. Halted orders never read as Delivered.
+const SHIP_STEPS = ['Ordered', 'Confirmed', 'Loading / dispatched', 'In transit', 'Delivered'];
+const SHIP_RULES = [
+  [3, /out for deliver/],
+  [4, /deliver(ed|y complete)|^complete|handed over/],
+  [3, /transit|en route|on the way|weighbridge|checkpoint|highway|arriv/],
+  [1, /queue|await|pending|confirm|schedul|escrow/],
+  [2, /dispatch|load|prepar|pick|assign|vehicle|depart/],
+  [0, /placed|ordered|created|submitted/],
+];
+function shipStage(status) {
+  const s = String(status ?? '').toLowerCase().trim();
+  const halted = /cancel|fail|reject|undeliver|returned|on hold/.test(s);
+  if (!s) return { step: 0, halted };
+  const hit = SHIP_RULES.find(([, re]) => re.test(s));
+  const step = hit ? hit[0] : 1;
+  return { step: halted ? Math.min(step, 3) : step, halted };
+}
+/* ship-stage:end */
 const isOpen = (o) => !['ok', 'bad'].includes(statusTone(o.deliveryStatus));
 const byNewest = (a, b) => new Date(b.orderedAt || 0) - new Date(a.orderedAt || 0);
 const tons = (n) => Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 1 });
@@ -784,15 +952,196 @@ function switchTab(tabId) {
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
 
-  const onCatalog = tabId === 'catalog' || tabId === 'orders' || tabId === 'tracking';
-  ($id(onCatalog ? 'tab-catalog' : 'tab-' + tabId) || $id('tab-catalog')).classList.add('active');
+  const sec = { catalog: 'tab-catalog', orders: 'tab-catalog', tracking: 'tab-tracking', store: 'tab-store' }[tabId];
+  $id(sec || 'tab-catalog').classList.add('active');
 
   const i = { catalog: 0, orders: 1, tracking: 2, store: 3 }[tabId];
   const links = document.querySelectorAll('.nav-link');
   if (i !== undefined && links[i]) links[i].classList.add('active');
 
-  if (tabId === 'orders' || tabId === 'tracking') { $id('ordersSectionAnchor').scrollIntoView({ behavior: 'smooth', block: 'start' }); flash($id('ordersSectionAnchor')); }
+  if (tabId === 'orders') { $id('ordersSectionAnchor').scrollIntoView({ behavior: 'smooth', block: 'start' }); flash($id('ordersSectionAnchor')); }
   else window.scrollTo({ top: 0, behavior: 'smooth' });
+  syncPoll();
+}
+
+// ── Freight tracking ──
+// Telemetry is polled only while the tracking view is shown and the tab is visible.
+// trkSeq invalidates in-flight polls whenever polling restarts or stops.
+const POLL_MS = 5000;
+let trkSel = null, trkTimer = 0, trkSeq = 0, trkLoadErr = '';
+const ROUTE_AT = [0, 0, 0.1, 0.55, 1]; // truck position on the route line per step
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const selOrder = () => globalOrders.find(o => o.id === trkSel);
+const isSelfHaul = (o) => /self/i.test(o.shippingMode || '');
+const shipLabel = (o) => isSelfHaul(o) ? 'Self-haul from depot' : /^freight$/i.test(o.shippingMode || '') ? 'EV heavy loader freight' : (o.shippingMode || 'EV freight');
+const pollable = (o) => !!(o && o.assignedTransport && !isSelfHaul(o) && shipStage(o.deliveryStatus).step < 4);
+const trackingShown = () => $id('tab-tracking').classList.contains('active') && !document.hidden;
+const fmtEta = (m) => m >= 60 ? `${Math.floor(m / 60)} <small>h</small> ${Math.round(m % 60)} <small>min</small>` : `${Math.round(m)} <small>min</small>`;
+const num = (v) => (typeof v === 'number' && isFinite(v)) ? v : null;
+
+function stopPoll() { clearTimeout(trkTimer); trkTimer = 0; trkSeq++; }
+function syncPoll() {
+  stopPoll();
+  if (trackingShown() && pollable(selOrder())) pollVehicle(trkSeq);
+}
+document.addEventListener('visibilitychange', syncPoll);
+
+async function pollVehicle(seq) {
+  const o = selOrder();
+  if (!pollable(o)) return;
+  try {
+    const res = await fetch('/api/tracking/' + encodeURIComponent(o.assignedTransport), { headers: { Accept: 'application/json' } });
+    const data = await res.json().catch(() => ({}));
+    if (seq !== trkSeq) return;
+    if (!res.ok || !data.success || !data.telemetry) throw new Error(data.error || `Tracking service returned HTTP ${res.status}`);
+    renderVehicle(data.telemetry);
+    showVehErr('');
+  } catch (err) {
+    if (seq !== trkSeq) return;
+    console.error('Tracking poll failed:', err);
+    showVehErr(`Live telemetry unavailable: ${err.message}. Retrying every ${POLL_MS / 1000}s.`);
+  } finally {
+    if (seq === trkSeq && trackingShown()) trkTimer = setTimeout(() => pollVehicle(seq), POLL_MS);
+  }
+}
+
+function showVehErr(msg) {
+  const el = $id('vehErr');
+  if (!el) return;
+  el.classList.toggle('show', !!msg);
+  el.querySelector('span').textContent = msg;
+  const live = $id('vehLive');
+  if (live && msg) {
+    live.classList.add('stale');
+    live.lastElementChild.textContent = live.lastElementChild.textContent.replace(/^Live · updated/, 'Stale · last fix');
+  }
+}
+
+function renderVehicle(t) {
+  if (!$id('vehSpeed')) return;
+  $id('vehName').textContent = [t.vehicleId, t.vehicleName].filter(Boolean).join(' · ') || selOrder().assignedTransport;
+  $id('vehDriver').textContent = [t.type, t.driverName && `Driver ${t.driverName}`].filter(Boolean).join(' · ');
+  const speed = num(t.speedKmH), eta = num(t.etaMinutes), km = num(t.distanceRemainingKm), bat = num(t.batteryLevel);
+  tick($id('vehSpeed'), speed === null ? '—' : `${Math.round(speed)} <small>km/h</small>`);
+  tick($id('vehEta'), eta === null ? '—' : fmtEta(eta));
+  tick($id('vehKm'), km === null ? '—' : `${km.toFixed(1)} <small>km</small>`);
+  $id('vehBatStat').hidden = bat === null;
+  if (bat !== null) {
+    tick($id('vehBat'), `${Math.round(bat)} <small>%</small>`);
+    $id('vehBatMeter').innerHTML = meter(bat / 100, 0, bat < 30);
+  }
+  $id('vehNote').innerHTML = `<b>${esc(t.currentCheckpoint || t.status || 'Telemetry received')}</b>${t.status && t.currentCheckpoint ? ` · ${esc(t.status)}` : ''}`;
+  const live = $id('vehLive');
+  live.classList.remove('stale');
+  live.lastElementChild.textContent = `Live · updated ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' })}`;
+}
+
+function renderTracking() {
+  const body = $id('trkBody'), list = $id('trkList');
+  const orders = [...globalOrders].sort(byNewest);
+  const open = orders.filter(isOpen).length;
+  $id('trkCount').textContent = trkLoadErr ? 'Unavailable' : orders.length ? `${open} active · ${orders.length} total` : 'No shipments';
+
+  if (trkLoadErr || !orders.length) {
+    trkSel = null; stopPoll();
+    body.classList.add('is-empty');
+    list.innerHTML = trkLoadErr
+      ? emptyState('truck', 'Shipments could not be loaded', esc(trkLoadErr), `<button type="button" class="btn-primary btn-sm" onclick="loadOrders()">Try again</button>`)
+      : emptyState('truck', 'No shipments yet', 'Procure a lot from the catalog and its freight will be tracked here, from confirmation to delivery.',
+        `<button type="button" class="btn-primary btn-sm" onclick="switchTab('catalog')">Browse lots</button>`);
+    $id('trkDetail').innerHTML = '';
+    return;
+  }
+  body.classList.remove('is-empty');
+  if (!selOrder()) trkSel = orders[0].id;
+
+  list.innerHTML = orders.map((o, i) => {
+    const { step, halted } = shipStage(o.deliveryStatus);
+    const bar = SHIP_STEPS.map((_, k) => `<i class="${k <= step ? 'on' : ''}"></i>`).join('');
+    return `<button type="button" class="shp" data-ship="${esc(o.id)}" aria-pressed="${o.id === trkSel}" style="--i:${Math.min(i, 8)}">
+      <span class="shp-top"><span class="mono strong">${esc(o.id)}</span><span class="shp-date">${o.orderedAt ? esc(fmtDate(o.orderedAt)) : ''}</span></span>
+      <span class="shp-mat">${esc(o.materialName || 'Material lot')}</span>
+      <span class="shp-meta">${tons(o.quantityTons)} t · to ${esc(o.deliveryDestination || '—')}</span>
+      <span class="pill ${statusTone(o.deliveryStatus)}">${esc(o.deliveryStatus || SHIP_STEPS[step])}</span>
+      <span class="shp-bar${halted ? ' halt' : step === 4 ? ' done' : ''}" aria-hidden="true">${bar}</span>
+    </button>`;
+  }).join('');
+  renderShipment();
+}
+
+$id('trkList').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-ship]');
+  if (!b || b.dataset.ship === trkSel) return;
+  trkSel = b.dataset.ship;
+  $id('trkList').querySelectorAll('[data-ship]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  renderShipment();
+  if (matchMedia('(max-width: 960px)').matches) $id('trkDetail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+function renderShipment() {
+  const o = selOrder();
+  const { step, halted } = shipStage(o.deliveryStatus);
+  const done = step === 4 && !halted;
+  const tlCls = halted ? ' halt' : done ? ' done' : '';
+  const subs = [o.orderedAt ? `${fmtDate(o.orderedAt)}, ${fmtTime(o.orderedAt)}` : '', '', '', '', ''];
+  subs[step] = o.deliveryStatus || subs[step];
+
+  const steps = SHIP_STEPS.map((lbl, k) => {
+    const cls = k < step || done ? 'past' : k === step ? 'now' : '';
+    return `<li class="tl-step ${cls}"${k === step ? ' aria-current="step"' : ''}>
+      <span class="tl-dot">${cls === 'past' ? CHECK : ''}</span>
+      <div><div class="tl-lbl">${esc(lbl)}</div>${subs[k] ? `<div class="tl-sub">${esc(subs[k])}</div>` : ''}</div>
+    </li>`;
+  }).join('');
+
+  let veh;
+  if (pollable(o)) {
+    veh = `<div class="veh-head">
+        <div class="veh-id"><span class="sec-ic">${ICON.truck}</span><div><b id="vehName">${esc(o.assignedTransport)}</b><span class="sub" id="vehDriver">Connecting to vehicle…</span></div></div>
+        <span class="veh-live stale" id="vehLive"><span class="live-pulse-dot"></span><span>Waiting for first fix</span></span>
+      </div>
+      <div class="veh-grid">
+        <div class="veh-stat"><div class="trk-k">Speed</div><div class="veh-val" id="vehSpeed">—</div></div>
+        <div class="veh-stat"><div class="trk-k">ETA</div><div class="veh-val" id="vehEta">—</div></div>
+        <div class="veh-stat"><div class="trk-k">Remaining</div><div class="veh-val" id="vehKm">—</div></div>
+        <div class="veh-stat" id="vehBatStat" hidden><div class="trk-k">Battery</div><div class="veh-val" id="vehBat">—</div><div id="vehBatMeter"></div></div>
+      </div>
+      <div class="veh-note" id="vehNote"></div>
+      <div class="veh-err" id="vehErr" role="alert"><span></span></div>`;
+  } else {
+    const why = halted ? 'This shipment is halted, so there is no live vehicle feed.'
+      : done ? 'Delivered. The vehicle feed for this shipment has ended.'
+      : isSelfHaul(o) ? 'Self-haul order: your own fleet collects from the depot, so there is no Recycle Hub vehicle to track.'
+      : 'No vehicle has been assigned to this shipment yet.';
+    veh = `<div class="veh-id"><span class="sec-ic">${ICON.truck}</span><div><b>${esc(o.assignedTransport || 'Unassigned')}</b><span class="sub veh-off">${why}</span></div></div>`;
+  }
+
+  $id('trkDetail').innerHTML = `
+    <div class="trk-head">
+      <div><h3>${esc(o.materialName || 'Material lot')}</h3><span class="sub"><span class="mono">${esc(o.id)}</span> · ${tons(o.quantityTons)} t · ${usd(o.totalAmount)} · ${esc(shipLabel(o))}</span></div>
+      <div class="trk-head-act"><span class="pill ${statusTone(o.deliveryStatus)}">${esc(o.deliveryStatus || SHIP_STEPS[step])}</span>
+        <button type="button" class="row-btn" data-inv="${esc(o.id)}">${ICON.doc} Invoice</button></div>
+    </div>
+    <div class="trk-card"><ol class="tl${tlCls}" id="trkTl" aria-label="Shipment progress">${steps}</ol></div>
+    <div class="trk-card">
+      <div class="route">
+        <div class="route-end"><span class="trk-k">From</span><b>${esc(o.dispatchOrigin || 'Recycle Hub depot')}</b></div>
+        <div class="route-line${done ? ' done' : ''}${step === 3 && !halted ? ' moving' : ''}" id="trkRoute" role="img" aria-label="${esc(SHIP_STEPS[step])}">
+          <span class="route-pin a"></span><i class="route-fill"></i><span class="route-pin b"></span><span class="route-truck">${ICON.truck}</span>
+        </div>
+        <div class="route-end to"><span class="trk-k">To</span><b>${esc(o.deliveryDestination || '—')}</b></div>
+      </div>
+    </div>
+    <div class="trk-card">${veh}</div>`;
+  $id('trkDetail').querySelector('[data-inv]').onclick = () => openInvoiceModal(o);
+
+  // Start fills at 0, then set the target next frame so they animate in.
+  const p = done ? 1 : step / 4, rp = ROUTE_AT[step];
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $id('trkTl')?.style.setProperty('--p', p);
+    $id('trkRoute')?.style.setProperty('--rp', rp);
+  }));
+  syncPoll();
 }
 
 // ── Load Inventory ──
@@ -927,14 +1276,16 @@ async function loadOrders() {
   try {
     const res = await fetch('/api/industrial/orders');
     const data = await res.json();
-    if (data.success && data.orders) {
-      globalOrders = data.orders;
-      renderOrdersTable();
-      updateOrderMetrics();
-    }
+    if (!data.success || !data.orders) throw new Error(data.error || `Orders service returned HTTP ${res.status}`);
+    globalOrders = data.orders;
+    trkLoadErr = '';
+    renderOrdersTable();
+    updateOrderMetrics();
   } catch (err) {
     console.error('Error fetching orders:', err);
+    trkLoadErr = err.message;
   }
+  renderTracking();
 }
 
 function updateOrderMetrics() {

@@ -180,7 +180,7 @@
     .c-main { font-weight: 600; }
     .c-sub { font-size: 12px; color: var(--a-ink-3); margin-top: 2px; }
     .c-muted { color: var(--a-ink-3); font-size: 12px; white-space: nowrap; }
-    .c-trunc { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .c-trunc { max-width: clamp(140px, 14vw, 240px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .c-wrap { max-width: 320px; color: var(--a-ink-2); font-size: 12px; line-height: 1.5; }
     .who { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .who-av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; flex-shrink: 0; background: #f1f5f9; color: var(--a-ink-2); }
@@ -205,6 +205,13 @@
     /* ── Buttons ─────────────────────────────────────────── */
     .btn-sm { height: 30px; padding: 0 12px; border-radius: 8px; font: 600 12px 'Inter', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; border: 1px solid var(--a-line); background: #fff; color: var(--a-ink); transition: background-color .15s ease, border-color .15s ease, color .15s ease, translate .2s var(--a-pop); }
     .btn-sm:hover { border-color: var(--a-line-2); background: #f8fafc; }
+    .st-pick { appearance: none; max-width: 170px; padding: 3px 24px 3px 10px; font: 500 12px 'Inter', sans-serif; cursor: pointer; text-overflow: ellipsis; transition: box-shadow .15s ease, filter .15s ease;
+      background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+      background-position: right 12px center, right 8px center; background-size: 4px 4px; background-repeat: no-repeat; }
+    .st-pick:hover { filter: brightness(.97); box-shadow: 0 0 0 3px rgba(15,23,42,.05); }
+    .st-pick option { color: #0f172a; background: #fff; }
+    .st-pick:focus-visible { border-color: var(--a-em); box-shadow: 0 0 0 3px rgba(5,150,105,.15); outline: none; }
+    .st-pick:disabled { opacity: .55; cursor: progress; }
     html .btn-sm.btn-green { background: var(--a-em); border-color: var(--a-em); color: #fff; }
     html .btn-sm.btn-green:hover { background: #065f46; }
     .btn-cyan { color: var(--a-ink); }
@@ -628,7 +635,7 @@
         </div>
         <div class="tbl-wrap">
           <table class="data-table" id="delTable">
-            <thead><tr><th>Delivery</th><th>Order</th><th>Vehicle</th><th>Driver</th><th>Route</th><th class="r">Weight</th><th>ETA</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Delivery</th><th>Order</th><th>Status</th><th>Vehicle</th><th>Driver</th><th>Route</th><th class="r">Weight</th><th>ETA</th><th></th></tr></thead>
             <tbody id="delBody"></tbody>
           </table>
         </div>
@@ -650,7 +657,7 @@
       <div class="card static">
         <div class="tbl-wrap">
           <table class="data-table" id="slotTable">
-            <thead><tr><th>Slot</th><th>Partner</th><th>Date</th><th>Window</th><th>Material</th><th class="r">Est. weight</th><th>Address</th><th>Vehicle</th><th>Status</th></tr></thead>
+            <thead><tr><th>Slot</th><th>Partner</th><th>Status</th><th>When</th><th>Material</th><th class="r">Est. weight</th><th>Address</th><th>Vehicle</th></tr></thead>
             <tbody id="slotBody"></tbody>
           </table>
         </div>
@@ -1103,8 +1110,8 @@ function renderFleetMini() {
 function statusTone(s) {
   s = String(s || '');
   if (/flag|fail|cancel|reject|unverified/i.test(s)) return 'badge-red';
-  if (/deliver|paid|confirm|available|in stock|verified|complete/i.test(s)) return 'badge-green';
-  if (/transit|secured|dispatch|progress/i.test(s)) return 'badge-cyan';
+  if (/deliver|paid|confirm|available|in stock|verified|complete|collected/i.test(s)) return 'badge-green';
+  if (/transit|secured|dispatch|progress|arrived/i.test(s)) return 'badge-cyan';
   if (/pending|prepar|limited|load|maint/i.test(s)) return 'badge-amber';
   return 'badge-gray';
 }
@@ -1264,12 +1271,12 @@ function renderDeliveries(filter) {
     <tr class="${d.isAiFlagged ? 'flag' : ''}">
       <td class="c-id">${escapeHtml(d.id)}</td>
       <td class="c-id">${escapeHtml(d.orderId)}</td>
+      <td>${d.isAiFlagged ? '<span class="badge badge-red">AI flagged</span>' : statusPick('del', d.id, d.status)}</td>
       <td class="c-id">${escapeHtml(d.transportId)}</td>
       <td style="white-space:nowrap">${escapeHtml(d.driver)}</td>
       <td><div class="c-trunc">${escapeHtml(d.origin)}</div><div class="c-sub c-trunc">→ ${escapeHtml(d.destination)}</div></td>
       <td class="r num">${(d.weightKg / 1000).toFixed(1)} t</td>
       <td class="c-muted">${new Date(d.eta).toLocaleTimeString('en-IN', { hour12: true, hour: '2-digit', minute: '2-digit' })}</td>
-      <td><span class="badge ${d.isAiFlagged ? 'badge-red' : statusTone(d.status)}">${d.isAiFlagged ? 'AI flagged' : escapeHtml(d.status)}</span></td>
       <td class="r">${d.isAiFlagged ? `<button class="btn-sm btn-red" onclick="resolveAiError('${escapeHtml(d.id)}')">Resolve</button>` : ''}</td>
     </tr>`).join('') : emptyRow(9, filter === 'flagged' ? 'No AI flags' : 'No deliveries', filter === 'flagged' ? 'Nothing needs review right now.' : 'Nothing matches this tab.');
 
@@ -1311,6 +1318,31 @@ async function resolveAiError(delId) {
   } catch(e) { showNotification('Failed to resolve', 'error'); }
 }
 
+// Status steps the partner dashboards understand: industrial shipStage() and
+// sourcing rhImpact.phase() parse this wording, so keep it in sync with them.
+const STATUS_STEPS = {
+  del: ['Order Confirmed - Queue for Dispatch', 'Loading at Yard', 'In Transit', 'Out for Delivery', 'Delivered', 'On Hold'],
+  slot: ['Vehicle Dispatched', 'Arrived at Site', 'Collected', 'Cancelled'],
+};
+function statusPick(kind, id, cur) {
+  const opts = STATUS_STEPS[kind].includes(cur) ? STATUS_STEPS[kind] : [cur, ...STATUS_STEPS[kind]];
+  return `<select class="st-pick badge ${statusTone(cur)}" title="Change status" aria-label="Update status of ${escapeHtml(id)}" data-kind="${kind}" data-id="${escapeHtml(id)}" onchange="setStatus(this)">${
+    opts.map(o => `<option${o === cur ? ' selected' : ''}>${escapeHtml(o)}</option>`).join('')}</select>`;
+}
+async function setStatus(el) {
+  const { kind, id } = el.dataset, status = el.value;
+  const [url, body] = kind === 'del'
+    ? ['/api/admin/deliveries/update', { deliveryId: id, status }]
+    : ['/api/admin/slots/update', { slotId: id, status }];
+  el.disabled = true;
+  try {
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'HTTP ' + r.status);
+    showNotification(`${id} → ${status}. The partner's dashboard now shows this.`, 'success');
+  } catch (e) { showNotification('Status not saved: ' + e.message, 'error'); }
+  loadAdminData();
+}
+
 // ── Pickup Slots ──
 function renderSlots() {
   const slots = adminData.pickupSlots || [];
@@ -1318,14 +1350,13 @@ function renderSlots() {
     <tr>
       <td class="c-id">${escapeHtml(s.id)}</td>
       <td><div class="c-main c-trunc">${escapeHtml(s.partnerName)}</div><div class="c-sub c-trunc">${escapeHtml(s.partnerEmail)}</div></td>
-      <td style="white-space:nowrap">${escapeHtml(s.date)}</td>
-      <td class="c-muted">${escapeHtml(s.timeSlot)}</td>
+      <td>${statusPick('slot', s.id, s.status)}</td>
+      <td style="white-space:nowrap">${escapeHtml(s.date)}<div class="c-sub" style="white-space:normal;max-width:150px">${escapeHtml(s.timeSlot)}</div></td>
       <td class="c-trunc" title="${escapeHtml(s.materialType)}">${escapeHtml(s.materialType)}</td>
       <td class="r num">${s.estimatedWeightKg} kg</td>
       <td class="c-trunc c-muted" style="max-width:180px" title="${escapeHtml(s.address)}">${escapeHtml(s.address)}</td>
       <td class="c-id">${escapeHtml(s.assignedTransport || '—')}</td>
-      <td><span class="badge ${statusTone(s.status)}">${escapeHtml(s.status)}</span></td>
-    </tr>`).join('') : emptyRow(9, 'No pickup slots', 'Sourcing partners haven\'t booked any pickups yet.');
+    </tr>`).join('') : emptyRow(8, 'No pickup slots', 'Sourcing partners haven\'t booked any pickups yet.');
 }
 
 // ── Accounts ──

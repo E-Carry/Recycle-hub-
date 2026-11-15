@@ -1,4 +1,5 @@
 const express = require('express');
+const { syncOrderStatus, syncPickupStatus } = require('./sync.js');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const fs = require('fs');
@@ -537,6 +538,7 @@ app.post('/api/admin/deliveries/update', (req, res) => {
         del.status = 'In Transit (AI Resolved)';
         if (del.aiErrorDetails) del.aiErrorDetails.resolvedAt = new Date().toISOString();
     }
+    syncOrderStatus(adminData.industrialOrders, del);
 
     saveAdminData(adminData);
 
@@ -558,6 +560,7 @@ app.post('/api/admin/slots/update', (req, res) => {
 
     if (status) slot.status = status;
     if (assignedTransport) slot.assignedTransport = assignedTransport;
+    syncPickupStatus(adminData.sourcingPickups, slot);
 
     saveAdminData(adminData);
 

@@ -383,6 +383,86 @@
       .tele-val { font-size: 15px; }
     }
 
+    /* ── Environmental impact (numbers from js/impact.js) ── */
+    .impact-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; overflow: hidden; margin-bottom: 18px; border: 1px solid var(--ln); border-radius: 12px; background: var(--ln); }
+    .impact-stat { min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: #fff; }
+    .impact-stat.hi { background: var(--acc-soft); }
+    .impact-stat.hi .ops-val { color: var(--acc); }
+    .impact-stat .ops-val[title] { cursor: help; text-decoration: underline dotted var(--acc-line); text-underline-offset: 5px; }
+    .impact-bars { display: flex; flex-direction: column; gap: 14px; }
+    .imp-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: baseline; }
+    .imp-row .meter { grid-column: 1 / -1; height: 8px; }
+    .imp-row.unrated .meter > i { background: var(--ln-2); }
+    .imp-name { min-width: 0; font-size: 13.5px; font-weight: 600; overflow-wrap: anywhere; }
+    .imp-name small { margin-left: 6px; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--ink-3); }
+    .imp-fig { font-size: 13px; color: var(--ink-2); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .imp-fig b { color: var(--ink); }
+    .imp-fig .co2 { color: var(--acc); font-weight: 600; }
+    .imp-fig .nr { color: var(--ink-3); font-style: italic; }
+    .impact-note { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--ln); font-size: 12px; line-height: 1.5; color: var(--ink-3); }
+    .impact-note a { color: var(--acc); }
+    .btn-ghost:disabled { opacity: .55; cursor: not-allowed; }
+    .btn-ghost.acc { color: var(--acc); border-color: var(--acc-line); background: var(--acc-soft); }
+    .btn-ghost.acc:hover:not(:disabled) { background: #fff; }
+    @media (max-width: 600px) {
+      .impact-stats { grid-template-columns: minmax(0, 1fr); }
+      .imp-row { grid-template-columns: minmax(0, 1fr); }
+      .imp-fig { text-align: left; white-space: normal; }
+    }
+
+    /* Certificate: same markup on screen (modal) and on paper (.rh-print sheet). */
+    .cert { --c: #047857; position: relative; padding: 34px 38px 28px; border: 1px solid #a7f3d0; border-radius: 14px; background: #fff; color: #0f172a; text-align: center; overflow-wrap: anywhere;
+      background-image: radial-gradient(circle at 100% 0, #ecfdf5 0 120px, transparent 121px), radial-gradient(circle at 0 100%, #f0fdf4 0 90px, transparent 91px); }
+    .cert::before { content: ''; position: absolute; inset: 8px; border: 1px solid #d1fae5; border-radius: 9px; pointer-events: none; }
+    .cert-band { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; font-size: 11px; }
+    .cert-brand { font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--c); }
+    .cert-id { font-family: var(--mono); color: #64748b; }
+    .cert-kicker { font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--c); }
+    html .cert-title { margin: 6px 0 18px; font-size: 26px; font-weight: 700; line-height: 1.2; color: #0f172a; }
+    .cert-lede { font-size: 13px; color: #475569; }
+    .cert-name { margin: 6px 0 2px; font-size: 24px; font-weight: 800; letter-spacing: -.01em; }
+    .cert-meta { margin-bottom: 10px; font-size: 12px; color: #64748b; }
+    .cert-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0 18px; }
+    .cert-totals > div { display: flex; flex-direction: column; gap: 2px; padding: 14px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; }
+    .cert-totals > div + div { background: #ecfdf5; border-color: #a7f3d0; }
+    .cert-totals small, .cert-foot small { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #64748b; }
+    .cert-totals strong { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .cert-totals > div + div strong { color: var(--c); }
+    .cert-totals span { font-size: 11.5px; color: #64748b; }
+    .cert-table { width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left; }
+    .cert-table th { padding: 7px 8px; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #475569; border-bottom: 1.5px solid #0f172a; }
+    .cert-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+    .cert-table td small { display: block; font-family: var(--mono); font-size: 10.5px; color: #64748b; }
+    .cert-table .n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .cert-foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 20px; padding-top: 14px; border-top: 2px solid var(--c); text-align: left; }
+    .cert-foot > div:last-child { text-align: right; }
+    .cert-foot strong { display: block; font-size: 13px; }
+    .cert-note { margin-top: 14px; font-size: 10px; line-height: 1.5; color: #64748b; text-align: left; }
+    .cert-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+    #certModal .modal-box { width: min(820px, 100%); }
+    @media (max-width: 600px) {
+      .cert { padding: 24px 18px 20px; }
+      html .cert-title { font-size: 20px; }
+      .cert-name { font-size: 19px; }
+      .cert-totals { grid-template-columns: 1fr; }
+      .cert-totals strong { font-size: 20px; }
+      .cert-table { font-size: 11.5px; }
+      .cert-table th, .cert-table td { padding: 6px 4px; }
+      .cert-table th.n { white-space: normal; }
+      .cert-table td:first-child { min-width: 7.5em; overflow-wrap: break-word; }
+    }
+    /* Print: same swap-in-a-sheet approach as account.js printSheet, own class
+       names so account.css's .rh-print rules don't restyle the certificate. */
+    .cert-sheet { display: none; }
+    @page cert { size: A4 portrait; margin: 14mm; }
+    @media print {
+      body.cert-printing > *:not(.cert-sheet) { display: none !important; }
+      body.cert-printing { background: #fff !important; }
+      body.cert-printing .cert-sheet { display: block; page: cert; }
+      .cert-sheet .cert { border-color: #047857; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cert-sheet .cert-table tr { break-inside: avoid; }
+    }
+
   </style>
   <link rel="stylesheet" href="css/theme.css" />
   <link rel="stylesheet" href="css/account.css">
@@ -628,6 +708,43 @@
           </div>
         </div>
 
+        <!-- Environmental impact: completed pickups only, EPA WARM v16 factors (js/impact.js) -->
+        <div class="glass-panel" id="impactCard">
+          <div class="sec-head">
+            <span class="sec-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.9-5.4 5.1-6"/></svg></span>
+            <div class="sec-tt">
+              <h2>Environmental impact</h2>
+              <p>Counted from completed pickups only. CO₂e figures are estimates.</p>
+            </div>
+            <div class="sec-act">
+              <span class="tag acc">EPA WARM v16</span>
+              <button type="button" class="btn-ghost acc" id="btnCert" onclick="openCertificate()" disabled title="Available after your first completed pickup">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M8.5 13.9 7 22l5-3 5 3-1.5-8.1"/></svg>
+                Green certificate
+              </button>
+            </div>
+          </div>
+          <div class="impact-stats">
+            <div class="impact-stat">
+              <span class="metric-label">Recycled</span>
+              <div class="ops-val metric-val" id="impKg"><span class="rh-shimmer"></span></div>
+              <div class="metric-sub" id="impKgSub">&nbsp;</div>
+            </div>
+            <div class="impact-stat hi">
+              <span class="metric-label">CO₂e avoided (estimate)</span>
+              <div class="ops-val metric-val" id="impCo2"><span class="rh-shimmer"></span></div>
+              <div class="metric-sub" id="impCo2Sub">&nbsp;</div>
+            </div>
+            <div class="impact-stat">
+              <span class="metric-label">Awaiting collection</span>
+              <div class="ops-val metric-val" id="impPend"><span class="rh-shimmer"></span></div>
+              <div class="metric-sub" id="impPendSub">&nbsp;</div>
+            </div>
+          </div>
+          <div class="impact-bars" id="impBars" aria-label="Recycled weight by material"></div>
+          <p class="impact-note" id="impNote"></p>
+        </div>
+
         <!-- Price list -->
         <div class="glass-panel" id="pricesCard">
           <div class="sec-head">
@@ -845,6 +962,21 @@
   </div>
 </div>
 
+<!-- ════ MODAL: GREEN CERTIFICATE ════ -->
+<div class="modal-overlay" id="certModal" role="dialog" aria-modal="true" aria-label="Green certificate">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('certModal')" aria-label="Close">✕</button>
+    <div id="certBody" style="margin-top:28px"></div>
+    <div class="cert-actions">
+      <button type="button" class="btn-ghost" onclick="closeModal('certModal')">Close</button>
+      <button type="button" class="btn-primary btn-sm" onclick="printCertificate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        Print / Save as PDF
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toastMsg">Notification</div>
 
 <script>
@@ -1056,6 +1188,7 @@ async function loadPickups() {
       globalPickups = data.pickups;
       renderPickupsTable();
       updateDashboardMetrics();
+      renderImpact();
       renderTracker();
     }
   } catch (err) {
@@ -1092,6 +1225,79 @@ function updateDashboardMetrics() {
   const chip = $id('evStatusPill');
   chip.classList.toggle('on', open.length > 0);
   $id('evStatusText').innerText = open.length ? `${open.length} open ${open.length === 1 ? 'pickup' : 'pickups'}` : 'No open pickups';
+}
+
+// ── Environmental impact (maths + factor table in js/impact.js) ──
+let lastImpact = null;
+const fmtKg = (kg) => kg >= 1000
+  ? `${(kg / 1000).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>t</small>`
+  : `${kg.toLocaleString('en-US', { maximumFractionDigits: 1 })} <small>kg</small>`;
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+function renderImpact() {
+  const I = window.rhImpact;
+  const r = lastImpact = I.impact(globalPickups, globalPrices);
+  const rated = r.rows.filter((x) => x.rated);
+  const unrated = r.rows.filter((x) => !x.rated);
+
+  tick($id('impKg'), fmtKg(r.done.kg));
+  $id('impKgSub').innerText = r.done.n ? `${plural(r.done.n, 'completed pickup')}` : 'No completed pickups yet';
+  tick($id('impCo2'), fmtKg(r.co2));
+  $id('impCo2').title = rated.length
+    ? rated.map((x) => `${x.name}: ${x.factor.toFixed(2)} kg CO₂e/kg (WARM "${x.src.warm}", ${x.src.ref})`).join('\n')
+    : 'No rated material recycled yet';
+  $id('impCo2Sub').innerText = !r.done.n ? 'Estimated once pickups complete'
+    : r.unratedKg > 0 ? `Covers ${r.ratedKg.toLocaleString('en-US')} of ${r.done.kg.toLocaleString('en-US')} kg; rest not rated` : 'Covers all recycled weight';
+  tick($id('impPend'), fmtKg(r.pending.kg));
+  $id('impPendSub').innerText = r.pending.n ? `${plural(r.pending.n, 'open pickup')}, not yet counted` : 'Nothing booked';
+
+  const btn = $id('btnCert');
+  btn.disabled = !r.done.n;
+  btn.title = r.done.n ? 'Open a printable certificate' : 'Available after your first completed pickup';
+
+  if (!r.rows.length) {
+    $id('impBars').innerHTML = emptyState('leaf', 'Nothing recycled yet', r.pending.n
+      ? `${esc(r.pending.kg.toLocaleString('en-US'))} kg across ${plural(r.pending.n, 'pickup')} is booked. It counts here once the hub marks it collected.`
+      : 'Schedule a pickup. Its weight counts here once the hub marks it collected.');
+  } else {
+    const max = r.rows[0].kg || 1;
+    $id('impBars').innerHTML = r.rows.map((x, i) => `
+      <div class="imp-row${x.rated ? '' : ' unrated'}" title="${esc(x.rated ? `${x.factor.toFixed(2)} kg CO₂e avoided per kg · EPA WARM v16 "${x.src.warm}", ${x.src.ref}` : 'No published WARM factor for this material, so no CO₂e is claimed')}">
+        <span class="imp-name">${esc(x.name)}${x.code ? `<small>${esc(x.code)}</small>` : ''}</span>
+        <span class="imp-fig"><b>${esc(x.kg.toLocaleString('en-US'))} kg</b> · ${x.rated ? `<span class="co2">≈ ${esc(x.co2.toLocaleString('en-US'))} kg CO₂e</span>` : '<span class="nr">not rated</span>'}</span>
+        <div class="meter" style="--v:${(x.kg / max).toFixed(4)}; --i:${i}"><i></i></div>
+      </div>`).join('');
+  }
+
+  $id('impNote').innerHTML = `Estimates. A pickup counts once its status reads completed, collected, delivered, paid or settled; open pickups are shown apart and cancelled or failed ones are ignored. ` +
+    `CO₂e uses the <a href="${esc(I.SOURCE.url)}" target="_blank" rel="noopener">${esc(I.SOURCE.name)}</a> (${I.SOURCE.year}) net recycling factor for each material, converted from t CO₂e per short ton to kg per kg.` +
+    (unrated.length ? ` Not rated (no published factor): ${unrated.map((x) => esc(x.name)).join(', ')}.` : '');
+}
+
+function openCertificate() {
+  const r = lastImpact;
+  if (!r || !r.done.n) return showToast('Certificates are issued after your first completed pickup.');
+  const I = window.rhImpact;
+  $id('certBody').innerHTML = I.certHtml({
+    partner: activeUser.companyName || activeUser.fullName || 'Sourcing Partner',
+    email: activeUser.email,
+    code: activeUser.partnerCode,
+    id: I.certId(activeUser.email, r.rows.flatMap((x) => x.ids)),
+    issued: new Date().toLocaleDateString('en-CA'),
+    impact: r,
+  });
+  $id('certModal').classList.add('show');
+}
+
+// Same approach as account.js printSheet: swap in a print-only sheet, print, remove.
+function printCertificate() {
+  const sheet = document.createElement('div');
+  sheet.className = 'cert-sheet';
+  sheet.innerHTML = $id('certBody').innerHTML;
+  document.body.appendChild(sheet);
+  document.body.classList.add('cert-printing');
+  const done = () => { document.body.classList.remove('cert-printing'); sheet.remove(); removeEventListener('afterprint', done); };
+  addEventListener('afterprint', done);
+  window.print();
 }
 
 function renderPickupsTable() {
@@ -1342,6 +1548,7 @@ function showToast(msg) {
 </script>
   <script src="js/ux.js" defer></script>
   <script src="js/report.js" defer></script>
+  <script src="js/impact.js" defer></script>
   <script src="js/account.js" defer></script>
   <script src="js/fx.js" defer></script>
   <script src="js/motion.js" defer></script>
