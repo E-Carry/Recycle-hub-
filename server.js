@@ -1,5 +1,6 @@
 const express = require('express');
 const { syncOrderStatus, syncPickupStatus } = require('./sync.js');
+const { cancelPickup, blocker } = require('./cancel.js');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const fs = require('fs');
@@ -695,12 +696,22 @@ app.post('/api/sourcing/schedule-pickup', (req, res) => {
 app.get('/api/sourcing/pickups', (req, res) => {
     const email = req.user.email.toLowerCase();
     const pickups = (getAdminData().sourcingPickups || [])
-        .filter(p => p.partnerEmail && p.partnerEmail.toLowerCase() === email);
+        .filter(p => p.partnerEmail && p.partnerEmail.toLowerCase() === email)
+        .map(p => ({ ...p, cancellable: !blocker(p) }));
 
     res.json({
         success: true,
         pickups: pickups
     });
+});
+
+// POST Cancel a pickup (free until 2h before the slot, see cancel.js)
+app.post('/api/sourcing/pickups/:id/cancel', (req, res) => {
+    const adminData = getAdminData();
+    const r = cancelPickup(adminData, req.params.id, req.user.email);
+    if (r.error) return res.status(r.code).json({ error: r.error });
+    saveAdminData(adminData);
+    res.json({ success: true, message: 'Pickup cancelled. No fee applies.', pickup: r.pickup });
 });
 
 // GET Live EV Tracking Telemetry

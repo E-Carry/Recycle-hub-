@@ -180,6 +180,10 @@
     }
     .row-btn:hover { background: #fff; }
     .row-btn svg { width: 14px; height: 14px; }
+    .row-acts { display: flex; flex-direction: column; align-items: stretch; gap: 6px; min-width: 124px; }
+    .row-acts .row-btn { justify-content: center; }
+    html body .row-btn.row-cancel { color: #b42318; }
+    html body .row-btn.row-cancel.armed { background: #b42318; border-color: #b42318; color: #fff; }
 
     /* Empty states */
     .empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 16px; text-align: center; color: var(--ink-2); }
@@ -790,7 +794,7 @@
                   <th class="num">Net payout</th>
                   <th>EV</th>
                   <th>Status</th>
-                  <th>Invoice</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="pickupsTableBody">
@@ -1323,9 +1327,30 @@ function renderPickupsTable() {
       <td class="num strong">${usd(p.netPayout)}</td>
       <td><span class="mono">${esc(p.assignedTransport || '—')}</span></td>
       <td><span class="pill ${statusTone(p.status)}">${esc(p.status)}</span></td>
-      <td><button class="row-btn" onclick="openGstBillById('${esc(p.id)}')">${ICON.doc} GST bill</button></td>
+      <td class="row-acts"><button class="row-btn" onclick="openGstBillById('${esc(p.id)}')">${ICON.doc} GST bill</button>${p.cancellable ? `<button class="row-btn row-cancel" onclick="cancelPickupUi('${esc(p.id)}', this)">Cancel</button>` : ''}</td>
     </tr>
   `).join('');
+}
+
+// Two clicks: the first arms the button for 4s (no browser confirm dialog).
+async function cancelPickupUi(id, btn) {
+  if (!btn.classList.contains('armed')) {
+    btn.classList.add('armed');
+    btn.innerText = 'Confirm cancel';
+    setTimeout(() => { if (btn.isConnected && !btn.disabled) { btn.classList.remove('armed'); btn.innerText = 'Cancel'; } }, 4000);
+    return;
+  }
+  btn.disabled = true;
+  btn.innerText = 'Cancelling…';
+  try {
+    const res = await fetch('/api/sourcing/pickups/' + encodeURIComponent(id) + '/cancel', { method: 'POST' });
+    const data = await res.json();
+    showToast(data.success ? `Pickup ${id} cancelled. No fee applies.` : (data.error || 'Could not cancel this pickup.'));
+  } catch (err) {
+    console.error(err);
+    showToast('Network error while cancelling.');
+  }
+  await loadPickups();
 }
 
 function openGstBillById(id) {
