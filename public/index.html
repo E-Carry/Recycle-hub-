@@ -72,10 +72,33 @@
 
     /* ── Hero ─────────────────────────────────────────────── */
     .hero { position: relative; padding: 64px 0 24px; }
+    /* Aurora: the hero's colour fields drift slowly (registered props make gradient positions animatable) */
+    @property --a1x { syntax: '<percentage>'; inherits: false; initial-value: 78%; }
+    @property --a1y { syntax: '<percentage>'; inherits: false; initial-value: 30%; }
+    @property --a2x { syntax: '<percentage>'; inherits: false; initial-value: 92%; }
+    @property --a2y { syntax: '<percentage>'; inherits: false; initial-value: 70%; }
+    @property --a3x { syntax: '<percentage>'; inherits: false; initial-value: 40%; }
+    @keyframes aurora {
+      33% { --a1x: 66%; --a1y: 42%; --a2x: 84%; --a2y: 52%; --a3x: 55%; }
+      66% { --a1x: 84%; --a1y: 22%; --a2x: 96%; --a2y: 80%; --a3x: 30%; }
+    }
+    .hero::before { animation: aurora 18s ease-in-out infinite; }
+    /* Live rates ticker */
+    .tick { margin-top: 40px; overflow: hidden; border-block: 1px solid var(--line); background: #fff;
+      -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+    .tick[hidden] { display: none; }
+    .tick-track { display: flex; width: max-content; animation: tick 40s linear infinite; }
+    .tick:hover .tick-track { animation-play-state: paused; }
+    .tick-track span { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; font-size: 13px; white-space: nowrap; color: var(--ink-2); border-right: 1px solid var(--line); }
+    .tick-track b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .tick-track em { font: 600 12px/1 var(--mono); font-style: normal; }
+    .tick-track em.up { color: #047857; } .tick-track em.down { color: #b91c1c; }
+    @keyframes tick { to { transform: translateX(-50%); } }
     .hero::before { content: ''; position: absolute; top: -80px; left: calc(50% - 50vw + 8px); right: calc(50% - 50vw + 8px); height: 760px; z-index: -1; pointer-events: none;
       background:
-        radial-gradient(520px 320px at 78% 30%, rgba(16,185,129,.13), transparent 70%),
-        radial-gradient(420px 260px at 92% 70%, rgba(37,99,235,.08), transparent 70%),
+        radial-gradient(520px 320px at var(--a1x) var(--a1y), rgba(16,185,129,.15), transparent 70%),
+        radial-gradient(420px 260px at var(--a2x) var(--a2y), rgba(37,99,235,.09), transparent 70%),
+        radial-gradient(360px 240px at var(--a3x) 55%, rgba(20,184,166,.08), transparent 70%),
         linear-gradient(rgba(15,23,42,.045) 1px, transparent 1px) 0 0 / 100% 48px,
         linear-gradient(90deg, rgba(15,23,42,.045) 1px, transparent 1px) 0 0 / 48px 100%;
       -webkit-mask: radial-gradient(ellipse 60% 70% at 60% 35%, #000 20%, transparent 75%); mask: radial-gradient(ellipse 60% 70% at 60% 35%, #000 20%, transparent 75%); }
@@ -302,6 +325,8 @@
     .hero .rv { transform: translateY(10px); }
 
     @media (prefers-reduced-motion: reduce) {
+      .hero::before, .tick-track { animation: none; }
+      .tick { overflow-x: auto; }
       *, *::before, *::after { animation: none !important; }
       .rv, .rates li, .qa .ans, .qa .ans p, .btn, .btn svg, .step, .role, .mat, .qa .pm, .qa .pm::after { transition: none !important; }
       .rv, .rates li { opacity: 1; transform: none; }
@@ -355,7 +380,7 @@
 
       <div class="viz rv" style="--i:2" aria-label="Illustration of a pickup in the Recycle Hub dashboard" role="img">
         <span class="viz-tag">Sample pickup, for illustration</span>
-        <div class="pk" aria-hidden="true">
+        <div class="pk" aria-hidden="true" data-tilt="5">
           <div class="pk-top">
             <div class="pk-id">
               <span class="pk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>
@@ -392,6 +417,8 @@
         </div>
       </div>
     </div>
+
+    <div class="tick" id="tick" hidden aria-label="Live material rates"><div class="tick-track" id="tickTrack"></div></div>
 
     <!-- Trust / compliance strip -->
     <div class="trust" id="platform" aria-label="Compliance and trust">
@@ -599,6 +626,11 @@
             + `<div class="tr ${dir}">${esc(p.trend || '')}</div></li>`;
         }).join('');
         showList();
+
+        const tickItems = all.map((p) => `<span>${esc(p.name)} <b>${esc(money(p, p.pricePerKg))}/kg</b>`
+          + `<em class="${p.trendDirection === 'down' ? 'down' : 'up'}">${p.trendDirection === 'down' ? '▼' : '▲'} ${esc(p.trend || '')}</em></span>`).join('');
+        document.getElementById('tickTrack').innerHTML = tickItems + tickItems.replace(/<span>/g, '<span aria-hidden="true">');
+        document.getElementById('tick').hidden = false;
 
         const cats = new Set(all.map((p) => p.category));
         document.getElementById('heroPill').textContent = `${all.length} grades across ${cats.size} categories, updated by the desk`;

@@ -235,8 +235,63 @@
     c.style.setProperty('--my', (e.clientY - r.top) + 'px');
   }, { passive: true });
 
+  /* Section headings get the same word reveal, but only when scrolled into view. */
+  const h2io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    h2io.unobserve(e.target);
+    words(e.target);
+  }), { rootMargin: '0px 0px -10% 0px' });
+
+  /* 3D tilt (Figma "smart animate" hover): small cards lean toward the pointer
+     and spring back on leave. Inline transform only while hovered; the card's own
+     transitions are kept by appending ours (last duplicate wins in CSS). */
+  const TILT = '[data-tilt], .store-card, .product-card, .mat, .role, .step, .kpi-tile, .imp-card';
+  const SPRING = 'cubic-bezier(.34,1.56,.64,1)';
+  let tilted = null, tiltRaf = 0;
+  function untilt(c) {
+    c.style.transition = `${c.__rhTr}, transform .7s ${SPRING}`;
+    c.style.transform = '';
+    setTimeout(() => { if (tilted !== c) c.style.transition = ''; }, 700);
+  }
+  function tilt(c, e) {
+    const r = c.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+    const max = c.dataset.tilt ? +c.dataset.tilt || 6 : 7;
+    c.style.transform = `perspective(900px) rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max * 1.3).toFixed(2)}deg) translateY(-4px)`;
+  }
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse' || !e.target.closest) return;
+    let c = e.target.closest(TILT);
+    if (c && (c.closest(SKIP + ', .rh-cmdk') && !c.dataset.tilt || c.offsetWidth > 560)) c = null;
+    if (c !== tilted) {
+      if (tilted) untilt(tilted);
+      tilted = c;
+      if (c) { c.__rhTr = c.__rhTr || getComputedStyle(c).transition; c.style.transition = `${c.__rhTr}, transform .18s ease-out`; }
+    }
+    if (!c) return;
+    cancelAnimationFrame(tiltRaf);
+    tiltRaf = requestAnimationFrame(() => tilt(c, e));
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => { if (tilted) { untilt(tilted); tilted = null; } });
+
+  /* Magnetic CTAs: big primary buttons drift a few px toward the cursor. Uses the
+     independent `translate` property so it composes with press `scale` and page transforms. */
+  const MAG = '[data-magnetic], .btn-lg.rh-btn-primary, .btn-lg.rh-btn-secondary';
+  let magged = null;
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse' || !e.target.closest) return;
+    const b = e.target.closest(MAG);
+    if (magged && magged !== b) { magged.style.transition = ''; magged.animate([{ translate: magged.style.translate || '0 0' }, { translate: '0 0' }], { duration: 600, easing: SPRING }); magged.style.translate = ''; }
+    magged = b;
+    if (!b) return;
+    const r = b.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    b.style.translate = `${Math.max(-6, Math.min(6, dx * 0.18)).toFixed(1)}px ${Math.max(-4, Math.min(4, dy * 0.3)).toFixed(1)}px`;
+  }, { passive: true });
+
   function init() {
     document.querySelectorAll('h1').forEach(words);
+    document.querySelectorAll('h2').forEach((h) => { if (!h.closest(SKIP)) h2io.observe(h); });
     stagger(document.body);
     setupNav();
     document.querySelectorAll(METRIC).forEach(countUp);

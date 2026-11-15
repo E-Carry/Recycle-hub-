@@ -111,3 +111,28 @@ a:hover .rh-logo-loop, .rh-logo:hover .rh-logo-loop, .brand-box:hover .rh-logo-l
   html::before { display: none; }
   ::view-transition-new(root) { animation: none; }
 }
+
+/* Shared logo across page navigations: glides with a spring instead of cross-fading.
+   Named in CSS, not JS: a deferred script runs too late for the incoming page's snapshot.
+   Names must be unique per page, hence the footer opt-out. */
+.rh-logo { view-transition-name: rh-logo; }
+footer .rh-logo { view-transition-name: none; }
+::view-transition-group(rh-logo) { animation-duration: .55s; animation-timing-function: cubic-bezier(.34, 1.3, .64, 1); }
+::view-transition-old(rh-logo), ::view-transition-new(rh-logo) { animation: none; mix-blend-mode: normal; }
+
+/* Light sweep across primary buttons on hover (background layer only, no pseudo
+   elements, so page ::before/::after and overflow stay untouched) */
+html body .rh-btn-primary, html body .btn-primary-solid, html body .submit-btn, html body .btn-submit {
+  background-image: linear-gradient(110deg, transparent 42%, rgba(255, 255, 255, .28) 50%, transparent 58%);
+  background-size: 250% 100%; background-repeat: no-repeat; background-position: 200% 0;
+}
+html body .rh-btn-primary:hover, html body .btn-primary-solid:hover, html body .submit-btn:hover, html body .btn-submit:hover {
+  background-image: linear-gradient(110deg, transparent 42%, rgba(255, 255, 255, .28) 50%, transparent 58%);
+  animation: rh-shine .9s cubic-bezier(.22, 1, .36, 1);
+}
+@keyframes rh-shine { from { background-position: 200% 0; } to { background-position: -100% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  html body .rh-btn-primary:hover, html body .btn-primary-solid:hover, html body .submit-btn:hover, html body .btn-submit:hover { animation: none; }
+}

@@ -35,6 +35,23 @@
       background-image: radial-gradient(rgba(255,255,255,.9) 1px, transparent 1px); background-size: 22px 22px;
       -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%); mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
     }
+    /* Aurora: two light fields drift across the brand panel */
+    @property --l1x { syntax: '<percentage>'; inherits: false; initial-value: 85%; }
+    @property --l1y { syntax: '<percentage>'; inherits: false; initial-value: 15%; }
+    @property --l2x { syntax: '<percentage>'; inherits: false; initial-value: 10%; }
+    @property --l2y { syntax: '<percentage>'; inherits: false; initial-value: 90%; }
+    .lg-brand::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(42% 38% at var(--l1x) var(--l1y), rgba(110,231,183,.38), transparent 70%),
+        radial-gradient(48% 42% at var(--l2x) var(--l2y), rgba(45,212,191,.30), transparent 70%);
+      mix-blend-mode: soft-light; animation: lg-aurora 16s ease-in-out infinite;
+    }
+    @keyframes lg-aurora {
+      33% { --l1x: 60%; --l1y: 35%; --l2x: 30%; --l2y: 70%; }
+      66% { --l1x: 92%; --l1y: 55%; --l2x: 5%; --l2y: 50%; }
+    }
+    @media (prefers-reduced-motion: reduce) { .lg-brand::before { animation: none; } }
     .lg-brand > * { position: relative; z-index: 1; }
     .rh-brand { display: inline-flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; align-self: flex-start; border-radius: 12px; }
     .rh-brand:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
@@ -214,7 +231,7 @@
       </li>
     </ul>
 
-    <div class="pv in" style="--i:5" role="img" aria-label="Example pickup status card, for illustration only">
+    <div class="pv in" data-tilt="6" style="--i:5" role="img" aria-label="Example pickup status card, for illustration only">
       <div class="pv-top">
         <span class="pv-title">Pickup &middot; Mixed PET bales</span>
         <span class="pv-tag">Example</span>
