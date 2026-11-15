@@ -9,6 +9,15 @@
   'use strict';
   if (window.__rhMotion) return;
   window.__rhMotion = true;
+
+  // Cross-document view transitions (motion.css) reject with AbortError
+  // "Transition was skipped" when the user navigates again mid-fade. Navigation
+  // still succeeds, so only that expected abort is silenced; others surface.
+  const quiet = (vt) => vt && ['ready', 'finished'].forEach((k) =>
+    vt[k].catch((e) => { if (e.name !== 'AbortError') throw e; }));
+  addEventListener('pageswap', (e) => quiet(e.viewTransition));
+  addEventListener('pagereveal', (e) => quiet(e.viewTransition));
+
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!Element.prototype.animate) return;
 

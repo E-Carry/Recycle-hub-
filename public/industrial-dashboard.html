@@ -1036,7 +1036,7 @@ function searchStore(val) {
 }
 
 async function openStoreBuyModal(item) {
-  if (confirm(`Procure refurbished unit: "${item.title}" for $${item.price} using Escrow Credit Line?`)) {
+  if (await rhConfirm(`Procure refurbished unit "${item.title}" for $${item.price} using your Escrow Credit Line?`, 'Reserve item')) {
     try {
       const res = await fetch('/api/store/inquire-buy', {
         method: 'POST',
@@ -1053,6 +1053,8 @@ async function openStoreBuyModal(item) {
       if (data.success) {
         showToast(`Item Reserved! Confirmation: ${data.receiptId}`);
         await loadStoreItems();
+      } else {
+        showToast(data.error || 'Could not reserve this item.');
       }
     } catch(err) {
       showToast('Error reserving item.');

@@ -115,6 +115,26 @@
   // site is a fire-and-forget notice, so a toast is a safe stand-in.
   window.alert = (msg) => toast(msg);
 
+  // In-app confirm dialog. Resolves true on confirm, false on cancel/Esc/backdrop.
+  function confirmBox(msg, ok) {
+    return new Promise((done) => {
+      const o = document.createElement('div');
+      o.className = 'rh-confirm';
+      o.innerHTML = `<div class="rh-confirm-card" role="alertdialog" aria-modal="true">
+        <p>${esc(msg)}</p>
+        <div class="rh-confirm-row"><button class="rh-confirm-no">Cancel</button><button class="rh-confirm-ok">${esc(ok || 'Confirm')}</button></div></div>`;
+      const end = (v) => { document.removeEventListener('keydown', key); o.remove(); done(v); };
+      const key = (e) => { if (e.key === 'Escape') end(false); };
+      o.onclick = (e) => { if (e.target === o) end(false); };
+      o.querySelector('.rh-confirm-no').onclick = () => end(false);
+      o.querySelector('.rh-confirm-ok').onclick = () => end(true);
+      document.addEventListener('keydown', key);
+      document.body.appendChild(o);
+      o.querySelector('.rh-confirm-ok').focus();
+    });
+  }
+  window.rhConfirm = confirmBox;
+
   /* ── Skeleton loaders ─────────────────────────────────────── */
   // Containers the pages fill from the API are marked with a comment.
   const PLACEHOLDER = /JS fills|Populated via API/;

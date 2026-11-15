@@ -388,3 +388,15 @@ html .sidebar, html .topbar, html .nav-in { background-color: rgba(255,255,255,.
 html .metric-label, html .bridge-lbl, html .quote-lbl, html .tele-lbl, html .store-category,
 html .cat-tag, html .brand-badge, html .field-label, html .panel-badge, html .hero-card-label,
 html .stat-lbl, html .stat-label, html .card-h-sub { letter-spacing: .04em !important; }
+
+/* ── Confirm dialog (rhConfirm) ── */
+.rh-confirm { position: fixed; inset: 0; z-index: 2147483001; display: grid; place-items: center; padding: 16px; background: rgba(15,23,42,.35); animation: rh-toast-in .18s ease-out both; }
+.rh-confirm-card { width: min(420px, 100%); padding: 22px; border-radius: 14px; background: var(--t-panel); border: 1px solid var(--t-line); box-shadow: 0 24px 60px -20px rgba(15,23,42,.35); font: 500 15px/1.5 Inter, system-ui, sans-serif; color: var(--t-text); }
+.rh-confirm-card p { margin: 0 0 18px; }
+.rh-confirm-row { display: flex; justify-content: flex-end; gap: 10px; }
+.rh-confirm-row button { all: unset; cursor: pointer; padding: 9px 16px; border-radius: 9px; font-weight: 600; font-size: 14px; }
+.rh-confirm-row .rh-confirm-no { color: var(--t-text-2, #475569); border: 1px solid var(--t-line); }
+.rh-confirm-row .rh-confirm-no:hover { background: var(--t-bg-2); }
+.rh-confirm-row .rh-confirm-ok { background: var(--t-em); color: #fff; }
+.rh-confirm-row .rh-confirm-ok:hover { filter: brightness(1.08); }
+.rh-confirm-row button:focus-visible { outline: 2px solid var(--t-em); outline-offset: 2px; }

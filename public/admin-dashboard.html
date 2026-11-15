@@ -1279,18 +1279,14 @@ document.addEventListener('DOMContentLoaded', () => {
     .to('#topbar', { opacity:1, y:0, duration:.5 }, '-=.3')
     .to('.section.active', { opacity:1, y:0, duration:.6 }, '-=.3');
 
-  // Nav hover effects
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('mouseenter', () => gsap.to(btn, { scale:1.08, duration:.15 }));
-    btn.addEventListener('mouseleave', () => gsap.to(btn, { scale:1, duration:.2 }));
-  });
-
-  // Stat cards hover
+  // Stat cards hover (capture listeners also fire for document itself, which has no .closest)
   document.addEventListener('mouseenter', e => {
-    if (e.target.closest('.stat-card')) gsap.to(e.target.closest('.stat-card'), { y:-3, duration:.2 });
+    const c = e.target instanceof Element && e.target.closest('.stat-card');
+    if (c) gsap.to(c, { y:-3, duration:.2 });
   }, true);
   document.addEventListener('mouseleave', e => {
-    if (e.target.closest('.stat-card')) gsap.to(e.target.closest('.stat-card'), { y:0, duration:.25 });
+    const c = e.target instanceof Element && e.target.closest('.stat-card');
+    if (c) gsap.to(c, { y:0, duration:.25 });
   }, true);
 
   // Close modal on overlay click
