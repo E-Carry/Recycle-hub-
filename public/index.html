@@ -266,27 +266,38 @@
     .panel-foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
     @media (max-width: 680px) { .rates li { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; } .rates .cat { display: none; } .rates .nm { grid-row: 1 / span 2; } .rates .tr { grid-column: 2; grid-row: 2; } .rates .px { grid-row: 1; grid-column: 2; } }
 
-    /* ── FAQ ──────────────────────────────────────────────── */
-    .faq-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 64px; align-items: start; }
+    /* ── FAQ: one panel, hairline rows, roomy padding ─────── */
+    .faq-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); gap: 72px; align-items: start; }
     .faq-grid .head { grid-template-columns: 1fr; margin: 0; position: sticky; top: 100px; }
-    .faq { border-top: 1px solid var(--line); }
-    .qa { border-bottom: 1px solid var(--line); }
+    .faq-grid .head p { margin-top: 18px; max-width: 34ch; line-height: 1.65; }
+    .faq-contact { justify-self: start; display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line-2);
+      background: #fff; color: var(--ink); font-size: 14px; font-weight: 600; text-decoration: none; transition: border-color .2s, background-color .2s; }
+    .faq-contact:hover { border-color: var(--em-line); background: var(--em-soft); color: var(--em); }
+    .faq-contact svg { width: 16px; height: 16px; }
+    .faq { background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 1px 2px rgba(15,23,42,.04); overflow: hidden; }
+    .qa + .qa { border-top: 1px solid var(--line); }
+    .qa { transition: background-color .25s ease; }
+    .qa.open { background: #fbfdfc; }
     .qa h3 { margin: 0; font: inherit; }
-    .qa button { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 4px;
-      font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
-    .qa button:focus-visible { outline: 2px solid var(--em); outline-offset: 2px; border-radius: 6px; }
-    .qa .pm { position: relative; width: 22px; height: 22px; flex: none; border-radius: 6px; border: 1px solid var(--line); background: #fff; transition: transform .35s var(--pop), border-color .2s; }
-    .qa .pm::before, .qa .pm::after { content: ''; position: absolute; left: 50%; top: 50%; width: 10px; height: 1.5px; margin: -.75px 0 0 -5px; background: var(--ink-2); border-radius: 1px; transition: transform .35s var(--pop); }
+    .qa button { all: unset; box-sizing: border-box; width: 100%; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 24px 28px;
+      font-size: 16.5px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; line-height: 1.4; }
+    .qa button:hover { color: var(--em); }
+    .qa button:focus-visible { outline: 2px solid var(--em); outline-offset: -4px; border-radius: 12px; }
+    .qa .pm { position: relative; width: 30px; height: 30px; flex: none; border-radius: 50%; border: 1px solid var(--line-2); background: #fff; transition: transform .35s var(--pop), border-color .2s, background-color .2s; }
+    .qa .pm::before, .qa .pm::after { content: ''; position: absolute; left: 50%; top: 50%; width: 11px; height: 1.6px; margin: -.8px 0 0 -5.5px; background: var(--ink-2); border-radius: 1px; transition: transform .35s var(--pop), background-color .2s; }
     .qa .pm::after { transform: rotate(90deg); }
-    .qa button[aria-expanded="true"] .pm { border-color: var(--em-line); }
+    .qa button:hover .pm { border-color: var(--em-line); }
+    .qa button[aria-expanded="true"] .pm { border-color: var(--em); background: var(--em); }
+    .qa button[aria-expanded="true"] .pm::before, .qa button[aria-expanded="true"] .pm::after { background: #fff; }
     .qa button[aria-expanded="true"] .pm::after { transform: rotate(0deg); }
     .qa .ans { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s var(--slide); }
     .qa .ans > div { overflow: hidden; }
-    .qa .ans p { margin: 0; padding: 0 40px 22px 4px; color: var(--ink-2); font-size: 15px; line-height: 1.7; opacity: 0; transform: translateY(-4px); transition: opacity .3s ease, transform .35s var(--slide); }
+    .qa .ans p { margin: 0; padding: 0 82px 26px 28px; max-width: 68ch; color: var(--ink-2); font-size: 15px; line-height: 1.75; opacity: 0; transform: translateY(-4px); transition: opacity .3s ease, transform .35s var(--slide); }
     .qa.open .ans { grid-template-rows: 1fr; }
     .qa.open .ans p { opacity: 1; transform: none; }
     .qa a { color: var(--em); }
-    @media (max-width: 860px) { .faq-grid { grid-template-columns: 1fr; gap: 28px; } .faq-grid .head { position: static; } }
+    @media (max-width: 860px) { .faq-grid { grid-template-columns: 1fr; gap: 32px; } .faq-grid .head { position: static; } }
+    @media (max-width: 560px) { .qa button { padding: 20px 18px; font-size: 15.5px; } .qa .ans p { padding: 0 18px 22px; } }
 
     /* ── Final CTA ────────────────────────────────────────── */
     .final { position: relative; overflow: hidden; margin-top: 112px; border-radius: 20px; padding: 64px 56px; background: #052e22; color: #fff;
@@ -316,7 +327,6 @@
     .foot ul a:hover { color: var(--em); }
     .foot .about { color: var(--ink-2); margin: 14px 0 0; max-width: 300px; line-height: 1.6; }
     .base { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 20px 24px 28px; color: var(--ink-3); font-size: 13px; border-top: 1px solid var(--line); }
-    kbd { font: 600 11px/1 'Inter', sans-serif; padding: 3px 6px; border-radius: 5px; border: 1px solid var(--line-2); background: #f8fafc; color: var(--ink-2); }
     @media (max-width: 760px) { .foot { grid-template-columns: 1fr 1fr; } .foot > div:first-child { grid-column: 1 / -1; } }
 
     /* ── Scroll reveal (page script adds .in) ─────────────── */
@@ -370,7 +380,6 @@
         <p class="lead rv" style="--i:2">Recycle Hub connects sourcing partners who collect material with industrial partners who process it, with published rates, EV pickups, weighbridge-confirmed weights and GST invoices on every load.</p>
         <div class="cta rv" style="--i:3">
           <a class="btn btn-lg rh-btn-primary" href="register.html">Create a free account <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <a class="btn btn-lg rh-btn-secondary" href="login.html">Sign in to dashboard</a>
         </div>
         <ul class="checks rv" style="--i:4">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Free verification</li>
@@ -523,7 +532,8 @@
     <div class="faq-grid">
       <div class="head">
         <div><span class="eyebrow rv">FAQ</span><h2 class="rv" style="--i:1">Questions, answered.</h2></div>
-        <p class="rv" style="--i:2">Still stuck? Ask Rio with <kbd>Ctrl</kbd> <kbd>/</kbd> or email <a href="mailto:recycle.hub.pvt.ltd@gmail.com" style="color:var(--em)">our team</a>.</p>
+        <p class="rv" style="--i:2">Can't find your answer? Rio, the assistant in the corner, answers most questions instantly. For anything else, write to our team.</p>
+        <a class="faq-contact rv" style="--i:3" href="mailto:recycle.hub.pvt.ltd@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email our team</a>
       </div>
       <div class="faq">
         <div class="qa rv" style="--i:0"><h3><button type="button" aria-expanded="false" aria-controls="qa1" id="qb1">Who can join Recycle Hub?<span class="pm" aria-hidden="true"></span></button></h3><div class="ans" id="qa1" role="region" aria-labelledby="qb1"><div><p>Businesses that collect recyclable material (sourcing partners) and businesses that process it (industrial partners). Every account is verified before it can trade.</p></div></div></div>
@@ -564,7 +574,7 @@
     <div><h4>Product</h4><ul><li><a href="#how">How it works</a></li><li><a href="#materials">Materials</a></li><li><a href="#rates">Live rates</a></li><li><a href="#faq">FAQ</a></li></ul></div>
     <div><h4>Account</h4><ul><li><a href="login.html">Sign in</a></li><li><a href="register.html">Register</a></li><li><a href="mailto:recycle.hub.pvt.ltd@gmail.com">Contact</a></li></ul></div>
   </div>
-  <div class="wrap base"><span>© <span id="yr"></span> Recycle Hub Pvt. Ltd.</span><span>Press <kbd>Ctrl</kbd> <kbd>K</kbd> for quick actions</span></div>
+  <div class="wrap base"><span>© <span id="yr"></span> Recycle Hub Pvt. Ltd.</span></div>
 </footer>
 
 <script>

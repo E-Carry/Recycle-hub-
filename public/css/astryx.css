@@ -57,7 +57,7 @@ html body .nav-btn .nav-n, html body .nav-badge { background: var(--ax-hover); c
 /* Cards: white, hairline, low shadow; nested ones go flat on the muted grey */
 html body .card, html body .glass-panel, html body .metric-card, html body .rh-kpi, html body .rh-chart, html body .store-card, html body .trk-card,
 html body .hero .pk, html body .hero .chip, html body #platform.trust, html body #how .step, html body .roles .role,
-html body #matGrid .mat, html body #rates.panel, html body .qa,
+html body #matGrid .mat, html body #rates.panel,
 html body .pt-card, html body .wz, html body .side .panel,
 html body .section-card, html body .signature-exec-card,
 html body .rail-card, html body .chip-btn {

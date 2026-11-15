@@ -222,7 +222,7 @@
       if (h) add({ label: txt(h).slice(0, 60), hint: 'Jump to section', group: 'On this page', icon: 'hash', run: () => s.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }) });
     });
     PAGES.filter((p) => p.href !== here).forEach((p) => add({ label: p.label, hint: p.hint, group: 'Pages', icon: 'page', run: () => { location.href = p.href; } }));
-    add({ label: 'Ask Rio AI', hint: 'assistant help chat question  Ctrl+/', group: 'Assistant', icon: 'rio', run: () => window.rioOpen && window.rioOpen() });
+    add({ label: 'Ask Rio AI', hint: 'assistant help chat question', group: 'Assistant', icon: 'rio', run: () => window.rioOpen && window.rioOpen() });
     return items;
   }
 
@@ -241,10 +241,8 @@
         <div class="rh-cmdk-head">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
           <input class="rh-cmdk-input" placeholder="Search pages, sections, or ask Rio…" aria-label="Search commands" autocomplete="off" spellcheck="false">
-          <kbd>Esc</kbd>
         </div>
         <ul class="rh-cmdk-list" role="listbox"></ul>
-        <div class="rh-cmdk-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open</span><span><kbd>Ctrl</kbd><kbd>/</kbd> Rio AI</span></div>
       </div>`;
     document.body.appendChild(pal);
     input = pal.querySelector('input'); list = pal.querySelector('ul');
@@ -314,7 +312,7 @@
     if (!bar) return;
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'rh-kbtn';
-    b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Search</span><kbd>${/Mac|iP/.test(navigator.platform) ? '⌘' : 'Ctrl'} K</kbd>`;
+    b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span>Search</span>`;
     b.onclick = open;
     bar.insertBefore(b, bar.firstChild);
   }

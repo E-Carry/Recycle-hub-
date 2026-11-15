@@ -64,11 +64,10 @@
     .topbar-center { flex: 1; max-width: 420px; margin-left: auto; }
     .search-wrap { position: relative; }
     .search-wrap svg { position: absolute; left: 11px; top: 50%; translate: 0 -50%; color: var(--a-ink-3); pointer-events: none; }
-    .search-box { width: 100%; height: 38px; padding: 0 40px 0 36px; background: var(--a-bg); border: 1px solid var(--a-line); border-radius: 10px; color: var(--a-ink); font: 400 14px 'Inter', sans-serif; outline: none; }
+    .search-box { width: 100%; height: 38px; padding: 0 14px 0 36px; background: var(--a-bg); border: 1px solid var(--a-line); border-radius: 10px; color: var(--a-ink); font: 400 14px 'Inter', sans-serif; outline: none; }
     .search-box:focus { background: #fff; }
-    .search-wrap kbd { position: absolute; right: 8px; top: 50%; translate: 0 -50%; font: 600 11px/1 'Inter', sans-serif; color: var(--a-ink-3); border: 1px solid var(--a-line); border-radius: 5px; padding: 4px 6px; background: #fff; pointer-events: none; }
     .topbar-right { display: flex; align-items: center; gap: 10px; }
-    .topbar-right .rh-kbtn { display: none; } /* the filter box above is this page's search; Ctrl K still opens the palette */
+    .topbar-right .rh-kbtn { display: none; } /* the filter box above is this page's search */
     .mode-switch { display: flex; position: relative; background: #f1f5f9; border-radius: 10px; padding: 3px; }
     .mode-btn { position: relative; z-index: 1; height: 30px; padding: 0 12px; font: 600 12px 'Inter', sans-serif; color: var(--a-ink-2); background: none; border: 0; border-radius: 8px; cursor: pointer; transition: color .2s ease; }
     .mode-btn.active { color: var(--a-ink); }
@@ -493,7 +492,6 @@
       <div class="search-wrap">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
         <input type="search" class="search-box" placeholder="Filter this view…" id="globalSearch" aria-label="Filter rows in the current view" autocomplete="off" />
-        <kbd aria-hidden="true">/</kbd>
       </div>
     </div>
     <div class="topbar-right">
