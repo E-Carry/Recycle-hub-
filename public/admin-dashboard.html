@@ -331,7 +331,7 @@
 
 <!-- ═══ SIDEBAR ═══ -->
 <nav class="sidebar" id="sidebar">
-  <div class="sidebar-logo" title="Recycle Hub Admin" onclick="window.location.href='login.html'" style="background:transparent; box-shadow:none; padding:4px; margin-bottom:12px;">
+  <div class="sidebar-logo" title="Recycle Hub Admin" onclick="window.location.href='/'" style="background:transparent; box-shadow:none; padding:4px; margin-bottom:12px;">
     <div style="width:44px; height:44px; border-radius:14px; background:linear-gradient(135deg, rgba(5,150,105,0.12), rgba(37,99,235,0.12)); border:1px solid rgba(5,150,105,0.35); display:flex; align-items:center; justify-content:center; box-shadow:0 0 25px rgba(15,23,42,.08); transition:all 0.3s cubic-bezier(0.16,1,0.3,1);">
       <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -397,7 +397,7 @@
 
   <div class="sidebar-spacer"></div>
 
-  <a href="login.html" class="nav-btn" style="color:var(--red);" onclick="sessionStorage.clear()">
+  <a href="/logout" class="nav-btn" style="color:var(--red);" onclick="sessionStorage.clear()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
     <span class="nav-tip">Sign Out</span>
   </a>
@@ -676,22 +676,11 @@
 // RECYCLE HUB — ADMIN COMMAND CENTER — MAIN JS
 // ═══════════════════════════════════════════════════════════════
 
-const ADMIN_EMAIL = 'recycle.hub.pvt.ltd@gmail.com';
 let adminData = {};
 let currentMode = 'admin';
 let currentDeliveryFilter = 'all';
 
-// ── Auth Guard ──
-(function guardAccess() {
-  try {
-    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    if (!user || (user.email && user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase() && user.type !== 'admin' && !user.isAdmin)) {
-      window.location.href = 'login.html';
-    }
-  } catch(e) {
-    window.location.href = 'login.html';
-  }
-})();
+// Access is enforced server-side: this page and /api/admin need an admin session.
 
 // ── Live Clock ──
 function updateClock() {

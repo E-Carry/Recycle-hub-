@@ -60,6 +60,27 @@
     info: '<path d="M12 11v6M12 7.5v.5"/><circle cx="12" cy="12" r="9"/>',
   };
 
+  /* ── Session ──────────────────────────────────────────────── */
+  // The httpOnly rh_s cookie is the only identity; the server reads it.
+  // rhMe() fetches the signed-in user for display. Any /api/ 401 means the
+  // session ended, so go to sign-in instead of leaving a half-dead page.
+  const nativeFetch = window.fetch.bind(window);
+  const toLogin = () => { sessionStorage.removeItem('loggedInUser'); location.href = '/login.html'; };
+  window.fetch = async (input, init) => {
+    const res = await nativeFetch(input, init);
+    const url = typeof input === 'string' ? input : input.url;
+    if (res.status === 401 && /^\/api\//.test(new URL(url, location.href).pathname)) toLogin();
+    return res;
+  };
+  window.rhMe = async () => {
+    const res = await nativeFetch('/api/me');
+    if (res.status === 401) { toLogin(); return new Promise(() => {}); }
+    if (!res.ok) throw new Error('Could not load your account (' + res.status + ')');
+    const { user } = await res.json();
+    sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+    return user;
+  };
+
   /* ── Toasts ───────────────────────────────────────────────── */
   // Pending toasts live in sessionStorage until shown out, so a toast
   // followed by a redirect (alert(); location.href = ...) survives it.

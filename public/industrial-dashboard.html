@@ -400,7 +400,7 @@
           <span>Industrial Partner</span>
           <span style="font-size:9px; font-family: 'Inter', system-ui, sans-serif; background:rgba(37,99,235,0.12); padding:2px 6px; border-radius:4px;">VERIFIED</span>
         </div>
-        <a href="login.html" class="bridge-btn" style="color:#b91c1c;" onclick="sessionStorage.clear()">
+        <a href="/logout" class="bridge-btn" style="color:#b91c1c;" onclick="sessionStorage.clear()">
           <span>Sign Out</span>
           <span>→</span>
         </a>
@@ -730,22 +730,11 @@ let activeUser = null;
 let currentSelectedProduct = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load session or default industrial partner
-  const saved = sessionStorage.getItem('loggedInUser');
-  if (saved) {
-    activeUser = JSON.parse(saved);
-  } else {
-    activeUser = {
-      fullName: 'Apex Precision Smelters Ltd',
-      companyName: 'Apex Precision Smelters & Foundry Ltd',
-      uid: 'RHI-26-PARTNER',
-      email: 'purchasing@apexsmelters.com'
-    };
-  }
+  activeUser = await rhMe();
 
   // Update headers
   document.getElementById('partnerCompanyName').innerText = activeUser.companyName || activeUser.fullName || 'Industrial Partner';
-  document.getElementById('partnerCodeDisplay').innerText = `UID: ${activeUser.uid || 'IND-CORP-90'}`;
+  document.getElementById('partnerCodeDisplay').innerText = `UID: ${activeUser.partnerCode || '—'}`;
   document.getElementById('partnerAvatarLetter').innerText = (activeUser.companyName || activeUser.fullName || 'I')[0].toUpperCase();
 
   await loadInventory();
@@ -863,9 +852,6 @@ async function submitIndustrialOrder(e) {
   btn.disabled = true;
 
   const payload = {
-    partnerUid: activeUser.uid,
-    companyName: activeUser.companyName || activeUser.fullName,
-    contactEmail: activeUser.email,
     materialId: document.getElementById('orderMaterialId').value,
     quantityTons: document.getElementById('orderQty').value,
     shippingMode: document.getElementById('orderShipping').value,
@@ -900,7 +886,7 @@ async function submitIndustrialOrder(e) {
 // ── Load Orders ──
 async function loadOrders() {
   try {
-    const res = await fetch(`/api/industrial/orders?partnerUid=${encodeURIComponent(activeUser.uid)}`);
+    const res = await fetch('/api/industrial/orders');
     const data = await res.json();
     if (data.success && data.orders) {
       globalOrders = data.orders;
@@ -952,7 +938,7 @@ function openInvoiceModal(order) {
   document.getElementById('invNo').innerText = order.invoiceNumber || 'TAX-RH-2026-IND-4091';
   document.getElementById('invDate').innerText = 'Date: ' + (order.orderedAt ? order.orderedAt.split('T')[0] : '03 Sep 2026');
   document.getElementById('invBuyerName').innerText = order.companyName || activeUser.companyName;
-  document.getElementById('invBuyerCode').innerText = `UID / Code: ${order.partnerUid || activeUser.uid}`;
+  document.getElementById('invBuyerCode').innerText = `UID / Code: ${order.partnerUid || activeUser.partnerCode}`;
   document.getElementById('invBuyerDest').innerText = order.deliveryDestination || 'Standard Plant Receiving Bay';
   document.getElementById('invTransport').innerText = `${order.assignedTransport || 'RHT-01'} (EV Cargo Loader)`;
 
@@ -1043,9 +1029,6 @@ async function openStoreBuyModal(item) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           itemId: item.id,
-          buyerRole: 'Industrial Partner',
-          buyerEmail: activeUser.email,
-          buyerName: activeUser.companyName || activeUser.fullName,
           deliveryAddress: 'Main Foundry Facility Office'
         })
       });

@@ -1,9 +1,10 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
-const cors = require('cors');
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
+const { hashPw, checkPw, sign, verify, cookies } = require('./auth');
 
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) {
@@ -15,8 +16,8 @@ const UIDS_FILE = path.join(DATA_DIR, 'uids.json');
 const ADMIN_DATA_FILE = path.join(DATA_DIR, 'admin-data.json');
 
 const ADMIN_EMAIL = 'recycle.hub.pvt.ltd@gmail.com';
-// Set ADMIN_PASSWORD in .env for any deployment; the fallback is the public demo password.
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+// ADMIN_PASSWORD in .env (re)sets the admin password; it is stored hashed.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const getUsers = () => {
     try {
@@ -48,35 +49,34 @@ const saveAdminData = (data) => {
     fs.writeFileSync(ADMIN_DATA_FILE, JSON.stringify(data, null, 2));
 };
 
-// Ensure permanent Admin exists in users.json
+// Ensure the permanent admin exists. ADMIN_PASSWORD in .env sets its password
+// (stored hashed; only rehashed when the env value no longer matches).
 const initPermanentAdmin = () => {
     const users = getUsers();
     let admin = users.find(u => u.email && u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+    if (!ADMIN_PASSWORD && !(admin && admin.password)) {
+        console.error('ADMIN_PASSWORD is not set in .env and no admin password is stored. Refusing to start.');
+        process.exit(1);
+    }
     if (!admin) {
         admin = {
             id: 'USR-RH-ADMIN-01',
             uid: 'RH-ADMIN-SPECIAL-01',
             fullName: 'Recycle Hub Admin',
             email: ADMIN_EMAIL,
-            password: ADMIN_PASSWORD,
-            type: 'admin',
-            isAdmin: true,
-            isVerified: true,
             registeredAt: new Date().toISOString(),
             termsAgreed: true,
             agreedAt: new Date().toISOString()
         };
         users.unshift(admin);
-        saveUsers(users);
         console.log(`Permanent Admin initialized: ${ADMIN_EMAIL}`);
-    } else {
-        // Ensure credentials and role are always synced
-        admin.password = ADMIN_PASSWORD;
-        admin.type = 'admin';
-        admin.isAdmin = true;
-        admin.isVerified = true;
-        saveUsers(users);
     }
+    const c = ADMIN_PASSWORD ? checkPw(ADMIN_PASSWORD, admin.password) : { ok: true, legacy: false };
+    if (!c.ok || c.legacy) admin.password = hashPw(ADMIN_PASSWORD);
+    admin.type = 'admin';
+    admin.isAdmin = true;
+    admin.isVerified = true;
+    saveUsers(users);
 };
 
 initPermanentAdmin();
@@ -107,8 +107,79 @@ const getNextUid = (users) => {
 };
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+
+// ── Sessions ─────────────────────────────────────────────────────────
+// Cookie rh_s = HMAC-signed lowercased email (auth.js). Identity for every
+// partner/admin API comes from here, never from the request body or query.
+const SESSION_SECRET = process.env.SESSION_SECRET || (() => {
+    console.warn('SESSION_SECRET not set in .env: using a random per-boot secret (logins end on restart).');
+    return crypto.randomBytes(32).toString('hex');
+})();
+const HOME = { admin: '/admin-dashboard.html', sourcing: '/sourcing-dashboard.html', industrial: '/industrial-dashboard.html' };
+const role = (u) => (u.type in HOME ? u.type : 'sourcing');
+
+// Lookup by email, UID or partner code (codes are case/space-insensitive).
+const findUser = (key) => {
+    const k = String(key || '').trim();
+    if (!k) return null;
+    const lo = k.toLowerCase(), code = k.toUpperCase().replace(/\s+/g, '-');
+    return getUsers().find((u) => (u.email && u.email.toLowerCase() === lo)
+        || (u.uid && u.uid.toUpperCase() === code)
+        || (u.partnerCode && u.partnerCode.toUpperCase() === code)) || null;
+};
+const byEmail = (email) => getUsers().find((u) => u.email && u.email.toLowerCase() === email) || null;
+const updateUser = (email, fn) => {
+    const users = getUsers();
+    const u = users.find((x) => x.email && x.email.toLowerCase() === email.toLowerCase());
+    if (!u) throw new Error(`updateUser: no user ${email}`);
+    fn(u);
+    saveUsers(users);
+    return u;
+};
+// Client-safe view of a user: never the password hash.
+const pub = (u) => {
+    const { password, ...rest } = u;
+    return { ...rest, type: role(u), isAdmin: role(u) === 'admin', partnerCode: u.partnerCode || u.uid };
+};
+// Industrial orders are keyed by partner code; older accounts without one fall back to email.
+const partnerKey = (u) => String(u.uid || u.partnerCode || u.email).toUpperCase();
+
+// Sliding-window rate limiter shared by login, OTP and Rio.
+const hits = new Map();
+const over = (key, n, ms) => {
+    const now = Date.now();
+    const h = (hits.get(key) || []).filter((t) => now - t < ms);
+    h.push(now);
+    hits.set(key, h);
+    if (hits.size > 5000) hits.clear();
+    return h.length > n;
+};
+
+app.use((req, res, next) => {
+    const email = verify(cookies(req.headers.cookie).rh_s, SESSION_SECRET);
+    req.user = email ? byEmail(email) : null;
+    next();
+});
+
+// Role guard. No roles = any logged-in account.
+const need = (...roles) => (req, res, next) => {
+    if (req.user && (!roles.length || roles.includes(role(req.user)))) return next();
+    res.status(req.user ? 403 : 401).json({ error: req.user ? 'This account cannot access that.' : 'Please log in.' });
+};
+
+// Dashboard pages: logged out -> login, wrong role -> own dashboard.
+// Compares the decoded path so %-encoded names cannot slip past to express.static.
+app.use((req, res, next) => {
+    let p;
+    try { p = decodeURIComponent(req.path); } catch { return res.status(400).end(); }
+    const r = Object.keys(HOME).find((k) => HOME[k] === p);
+    if (!r) return next();
+    if (!req.user) return res.redirect('/login.html');
+    if (role(req.user) !== r) return res.redirect(HOME[role(req.user)]);
+    res.set('Cache-Control', 'no-store');
+    next();
+});
 
 // Serve static client assets from public/ ("/" -> public/index.html, the landing page)
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -124,21 +195,28 @@ app.use(express.static(path.join(PUBLIC_DIR, 'js')));
 // Rio AI LLM replies (OpenRouter). Public endpoint spending the site's key,
 // so cap each IP at 15 requests/minute.
 const rioLLM = require('./rio-llm');
-const rioHits = new Map();
 app.post('/api/rio/chat', async (req, res) => {
-    const now = Date.now();
-    const hits = (rioHits.get(req.ip) || []).filter((t) => now - t < 60000);
-    if (hits.length >= 15) return res.status(429).json({ error: 'Too many requests' });
-    hits.push(now);
-    rioHits.set(req.ip, hits);
-    if (rioHits.size > 5000) rioHits.clear();
+    if (over('rio:' + req.ip, 15, 60000)) return res.status(429).json({ error: 'Too many requests' });
     const r = await rioLLM.chat(req.body);
     res.status(r.status).json(r.body);
 });
 
-// In-memory store for OTPs
-const otpStore = {};
+// ── One-time codes ───────────────────────────────────────────────────
+// Keys: 'u:<email>' sign-in code, 'r:<email>' registration email check.
+// 10 minute expiry, 5 wrong guesses burn the code.
+const otps = new Map();
+// email -> expiry. Set by /verify-otp, consumed by /register.
+const verifiedEmails = new Map();
+const OTP_TTL = 10 * 60 * 1000;
+const takeOtp = (key, code) => {
+    const o = otps.get(key);
+    if (!o || o.exp < Date.now() || o.tries >= 5) { otps.delete(key); return false; }
+    if (o.code !== String(code).trim()) { o.tries++; return false; }
+    otps.delete(key);
+    return true;
+};
 
+const mailReady = Boolean(process.env.EMAIL_USER && process.env.EMAIL_PASS);
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -147,248 +225,167 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-app.post('/register', (req, res) => {
-    const { email, password } = req.body;
+// Fields a client may never set on its own account.
+const PRIVILEGED = ['id', 'uid', 'partnerCode', 'type', 'isAdmin', 'isVerified', 'registeredAt', 'password', 'email'];
 
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
+app.post('/register', (req, res) => {
+    const b = req.body || {};
+    const email = String(b.email || '').trim().toLowerCase();
+    const type = b.type || 'sourcing';
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !b.password) {
+        return res.status(400).json({ error: 'A valid email and a password are required.' });
+    }
+    if (String(b.password).length < 8) {
+        return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+    }
+    if (!['sourcing', 'industrial'].includes(type)) {
+        return res.status(400).json({ error: 'Account type must be sourcing or industrial.' });
+    }
+    // Industrial signup proves the email first (send-otp purpose register, then verify-otp).
+    // With mail unconfigured no code can be sent, so skip; new accounts start unverified anyway.
+    if (type === 'industrial' && mailReady && !((verifiedEmails.get(email) || 0) > Date.now())) {
+        return res.status(400).json({ error: 'Verify your email with the 6-digit code first.' });
     }
 
     const users = getUsers();
-    if (users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase())) {
-        return res.status(400).json({ error: 'User already exists with this email' });
+    if (users.find(u => u.email && u.email.toLowerCase() === email)) {
+        return res.status(400).json({ error: 'An account with this email already exists. Please sign in.' });
     }
 
-    // Allocate UID
-    const assignedUid = getNextUid(users);
-
+    const extra = Object.fromEntries(Object.entries(b).filter(([k]) => !PRIVILEGED.includes(k)));
     const newUser = {
+        ...extra,
         id: 'USR-' + Date.now(),
-        uid: assignedUid,
-        registeredAt: new Date().toISOString(),
+        uid: getNextUid(users),
+        email,
+        type,
+        password: hashPw(b.password),
         isVerified: false,
-        type: req.body.type || 'sourcing',
-        ...req.body
+        registeredAt: new Date().toISOString()
     };
 
     users.push(newUser);
     saveUsers(users);
+    verifiedEmails.delete(email);
 
-    res.json({ 
-        success: true, 
-        message: 'Registration successful', 
-        userId: newUser.id,
-        uid: newUser.uid 
-    });
-});
-
-// Login via Email (Sourcing Partner), Industrial Unique Partner Code, or Admin
-app.post('/login', (req, res) => {
-    const { email, password, identifier, otp } = req.body;
-    const loginKey = (identifier || email || '').trim();
-
-    if (!loginKey) {
-        return res.status(400).json({ error: 'Email or Industrial Partner UID/Code is required' });
-    }
-
-    // 1. Direct check for Permanent Admin Login
-    if (loginKey.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        if (otp) {
-            if (otp === '123456' || otpStore[ADMIN_EMAIL] === otp) {
-                delete otpStore[ADMIN_EMAIL];
-                return res.json({
-                    success: true,
-                    message: 'Admin login successful via OTP',
-                    redirect: 'admin-dashboard.html',
-                    user: {
-                        fullName: 'Recycle Hub Admin',
-                        email: ADMIN_EMAIL,
-                        uid: 'RH-ADMIN-SPECIAL-01',
-                        type: 'admin',
-                        isAdmin: true
-                    }
-                });
-            } else {
-                return res.status(400).json({ error: 'Invalid or expired OTP code' });
-            }
-        }
-
-        if (password !== ADMIN_PASSWORD) {
-            return res.status(401).json({ error: 'Invalid Admin password. Please check your credentials.' });
-        }
-
-        return res.json({
-            success: true,
-            message: 'Admin login successful',
-            redirect: 'admin-dashboard.html',
-            user: {
-                fullName: 'Recycle Hub Admin',
-                email: ADMIN_EMAIL,
-                uid: 'RH-ADMIN-SPECIAL-01',
-                type: 'admin',
-                isAdmin: true
-            }
-        });
-    }
-
-    const users = getUsers();
-
-    // 2. SOURCING PARTNER LOGIN: Any Email ID
-    if (loginKey.includes('@')) {
-        let user = users.find(u => u.email && u.email.toLowerCase() === loginKey.toLowerCase());
-        if (!user) {
-            // Auto-provision new Sourcing Partner
-            const rawPrefix = loginKey.split('@')[0].replace(/[\._-]/g, ' ');
-            const formattedName = rawPrefix.replace(/\b\w/g, l => l.toUpperCase()) || 'Sourcing Partner';
-            user = {
-                id: 'USR-' + Date.now(),
-                uid: 'SRC-' + Math.floor(1000 + Math.random() * 9000),
-                fullName: formattedName,
-                email: loginKey.toLowerCase(),
-                type: 'sourcing',
-                password: password || 'demo123',
-                isVerified: true,
-                registeredAt: new Date().toISOString(),
-                termsAgreed: true,
-                agreedAt: new Date().toISOString()
-            };
-            users.push(user);
-            saveUsers(users);
-        }
-
-        return res.json({
-            success: true,
-            message: `Welcome, ${user.fullName}! Logged in as Sourcing Partner`,
-            redirect: 'sourcing-dashboard.html',
-            user: {
-                id: user.id,
-                fullName: user.fullName,
-                email: user.email,
-                uid: user.uid,
-                type: 'sourcing',
-                isAdmin: false
-            }
-        });
-    }
-
-    // 3. INDUSTRIAL PARTNER LOGIN: Any Unique Code + any password
-    const cleanCode = loginKey.toUpperCase().replace(/\s+/g, '-');
-    let user = users.find(u => 
-        (u.uid && u.uid.toUpperCase() === cleanCode) ||
-        (u.partnerCode && u.partnerCode.toUpperCase() === cleanCode)
-    );
-
-    if (!user) {
-        // Auto-provision new Industrial Partner with unique code
-        user = {
-            id: 'USR-' + Date.now(),
-            uid: cleanCode,
-            partnerCode: cleanCode,
-            fullName: `Industrial Partner [${cleanCode}]`,
-            companyName: `Apex Industrial Plant (${cleanCode})`,
-            email: `partner.${cleanCode.toLowerCase().replace(/[^a-z0-9]/g, '')}@recyclehub-industry.com`,
-            type: 'industrial',
-            password: password || 'demo123',
-            isVerified: true,
-            registeredAt: new Date().toISOString(),
-            termsAgreed: true,
-            agreedAt: new Date().toISOString()
-        };
-        users.push(user);
-        saveUsers(users);
-    }
-
-    return res.json({
+    res.json({
         success: true,
-        message: `Industrial partner verified code [${cleanCode}]. Access granted.`,
-        redirect: 'industrial-dashboard.html',
-        user: {
-            id: user.id,
-            fullName: user.fullName,
-            companyName: user.companyName || user.fullName,
-            email: user.email,
-            uid: user.uid,
-            partnerCode: user.partnerCode || user.uid,
-            type: 'industrial',
-            isAdmin: false
-        }
+        message: 'Registration successful',
+        userId: newUser.id,
+        uid: newUser.uid
     });
 });
 
-app.post('/send-otp', async (req, res) => {
-    const { email, identifier, uid } = req.body;
-    const searchKey = (identifier || email || uid || '').trim();
-
-    if (!searchKey) {
-        return res.status(400).json({ error: 'Email or Industrial UID is required' });
+// Login with email / UID / partner code plus either password or an emailed code.
+app.post('/login', (req, res) => {
+    const { identifier, email, password, otp } = req.body || {};
+    if (!String(identifier || email || '').trim()) {
+        return res.status(400).json({ error: 'Enter your email or partner code.' });
+    }
+    if (over('login:' + req.ip, 20, 15 * 60 * 1000)) {
+        return res.status(429).json({ error: 'Too many sign-in attempts. Wait 15 minutes and try again.' });
     }
 
-    const users = getUsers();
-    const user = users.find(u => 
-        (u.email && u.email.toLowerCase() === searchKey.toLowerCase()) || 
-        (u.uid && u.uid.toUpperCase() === searchKey.toUpperCase())
-    );
+    const user = findUser(identifier || email);
+    const bad = (msg) => res.status(401).json({ error: msg || 'Incorrect ID or password. New here? Register first.' });
+    if (!user || !user.email) return bad();
 
-    const targetEmail = user ? user.email : (searchKey.includes('@') ? searchKey : null);
-    
-    // Generate a 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpStore[searchKey] = otp;
-    if (user && user.email) otpStore[user.email] = otp;
-    if (user && user.uid) otpStore[user.uid] = otp;
-    if (searchKey.toLowerCase() === ADMIN_EMAIL.toLowerCase()) otpStore[ADMIN_EMAIL] = otp;
+    const key = user.email.toLowerCase();
+    if (otp) {
+        if (!takeOtp('u:' + key, otp)) return bad('That code is wrong or has expired. Request a new one.');
+    } else {
+        const c = checkPw(password, user.password);
+        if (!c.ok) return bad();
+        if (c.legacy) updateUser(key, (u) => { u.password = hashPw(password); });
+    }
 
-    if (targetEmail && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        const mailOptions = {
+    // "Remember me": persistent 30-day cookie. Otherwise a browser-session cookie
+    // whose token still expires after 12h.
+    const ttl = req.body.remember ? 30 * 24 * 3600 : 12 * 3600;
+    res.cookie('rh_s', sign(key, SESSION_SECRET, ttl), {
+        httpOnly: true, sameSite: 'lax', secure: req.secure, path: '/',
+        ...(req.body.remember ? { maxAge: ttl * 1000 } : {})
+    });
+    const r = role(user);
+    res.json({
+        success: true,
+        message: `Welcome back, ${user.fullName || user.companyName || user.email}`,
+        redirect: HOME[r].slice(1),
+        user: pub(user)
+    });
+});
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('rh_s', { path: '/' });
+    res.redirect('/login.html');
+});
+
+app.get('/api/me', need(), (req, res) => res.json({ success: true, user: pub(req.user) }));
+
+// Email a 6-digit code. purpose 'register' targets an address that has no
+// account yet; otherwise the code signs in an existing account. The reply never
+// reveals the code or whether the account exists.
+app.post('/send-otp', async (req, res) => {
+    const { email, identifier, uid, purpose } = req.body || {};
+    if (!mailReady) {
+        return res.status(503).json({ error: 'Email codes are unavailable right now. Please use your password.' });
+    }
+    if (over('otp:' + req.ip, 5, 10 * 60 * 1000)) {
+        return res.status(429).json({ error: 'Too many code requests. Wait a few minutes and try again.' });
+    }
+
+    let to, key;
+    if (purpose === 'register') {
+        to = String(email || '').trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return res.status(400).json({ error: 'Enter a valid email address.' });
+        key = 'r:' + to;
+    } else {
+        const user = findUser(identifier || email || uid);
+        if (!user || !user.email) return res.json({ success: true, message: 'If that account exists, we emailed it a 6-digit code.' });
+        to = user.email;
+        key = 'u:' + to.toLowerCase();
+    }
+
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    otps.set(key, { code: otp, exp: Date.now() + OTP_TTL, tries: 0 });
+    try {
+        await transporter.sendMail({
             from: process.env.EMAIL_USER,
-            to: targetEmail,
-            subject: 'Recycle-Hub Login OTP',
+            to,
+            subject: 'Your Recycle Hub verification code',
             html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                    <h2 style="color: #22d3ee;">Recycle-Hub Login Authentication</h2>
-                    <p>Hello,</p>
-                    <p>Your One-Time Password (OTP) for login is:</p>
-                    <h1 style="background: #f4f4f4; padding: 10px; display: inline-block; border-radius: 5px; letter-spacing: 2px;">${otp}</h1>
-                    <p>Please enter this code on the login page to proceed.</p>
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #0f172a;">
+                    <h2 style="color: #059669;">Recycle Hub</h2>
+                    <p>Your one-time code is:</p>
+                    <h1 style="background: #f1f5f9; padding: 10px 16px; display: inline-block; border-radius: 8px; letter-spacing: 4px;">${otp}</h1>
+                    <p>It expires in 10 minutes. If you did not request it, ignore this email.</p>
                 </div>
             `
-        };
-
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log(`OTP sent to ${targetEmail}`);
-        } catch (error) {
-            console.error('Error sending email:', error);
-        }
+        });
+    } catch (error) {
+        otps.delete(key);
+        console.error('Error sending OTP email:', error.message);
+        return res.status(502).json({ error: 'Could not send the email. Please try again shortly.' });
     }
-
-    // Setup simple expiration (10 mins)
-    setTimeout(() => {
-        delete otpStore[searchKey];
-    }, 10 * 60 * 1000);
-
-    res.json({ 
-        success: true, 
-        message: `OTP sent successfully. Demo Code: 123456 or ${otp}`, 
-        demoOtp: '123456' 
-    });
+    res.json({ success: true, message: 'If that account exists, we emailed it a 6-digit code.' });
 });
 
+// Registration email check (pairs with send-otp purpose 'register').
 app.post('/verify-otp', (req, res) => {
-    const { email, identifier, otp } = req.body;
-    const key = (identifier || email || '').trim();
-
-    if (!key || !otp) {
-        return res.status(400).json({ error: 'Identifier and OTP are required' });
-    }
-
-    if (otp === '123456' || (otpStore[key] && otpStore[key] === otp)) {
-        delete otpStore[key];
-        res.json({ success: true, message: 'OTP verified successfully' });
-    } else {
-        res.status(400).json({ error: 'Invalid or expired OTP' });
-    }
+    const email = String((req.body || {}).email || '').trim().toLowerCase();
+    const { otp } = req.body || {};
+    if (!email || !otp) return res.status(400).json({ error: 'Email and code are required.' });
+    if (!takeOtp('r:' + email, otp)) return res.status(400).json({ error: 'That code is wrong or has expired.' });
+    verifiedEmails.set(email, Date.now() + 30 * 60 * 1000);
+    res.json({ success: true, message: 'Email verified' });
 });
+
+// ── Route guards (before the route handlers below) ───────────────────
+app.use('/api/admin', need('admin'));
+app.use('/api/sourcing', need('sourcing'));
+app.use('/api/industrial', need('industrial'));
+app.use(['/api/store/inquire-buy', '/api/tracking'], need());
 
 // ═════════════════════════════════════════════════════════════════════
 // ADMIN WORKSPACE & DEVELOPER API ENDPOINTS
@@ -579,10 +576,15 @@ app.get('/api/raw-materials/prices', (req, res) => {
 
 // POST Schedule pickup for Sourcing Partner
 app.post('/api/sourcing/schedule-pickup', (req, res) => {
-    const { partnerEmail, partnerName, materialId, weightKg, pickupDate, timeSlot, address, notes } = req.body;
+    const { materialId, weightKg, pickupDate, timeSlot, address, notes } = req.body;
+    const partnerEmail = req.user.email;
+    const partnerName = req.user.fullName;
 
-    if (!partnerEmail || !materialId || !weightKg || !pickupDate || !timeSlot || !address) {
-        return res.status(400).json({ error: 'All pickup details are required (partnerEmail, materialId, weightKg, pickupDate, timeSlot, address).' });
+    if (!materialId || !weightKg || !pickupDate || !timeSlot || !address) {
+        return res.status(400).json({ error: 'All pickup details are required (materialId, weightKg, pickupDate, timeSlot, address).' });
+    }
+    if (!(parseFloat(weightKg) > 0)) {
+        return res.status(400).json({ error: 'Weight must be a positive number of kg.' });
     }
 
     const adminData = getAdminData();
@@ -681,24 +683,9 @@ app.post('/api/sourcing/schedule-pickup', (req, res) => {
 
 // GET Sourcing Pickups & GST Bills
 app.get('/api/sourcing/pickups', (req, res) => {
-    const { email } = req.query;
-    const adminData = getAdminData();
-    let pickups = adminData.sourcingPickups || [];
-
-    if (email) {
-        const userPickups = pickups.filter(p => p.partnerEmail && p.partnerEmail.toLowerCase() === email.trim().toLowerCase());
-        if (userPickups.length > 0) {
-            pickups = userPickups;
-        } else {
-            // Auto-populate with demo pickups customized for the partner so the dashboard is immediately rich with data
-            const partnerName = email.split('@')[0].replace(/[\._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' (Sourcing Hub)';
-            pickups = pickups.map(p => ({
-                ...p,
-                partnerEmail: email.trim(),
-                partnerName: partnerName
-            }));
-        }
-    }
+    const email = req.user.email.toLowerCase();
+    const pickups = (getAdminData().sourcingPickups || [])
+        .filter(p => p.partnerEmail && p.partnerEmail.toLowerCase() === email);
 
     res.json({
         success: true,
@@ -763,10 +750,16 @@ app.get('/api/industrial/inventory', (req, res) => {
 
 // POST Place Industrial Purchase Order & Generate GST Tax Invoice
 app.post('/api/industrial/order', (req, res) => {
-    const { partnerUid, companyName, contactEmail, materialId, quantityTons, deliveryDestination, shippingMode } = req.body;
+    const { materialId, quantityTons, deliveryDestination, shippingMode } = req.body;
+    const partnerUid = partnerKey(req.user);
+    const companyName = req.user.companyName || req.user.fullName;
+    const contactEmail = req.user.email;
 
-    if (!partnerUid || !materialId || !quantityTons || !deliveryDestination) {
-        return res.status(400).json({ error: 'Order details missing: partnerUid, materialId, quantityTons, and deliveryDestination are required.' });
+    if (!materialId || !quantityTons || !deliveryDestination) {
+        return res.status(400).json({ error: 'Order details missing: materialId, quantityTons, and deliveryDestination are required.' });
+    }
+    if (!(parseFloat(quantityTons) > 0)) {
+        return res.status(400).json({ error: 'Quantity must be a positive number of tons.' });
     }
 
     const adminData = getAdminData();
@@ -802,7 +795,7 @@ app.post('/api/industrial/order', (req, res) => {
 
     const newOrder = {
         id: orderId,
-        partnerUid: partnerUid.toUpperCase(),
+        partnerUid,
         companyName: companyName || `Industrial Partner [${partnerUid}]`,
         contactEmail: contactEmail || 'procurement@industrial-partner.com',
         materialId: product.id,
@@ -888,13 +881,9 @@ app.post('/api/industrial/order', (req, res) => {
 
 // GET Industrial Orders & Invoices
 app.get('/api/industrial/orders', (req, res) => {
-    const { partnerUid } = req.query;
     const adminData = getAdminData();
-    let orders = adminData.industrialOrders || [];
-
-    if (partnerUid) {
-        orders = orders.filter(o => o.partnerUid.toUpperCase() === partnerUid.trim().toUpperCase());
-    }
+    const me = partnerKey(req.user);
+    const orders = (adminData.industrialOrders || []).filter(o => String(o.partnerUid).toUpperCase() === me);
 
     res.json({
         success: true,
@@ -933,7 +922,9 @@ app.get('/api/store/items', (req, res) => {
 
 // POST Inquire or Instant Buy Second-Hand Item
 app.post('/api/store/inquire-buy', (req, res) => {
-    const { itemId, buyerRole, buyerEmail, buyerName, deliveryAddress, notes } = req.body;
+    const { itemId } = req.body;
+    const buyerRole = role(req.user);
+    const buyerEmail = req.user.email;
 
     if (!itemId) return res.status(400).json({ error: 'Item ID is required.' });
 
@@ -943,10 +934,8 @@ app.post('/api/store/inquire-buy', (req, res) => {
 
     if (!item) return res.status(404).json({ error: 'Store item not found.' });
 
-    // Decrement stock if available
-    if (item.stock > 0) {
-        item.stock -= 1;
-    }
+    if (!(item.stock > 0)) return res.status(409).json({ error: 'This item is sold out.' });
+    item.stock -= 1;
 
     const receiptId = 'STORE-TXN-' + Math.floor(1000 + Math.random() * 9000);
 

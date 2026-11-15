@@ -483,7 +483,7 @@
           <span>Sourcing Partner</span>
           <span style="font-size:9px; font-family: 'Inter', system-ui, sans-serif; background:rgba(5,150,105,0.12); padding:2px 6px; border-radius:4px;">ENCRYPTED</span>
         </div>
-        <a href="login.html" class="bridge-btn" style="color:#b91c1c;" onclick="sessionStorage.clear()">
+        <a href="/logout" class="bridge-btn" style="color:#b91c1c;" onclick="sessionStorage.clear()">
           <span>Sign Out</span>
           <span>→</span>
         </a>
@@ -921,21 +921,11 @@ let activeUser = null;
 let currentTrackingInterval = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Load session or default
-  const saved = sessionStorage.getItem('loggedInUser');
-  if (saved) {
-    activeUser = JSON.parse(saved);
-  } else {
-    activeUser = {
-      fullName: 'Saikat Pradhan',
-      email: 'saikatpradhan239@gmail.com',
-      uid: 'SRC-2026-99'
-    };
-  }
+  activeUser = await rhMe();
 
   // Update UI headers
   document.getElementById('partnerDisplayName').innerText = activeUser.fullName || 'Sourcing Partner';
-  document.getElementById('partnerDisplayEmail').innerText = activeUser.email || 'partner@recyclehub.com';
+  document.getElementById('partnerDisplayEmail').innerText = activeUser.email;
   document.getElementById('avatarLetter').innerText = (activeUser.fullName || 'S')[0].toUpperCase();
 
   // Set default date to today
@@ -1069,8 +1059,6 @@ document.getElementById('pickupScheduleForm').addEventListener('submit', async (
   btn.disabled = true;
 
   const payload = {
-    partnerEmail: activeUser.email,
-    partnerName: activeUser.fullName,
     materialId: document.getElementById('formMaterial').value,
     weightKg: document.getElementById('formWeight').value,
     pickupDate: document.getElementById('formDate').value,
@@ -1106,7 +1094,7 @@ document.getElementById('pickupScheduleForm').addEventListener('submit', async (
 // ── Load Pickups Table ──
 async function loadPickups() {
   try {
-    const res = await fetch(`/api/sourcing/pickups?email=${encodeURIComponent(activeUser.email)}`);
+    const res = await fetch('/api/sourcing/pickups');
     const data = await res.json();
     if (data.success && data.pickups) {
       globalPickups = data.pickups;
@@ -1313,9 +1301,6 @@ async function submitStoreOrder(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         itemId,
-        buyerRole: 'Sourcing Partner',
-        buyerEmail: activeUser.email,
-        buyerName: activeUser.fullName,
         deliveryAddress
       })
     });

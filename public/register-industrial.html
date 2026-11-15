@@ -307,9 +307,6 @@
     </div>
 
     <div style="display:flex; align-items:center; gap:12px;">
-      <button type="button" class="btn-sm btn-cyan" onclick="demoAutoFillAndSubmit()" style="box-shadow: 0 0 14px rgba(15,23,42,.08); font-weight:800;" title="Instantly fill test data & generate UID">
-        Fast-Test UID Generation
-      </button>
       <a href="register.html" class="back-link">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Change Partner Type
@@ -483,27 +480,18 @@
             <div class="form-group span-2">
               <div class="verify-box">
                 <h4 style="font-size:13px; font-weight:700; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; justify-space-between;">
-                  <span>Contact Verification (Both Mobile & Email OTP required)</span>
+                  <span>Contact Verification (email code required)</span>
                   <span class="v-badge unverified" id="overallOtpBadge">Verification Pending</span>
                 </h4>
 
                 <div class="form-grid" style="gap:16px;">
-                  <!-- Mobile OTP -->
+                  <!-- Mobile: no SMS provider; confirmed by the onboarding team -->
                   <div class="form-group">
                     <div class="verify-row">
-                      <span style="font-size:12px; font-weight:600; color:var(--text-2);">Mobile OTP Status</span>
-                      <span class="v-badge unverified" id="mobileBadge">Not Verified</span>
+                      <span style="font-size:12px; font-weight:600; color:var(--text-2);">Mobile Number</span>
+                      <span class="v-badge unverified">Checked at KYC</span>
                     </div>
-                    <button type="button" class="btn-sm btn-cyan" id="sendMobileOtpBtn" onclick="triggerMobileOtp()" style="margin-top:8px;">
-                      Send Mobile OTP
-                    </button>
-                    <div id="mobileOtpArea" style="display:none; margin-top:8px;">
-                      <div class="otp-input-wrap">
-                        <input type="text" class="form-control" id="mobileOtpVal" placeholder="Enter 6-digit OTP" maxlength="6" style="letter-spacing:2px; font-family: 'Inter', system-ui, sans-serif;" />
-                        <button type="button" class="btn-sm btn-green" onclick="verifyMobileOtp()">Verify</button>
-                      </div>
-                      <span style="font-size:11px; color:var(--text-3); margin-top:4px; display:block;">Demo OTP: 123456</span>
-                    </div>
+                    <span style="font-size:11px; color:var(--text-3); margin-top:8px; display:block;">Our onboarding team confirms this number by call during KYC review.</span>
                   </div>
 
                   <!-- Email OTP -->
@@ -513,14 +501,14 @@
                       <span class="v-badge unverified" id="emailBadge">Not Verified</span>
                     </div>
                     <button type="button" class="btn-sm btn-cyan" id="sendEmailOtpBtn" onclick="triggerEmailOtp()" style="margin-top:8px;">
-                      Send Email OTP
+                      Send Email Code
                     </button>
                     <div id="emailOtpArea" style="display:none; margin-top:8px;">
                       <div class="otp-input-wrap">
-                        <input type="text" class="form-control" id="emailOtpVal" placeholder="Enter 6-digit OTP" maxlength="6" style="letter-spacing:2px; font-family: 'Inter', system-ui, sans-serif;" />
+                        <input type="text" class="form-control" id="emailOtpVal" placeholder="6-digit code" maxlength="6" inputmode="numeric" autocomplete="one-time-code" style="letter-spacing:2px; font-family: 'Inter', system-ui, sans-serif;" />
                         <button type="button" class="btn-sm btn-green" onclick="verifyEmailOtp()">Verify</button>
                       </div>
-                      <span style="font-size:11px; color:var(--text-3); margin-top:4px; display:block;">Demo OTP: 123456</span>
+                      <span id="emailOtpMsg" style="font-size:11px; color:var(--text-3); margin-top:4px; display:block;">Check your inbox for a 6-digit code (valid 10 minutes).</span>
                     </div>
                   </div>
                 </div>
@@ -1010,8 +998,8 @@
   <script>
     let currentStep = 1;
     const totalSteps = 7;
-    let isMobileVerified = false;
     let isEmailVerified = false;
+    let verifiedEmail = '';
     let currentCaptcha = '';
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1028,6 +1016,7 @@
     function changeStep(delta) {
       if (delta === 1) {
         if (!validateStep(currentStep)) return;
+        if (currentStep === totalSteps) { submitRegistration(); return; } // submit moves to the success step
       }
       if (currentStep + delta >= 1 && currentStep + delta <= totalSteps + 1) {
         currentStep += delta;
@@ -1050,8 +1039,8 @@
           return false;
         }
 
-        if (!isMobileVerified || !isEmailVerified) {
-          alert('Both Mobile OTP and Email OTP must be verified before proceeding!');
+        if (!isEmailVerified) {
+          alert('Verify your email with the 6-digit code before continuing.');
           return false;
         }
       } else if (step === 2) {
@@ -1099,8 +1088,8 @@
         const capVal = document.getElementById('captchaInput').value.trim().toUpperCase();
         const terms = document.getElementById('termsCheck').checked;
 
-        if (!pw || pw.length < 6) {
-          alert('Password must be at least 6 characters long.');
+        if (!pw || pw.length < 8) {
+          alert('Password must be at least 8 characters long.');
           return false;
         }
         if (pw !== cpw) {
@@ -1117,8 +1106,6 @@
           return false;
         }
 
-        submitRegistration();
-        return false; // Submission handles transition to Step 8
       }
       return true;
     }
@@ -1179,72 +1166,60 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // OTP Handlers
-    function triggerMobileOtp() {
-      const mob = document.getElementById('mobile').value.trim();
-      if (!mob) {
-        alert('Please enter a valid Mobile Number first.');
-        return;
-      }
-      document.getElementById('mobileOtpArea').style.display = 'block';
-      document.getElementById('sendMobileOtpBtn').innerText = 'Resend OTP';
-      alert(`OTP sent to ${mob}. Use code 123456 to verify.`);
-    }
-
-    function verifyMobileOtp() {
-      const val = document.getElementById('mobileOtpVal').value.trim();
-      if (val === '123456' || val.length === 6) {
-        isMobileVerified = true;
-        const b = document.getElementById('mobileBadge');
-        b.innerText = 'Verified ✓';
-        b.className = 'v-badge verified';
-        document.getElementById('mobileOtpArea').style.display = 'none';
-        checkOverallOtp();
-      } else {
-        alert('Invalid OTP code. Please enter 123456');
-      }
+    // Email code: /send-otp (purpose register) then /verify-otp. Both report errors as {error}.
+    async function postJson(url, body) {
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed (' + res.status + ')');
+      return data;
     }
 
     async function triggerEmailOtp() {
       const em = document.getElementById('email').value.trim();
-      if (!em) {
-        alert('Please enter an Email Address first.');
-        return;
-      }
-      document.getElementById('emailOtpArea').style.display = 'block';
-      document.getElementById('sendEmailOtpBtn').innerText = 'Resend OTP';
-
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { alert('Enter a valid email address first.'); return; }
+      const btn = document.getElementById('sendEmailOtpBtn');
+      btn.disabled = true; btn.innerText = 'Sending…';
       try {
-        await fetch('/send-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: em })
-        });
-      } catch(e) {}
-      alert(`OTP sent to ${em}. Use code 123456 to verify.`);
+        await postJson('/send-otp', { email: em, purpose: 'register' });
+        document.getElementById('emailOtpArea').style.display = 'block';
+        document.getElementById('emailOtpVal').focus();
+        rhToast('Code sent to ' + em, 'success');
+        btn.innerText = 'Resend Code';
+      } catch (e) {
+        rhToast(e.message, 'error');
+        btn.innerText = 'Send Email Code';
+      } finally { btn.disabled = false; }
     }
 
-    function verifyEmailOtp() {
+    async function verifyEmailOtp() {
+      const em = document.getElementById('email').value.trim();
       const val = document.getElementById('emailOtpVal').value.trim();
-      if (val === '123456' || val.length === 6) {
-        isEmailVerified = true;
-        const b = document.getElementById('emailBadge');
-        b.innerText = 'Verified ✓';
-        b.className = 'v-badge verified';
-        document.getElementById('emailOtpArea').style.display = 'none';
-        checkOverallOtp();
-      } else {
-        alert('Invalid OTP code. Please enter 123456');
-      }
+      if (!/^\d{6}$/.test(val)) { alert('Enter the 6-digit code from your email.'); return; }
+      try {
+        await postJson('/verify-otp', { email: em, otp: val });
+      } catch (e) { rhToast(e.message, 'error'); return; }
+      isEmailVerified = true;
+      verifiedEmail = em.toLowerCase();
+      const b = document.getElementById('emailBadge');
+      b.innerText = 'Verified ✓';
+      b.className = 'v-badge verified';
+      document.getElementById('emailOtpArea').style.display = 'none';
+      const ob = document.getElementById('overallOtpBadge');
+      ob.innerText = 'Email Verified ✓';
+      ob.className = 'v-badge verified';
     }
 
-    function checkOverallOtp() {
-      if (isMobileVerified && isEmailVerified) {
+    // Editing the email after verifying it un-verifies it.
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('email').addEventListener('input', (e) => {
+        if (!isEmailVerified || e.target.value.trim().toLowerCase() === verifiedEmail) return;
+        isEmailVerified = false;
+        const b = document.getElementById('emailBadge');
+        b.innerText = 'Not Verified'; b.className = 'v-badge unverified';
         const ob = document.getElementById('overallOtpBadge');
-        ob.innerText = 'Fully Verified ✓';
-        ob.className = 'v-badge verified';
-      }
-    }
+        ob.innerText = 'Verification Pending'; ob.className = 'v-badge unverified';
+      });
+    });
 
     // GST & Business Verification
     function verifyGst() {
@@ -1348,6 +1323,10 @@
     }
 
     async function submitRegistration() {
+      // Step dots skip validation, so check every step before sending.
+      for (let st = 1; st <= totalSteps; st++) {
+        if (!validateStep(st)) { goToStep(st); return; }
+      }
       const payload = {
         type: 'industrial',
         companyName: document.getElementById('companyName').value,
@@ -1402,8 +1381,8 @@
         if (data.success) {
           document.getElementById('resCompName').innerText = payload.companyName;
           document.getElementById('resEmail').innerText = payload.email;
-          document.getElementById('resPartnerId').innerText = data.userId || ('USR-' + Date.now());
-          const allocatedUid = data.uid || 'RHI-26-A7K2-M9QX';
+          document.getElementById('resPartnerId').innerText = data.userId;
+          const allocatedUid = data.uid;
           document.getElementById('resUid').innerText = allocatedUid;
           document.getElementById('resUidHint').innerText = allocatedUid;
           currentStep = 8;
@@ -1412,13 +1391,7 @@
           alert(data.error || 'Registration failed.');
         }
       } catch (err) {
-        document.getElementById('resCompName').innerText = payload.companyName;
-        document.getElementById('resEmail').innerText = payload.email;
-        document.getElementById('resPartnerId').innerText = 'USR-' + Date.now();
-        document.getElementById('resUid').innerText = 'RHI-26-A7K2-M9QX';
-        document.getElementById('resUidHint').innerText = 'RHI-26-A7K2-M9QX';
-        currentStep = 8;
-        updateStepUi();
+        alert('Could not reach Recycle Hub. Check your connection and submit again; nothing was registered.');
       }
     }
 
@@ -1440,74 +1413,6 @@
       }
     }
 
-    function demoAutoFillAndSubmit() {
-      document.getElementById('companyName').value = 'EcoMatrix Industrial Recycling Pvt Ltd';
-      document.getElementById('tradeName').value = 'EcoMatrix Scrap Solutions';
-      document.getElementById('businessType').value = 'Private Limited';
-      document.getElementById('industryType').value = 'Plastic Recycling';
-      document.getElementById('contactName').value = 'Vikramaditya Sharma';
-      document.getElementById('designation').value = 'Procurement Director';
-      document.getElementById('mobile').value = '9876543210';
-      document.getElementById('email').value = 'demo.partner' + Math.floor(Math.random()*1000) + '@ecomatrix.com';
-      
-      isMobileVerified = true;
-      isEmailVerified = true;
-      const mobB = document.getElementById('mobileBadge');
-      if (mobB) { mobB.innerText = 'Verified ✓'; mobB.className = 'v-badge verified'; }
-      const emB = document.getElementById('emailBadge');
-      if (emB) { emB.innerText = 'Verified ✓'; emB.className = 'v-badge verified'; }
-      const ovB = document.getElementById('overallOtpBadge');
-      if (ovB) { ovB.innerText = 'Fully Verified ✓'; ovB.className = 'v-badge verified'; }
-
-      document.getElementById('gstin').value = '27AAACE1234H1Z5';
-      document.getElementById('pan').value = 'AAACE1234H';
-      document.getElementById('cin').value = 'U24100MH2021PTC365432';
-
-      document.getElementById('regAddr1').value = 'Plot 45, Sector 18, Industrial Zone';
-      document.getElementById('regCity').value = 'Mumbai';
-      document.getElementById('regState').value = 'Maharashtra';
-      document.getElementById('regPin').value = '400705';
-
-      document.getElementById('bankHolder').value = 'EcoMatrix Industrial Recycling Pvt Ltd';
-      document.getElementById('bankName').value = 'HDFC Bank Ltd';
-      document.getElementById('bankAccNo').value = '50200012345678';
-      document.getElementById('bankIfsc').value = 'HDFC0001234';
-      const chB = document.getElementById('chequeBadge');
-      if (chB) { chB.innerText = 'Uploaded ✓'; chB.className = 'v-badge verified'; }
-      document.getElementById('chequeCard').classList.add('uploaded');
-      document.getElementById('chequeFileName').innerText = 'Attached: cancelled_cheque_sample.pdf (245.0 KB)';
-
-      ['Gst', 'Pan', 'Reg', 'Photo', 'Gate', 'Auth'].forEach(key => {
-        const card = document.getElementById('cardDoc' + key);
-        const badge = document.getElementById('badge' + key);
-        const txt = document.getElementById('txt' + key);
-        if (card) card.classList.add('uploaded');
-        if (badge) { badge.innerText = 'Uploaded ✓'; badge.className = 'v-badge verified'; }
-        if (txt) txt.innerText = `Attached: ${key.toLowerCase()}_sample_document.pdf (320.0 KB)`;
-      });
-
-      const dt = new DataTransfer();
-      const fakeFile = new File(["dummy content"], "sample.pdf", { type: "application/pdf" });
-      dt.items.add(fakeFile);
-      ['chequeFileInput', 'fileGst', 'filePan', 'fileReg', 'filePhoto', 'fileGate', 'fileAuth'].forEach(id => {
-        const elem = document.getElementById(id);
-        if (elem) elem.files = dt.files;
-      });
-
-      document.getElementById('yearsOperated').value = '10';
-      document.getElementById('purchaseCapacity').value = '5000 MT/Year';
-      document.getElementById('numEmployees').value = '51-200';
-      document.getElementById('factoryArea').value = '50,000 Sq. Ft.';
-
-      document.getElementById('password').value = 'Password@123';
-      document.getElementById('confirmPassword').value = 'Password@123';
-      evalPwStrength('Password@123');
-      checkPwMatch();
-      document.getElementById('captchaInput').value = currentCaptcha;
-      document.getElementById('termsCheck').checked = true;
-
-      submitRegistration();
-    }
   </script>
   <script src="js/ux.js" defer></script>
   <script src="js/fx.js" defer></script>
