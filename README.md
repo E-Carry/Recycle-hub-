@@ -10,7 +10,7 @@ cp .env.example .env   # then fill in your Gmail address and app password
 npm start              # http://localhost:3000
 ```
 
-Email (OTP) is skipped if `EMAIL_USER`/`EMAIL_PASS` are not set. `data/users.json` is created on first run and is not committed.
+Email (OTP) is skipped if `EMAIL_USER`/`EMAIL_PASS` are not set. All data is stored permanently in SQLite at `data/recyclehub.db` (not committed; back it up by copying the file while the server is stopped). On first run it imports `data/users.json` and `data/admin-data.json` once. Set `DB_FILE` to use a different database, e.g. for tests.
 
 Rio AI answers with an LLM via OpenRouter when `OPENROUTER_API_KEY` is set in `.env` (default model `google/gemma-4-31b-it:free`, change with `OPENROUTER_MODEL`). Without it, Rio uses its built-in FAQ engine. The key stays on the server. Tests: `npm test`.
 

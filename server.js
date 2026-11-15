@@ -12,43 +12,18 @@ if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const UIDS_FILE = path.join(DATA_DIR, 'uids.json');
-const ADMIN_DATA_FILE = path.join(DATA_DIR, 'admin-data.json');
 
 const ADMIN_EMAIL = 'recycle.hub.pvt.ltd@gmail.com';
 // ADMIN_PASSWORD in .env (re)sets the admin password; it is stored hashed.
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-const getUsers = () => {
-    try {
-        if (!fs.existsSync(USERS_FILE)) return [];
-        const data = fs.readFileSync(USERS_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        console.error('Error reading users.json:', err);
-        return [];
-    }
-};
-
-const saveUsers = (users) => {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-};
-
-const getAdminData = () => {
-    try {
-        if (!fs.existsSync(ADMIN_DATA_FILE)) return {};
-        const data = fs.readFileSync(ADMIN_DATA_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        console.error('Error reading admin-data.json:', err);
-        return {};
-    }
-};
-
-const saveAdminData = (data) => {
-    fs.writeFileSync(ADMIN_DATA_FILE, JSON.stringify(data, null, 2));
-};
+// All persistent data lives in SQLite (db.js). Legacy JSON in data/ is imported once.
+const store = require('./db').open(process.env.DB_FILE || path.join(DATA_DIR, 'recyclehub.db'), DATA_DIR);
+const getUsers = store.users;
+const saveUsers = store.saveUsers;
+const getAdminData = store.admin;
+const saveAdminData = store.saveAdmin;
 
 // Ensure the permanent admin exists. ADMIN_PASSWORD in .env sets its password
 // (stored hashed; only rehashed when the env value no longer matches).
