@@ -3,205 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rio AI - Smart Assistant &amp; Support Intelligence Platform</title>
-  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <title>Rio AI · Recycle Hub assistant</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <!-- GSAP Animation Engine -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <!-- v8.1 — Rio AI Premium Design -->
-  <link rel="stylesheet" href="styles.css?v=8.1">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
+<div class="app" id="app">
 
-  <!-- Ambient Background & Cursor Spotlight -->
-  <div class="bg-ambient" aria-hidden="true"></div>
-  <div class="bg-grid" aria-hidden="true"></div>
-  <div class="cursor-spotlight" id="cursor-spotlight"></div>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       APP HEADER
-  ═══════════════════════════════════════════════════════════ -->
-  <header class="app-header">
-    <div class="brand">
-      <div class="brand-avatar" title="Rio AI — Blue Macaw AI Assistant">
-        <img src="assets/rio_logo.png?v=8.1" alt="Rio AI Logo" class="rio-bird-avatar">
+  <!-- Left rail: brand, new chat, tools, session context, voice state -->
+  <aside class="rail" id="rail" aria-label="Rio navigation">
+    <div class="rail-brand">
+      <span class="brand-avatar" title="Rio, the Recycle Hub assistant">
+        <img src="assets/rio_logo.png?v=8.1" alt="" class="rio-bird-avatar">
+      </span>
+      <div class="rail-brand-txt">
+        <strong>Rio AI</strong>
+        <small>Recycle Hub assistant</small>
       </div>
-      <div class="brand-info">
-        <h1>Rio AI <i class="fa-solid fa-sparkles" style="color: var(--cyan); font-size: 0.8rem;"></i></h1>
-        <p><i class="fa-solid fa-shield-halved" style="color:var(--emerald);"></i> Recycle Hub &bull; Neural Intelligence Engine</p>
-      </div>
+      <button class="icon-btn rail-close" type="button" data-rail-close aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="nav-tabs">
-      <button class="nav-btn active" data-tab="chat">
-        <i class="fa-solid fa-comments"></i> Chat Workspace
-      </button>
-      <button class="nav-btn" data-tab="kb">
-        <i class="fa-solid fa-brain"></i> Knowledge Base Manager
-      </button>
-      <button class="nav-btn" data-tab="alerts">
-        <i class="fa-solid fa-triangle-exclamation"></i> Email Alerts
-        <span class="badge" id="alert-count-badge">0</span>
-      </button>
-      <button class="nav-btn" data-tab="voice">
-        <i class="fa-solid fa-microphone-lines"></i> Voice Settings
-      </button>
-      <button class="nav-btn" data-tab="embed">
-        <i class="fa-solid fa-code"></i> Integration Studio
-      </button>
+    <button class="new-chat" id="btn-clear-chat" type="button" title="Clear the conversation and start over">
+      <i class="fa-solid fa-pen-to-square"></i><span>New chat</span>
+    </button>
+
+    <nav class="rail-nav nav-tabs" aria-label="Workspace">
+      <p class="rail-label">Workspace</p>
+      <button class="nav-btn active" data-tab="chat" type="button"><i class="fa-regular fa-comments"></i><span>Chat</span></button>
+      <button class="nav-btn" data-tab="kb" type="button"><i class="fa-solid fa-book-open"></i><span>Knowledge base</span></button>
+      <button class="nav-btn" data-tab="alerts" type="button"><i class="fa-regular fa-bell"></i><span>Email alerts</span><span class="badge" id="alert-count-badge">0</span></button>
+      <button class="nav-btn" data-tab="voice" type="button"><i class="fa-solid fa-microphone-lines"></i><span>Voice</span></button>
+      <button class="nav-btn" data-tab="embed" type="button"><i class="fa-solid fa-code"></i><span>Integrations</span></button>
     </nav>
 
-    <div class="header-actions">
-      <button class="btn-secondary" id="btn-toggle-widget">
-        <i class="fa-solid fa-comments"></i> Open Widget
-      </button>
+    <div class="rail-spacer"></div>
+
+    <details class="rail-card ctx">
+      <summary><i class="fa-regular fa-user"></i><span>Customer context</span><i class="fa-solid fa-chevron-down chev"></i></summary>
+      <div class="ctx-body">
+        <label class="form-label" for="cust-name-input">Name</label>
+        <input type="text" id="cust-name-input" class="form-input" value="App Customer">
+        <label class="form-label" for="cust-email-input">Email</label>
+        <input type="email" id="cust-email-input" class="form-input" value="customer@recyclehub.app">
+        <p class="ctx-note">Attached to any alert Rio raises from this chat.</p>
+      </div>
+    </details>
+
+    <div class="rail-card voice-status-card" aria-live="polite">
+      <div class="voice-status-dot" id="voice-dot"></div>
+      <div class="vs-txt">
+        <p id="voice-status-text">Voice Idle</p>
+        <p id="voice-subtext">Click Mic or Speak to Rio</p>
+      </div>
+      <div class="soundwave paused" id="soundwave-anim" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
     </div>
-  </header>
 
-  <!-- Notification Toast Container -->
-  <div class="toast-container" id="toast-container"></div>
+    <button class="rail-link" id="btn-toggle-widget" type="button"><i class="fa-regular fa-window-restore"></i><span>Preview widget</span></button>
+  </aside>
+  <div class="rail-scrim" data-rail-close></div>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       MAIN APP CONTAINER
-  ═══════════════════════════════════════════════════════════ -->
-  <main class="container">
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
-    <!-- ─────────────────── VIEW 1: CHAT WORKSPACE ─────────────────── -->
+  <main class="main">
+    <button class="icon-btn menu-fab" type="button" data-rail-open aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+    <!-- Chat -->
     <section id="view-chat" class="view-section active">
-      <div class="chat-workspace">
-
-        <!-- Sidebar Controls -->
-        <aside class="sidebar-panel">
-
-          <!-- Voice Mode Indicator -->
-          <div class="sidebar-box">
-            <div class="sidebar-title">
-              <i class="fa-solid fa-waveform"></i> Voice Audio State
-            </div>
-            <div class="voice-status-card">
-              <div class="voice-status-dot" id="voice-dot"></div>
-              <div style="flex: 1;">
-                <p id="voice-status-text" style="font-size: 0.825rem; font-weight: 600;">Voice Idle</p>
-                <p style="font-size: 0.725rem; color: var(--text-muted);" id="voice-subtext">Click Mic or Speak to Rio</p>
-              </div>
-              <div class="soundwave paused" id="soundwave-anim">
-                <span></span><span></span><span></span><span></span><span></span>
-              </div>
-            </div>
-            <div style="margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
-              <label class="form-label" style="margin:0;">Auto-Speak Voice</label>
-              <input type="checkbox" id="chk-auto-speak" checked style="accent-color: var(--accent-cyan);">
-            </div>
-          </div>
-
-          <!-- Customer Identity Context -->
-          <div class="sidebar-box">
-            <div class="sidebar-title">
-              <i class="fa-solid fa-user-check"></i> Customer Account Context
-            </div>
-            <div class="form-group" style="margin-bottom: 0.5rem;">
-              <label class="form-label">Customer Name</label>
-              <input type="text" id="cust-name-input" class="form-input" value="App Customer">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Customer Email</label>
-              <input type="email" id="cust-email-input" class="form-input" value="customer@recyclehub.app">
-            </div>
-          </div>
-
-          <!-- Quick FAQ Chips -->
-          <div class="sidebar-box">
-            <div class="sidebar-title">
-              <i class="fa-solid fa-bolt"></i> Quick FAQ Queries
-            </div>
-            <div class="quick-chips">
-              <button class="chip-btn" data-query="How do I book a recycling pickup?">
-                <span><i class="fa-solid fa-calendar-check" style="color:var(--indigo-light);"></i> Schedule Pickup</span>
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
-              <button class="chip-btn" data-query="What materials do you collect for recycling?">
-                <span><i class="fa-solid fa-recycle" style="color:var(--emerald);"></i> Recyclable Materials</span>
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
-              <button class="chip-btn" data-query="What payment methods are available?">
-                <span><i class="fa-solid fa-coins" style="color:var(--amber);"></i> Payments &amp; Pricing</span>
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
-              <button class="chip-btn" style="border-color: rgba(244,63,94,0.3); color: #fecdd3;" data-query="My payment failed and money was deducted!">
-                <span><i class="fa-solid fa-credit-card" style="color:var(--rose);"></i> Payment Issue</span>
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
-              <button class="chip-btn" style="border-color: rgba(245,158,11,0.3); color: #fef3c7;" data-query="The app crashed when I tried to log in, screen frozen.">
-                <span><i class="fa-solid fa-bug" style="color:var(--amber);"></i> Report Technical Bug</span>
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
-            </div>
-          </div>
-
-        </aside>
-
-        <!-- Main Chat Area -->
-        <div class="chat-container">
-          <div class="chat-header">
-            <div class="chat-user-info">
-              <div class="brand-avatar" style="width: 38px; height: 38px;">
-                <img src="assets/rio_logo.png?v=8.1" alt="Rio AI" class="rio-bird-avatar">
-              </div>
-              <div>
-                <h3 style="font-size: 0.95rem; font-weight: 600;">Rio AI Assistant</h3>
-                <p style="font-size:0.7rem;color:var(--text-tertiary);">Active &amp; Ready &bull; Knowledge Fed</p>
-              </div>
-              <span class="bot-badge">🟢 Online &bull; 100 FAQs Loaded &bull; v3.0</span>
-            </div>
-            <div style="display: flex; gap: 0.5rem;">
-              <button id="btn-manual-alert" class="btn-report">
-                <i class="fa-solid fa-flag"></i> Report Problem
-              </button>
-              <button class="btn-icon" id="btn-clear-chat" title="Clear Conversation">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Messages Container -->
-          <div class="messages-list" id="messages-list">
-            <!-- Messages rendered dynamically via JS -->
-          </div>
-
-          <!-- Input Bar -->
-          <div class="chat-input-area">
-            <div class="input-box">
-              <input type="text" id="chat-input" class="chat-input"
-                     placeholder="Type a query or report an issue to Rio AI..." autocomplete="off">
-              <div class="input-controls">
-                <button class="mic-btn" id="btn-mic" title="Speak to Rio AI (Voice Input)">
-                  <i class="fa-solid fa-microphone"></i>
-                </button>
-                <button class="send-btn" id="btn-send" title="Send Message">
-                  <i class="fa-solid fa-paper-plane"></i>
-                </button>
-              </div>
-            </div>
-            <div class="input-hint">
-              <i class="fa-solid fa-lightbulb" style="color:var(--amber);"></i>
-              <span>Tip: Ask any question from the knowledge base, or describe a problem to trigger automatic email alerting.</span>
-              <span style="margin-left:auto;" id="voice-mode-indicator">
-                <i class="fa-solid fa-volume-high"></i> Voice Output Enabled
-              </span>
-            </div>
+      <header class="chat-top">
+        <button class="icon-btn menu-btn" type="button" data-rail-open aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+        <div class="chat-id">
+          <span class="brand-avatar sm"><img src="assets/rio_logo.png?v=8.1" alt="" class="rio-bird-avatar"></span>
+          <div>
+            <h1>Rio</h1>
+            <p><span class="live-dot"></span>Answers from the Recycle Hub knowledge base</p>
           </div>
         </div>
+        <button id="btn-manual-alert" class="btn-report" type="button" title="Flag a problem to the support inbox">
+          <i class="fa-regular fa-flag"></i><span>Report a problem</span>
+        </button>
+      </header>
 
+      <div class="messages-list" id="messages-list" aria-live="polite"></div>
+
+      <div class="composer-wrap">
+        <div class="quick-chips" aria-label="Suggested questions">
+          <button class="chip-btn" type="button" data-query="How do I book a recycling pickup?"><i class="fa-regular fa-calendar-check"></i><span><b>Schedule a pickup</b><em>How booking works</em></span></button>
+          <button class="chip-btn" type="button" data-query="What materials do you collect for recycling?"><i class="fa-solid fa-recycle"></i><span><b>What you collect</b><em>Accepted materials</em></span></button>
+          <button class="chip-btn" type="button" data-query="What payment methods are available?"><i class="fa-solid fa-coins"></i><span><b>Payments</b><em>Methods and pricing</em></span></button>
+          <button class="chip-btn chip-warn" type="button" data-query="My payment failed and money was deducted!"><i class="fa-regular fa-credit-card"></i><span><b>Payment failed</b><em>Raises an alert</em></span></button>
+          <button class="chip-btn chip-warn" type="button" data-query="The app crashed when I tried to log in, screen frozen."><i class="fa-solid fa-bug"></i><span><b>App crashed</b><em>Report a bug</em></span></button>
+        </div>
+        <form class="composer input-box" onsubmit="return false">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Message Rio…" autocomplete="off" aria-label="Message Rio">
+          <button class="mic-btn" id="btn-mic" type="button" title="Speak to Rio" aria-label="Speak to Rio"><i class="fa-solid fa-microphone"></i></button>
+          <button class="send-btn" id="btn-send" type="button" title="Send" aria-label="Send message"><i class="fa-solid fa-arrow-up"></i></button>
+        </form>
+        <div class="composer-foot">
+          <label class="switch"><input type="checkbox" id="chk-auto-speak" checked><span class="track"></span><span>Read replies aloud</span></label>
+          <span class="hint">Describe a problem and Rio flags it to support by email.</span>
+        </div>
       </div>
     </section>
 
-
     <!-- ─────────────────── VIEW 2: KNOWLEDGE BASE MANAGER ─────────────────── -->
     <section id="view-kb" class="view-section">
+      <div class="page">
+      <header class="page-head"><h2>Knowledge base</h2><p>Questions and answers Rio matches against. Edits are saved in this browser.</p></header>
       <div class="panel-grid">
 
         <!-- Feed Form Card -->
@@ -228,7 +138,7 @@
                         placeholder="Enter the official response that Rio AI should give..." required></textarea>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-2">
               <div class="form-group">
                 <label class="form-label">Category</label>
                 <select id="kb-category" class="form-select">
@@ -267,23 +177,23 @@
               (<span id="kb-total-count">0</span>)
             </div>
             <div style="display: flex; gap: 0.5rem;">
-              <button class="btn-secondary" id="btn-export-kb" title="Export JSON">
+              <button class="btn-secondary" id="btn-export-kb" title="Export JSON" aria-label="Export knowledge base as JSON">
                 <i class="fa-solid fa-download"></i>
               </button>
-              <label class="btn-secondary" style="cursor: pointer;" title="Import JSON">
+              <label class="btn-secondary" style="cursor: pointer;" title="Import JSON" aria-label="Import knowledge base JSON">
                 <i class="fa-solid fa-upload"></i>
-                <input type="file" id="input-import-kb" accept=".json" style="display: none;">
+                <input type="file" id="input-import-kb" accept=".json" hidden>
               </label>
-              <button class="btn-secondary" id="btn-reset-kb" title="Reset to Default 100 FAQs">
+              <button class="btn-secondary" id="btn-reset-kb" title="Reset to Default 100 FAQs" aria-label="Reset knowledge base to defaults">
                 <i class="fa-solid fa-rotate-left"></i>
               </button>
             </div>
           </div>
 
-          <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div class="kb-filter">
             <input type="text" id="kb-search-input" class="form-input"
-                   placeholder="Search questions or keywords..." style="flex: 1;">
-            <select id="kb-filter-cat" class="form-select" style="width: 200px;">
+                   placeholder="Search questions or keywords..." >
+            <select id="kb-filter-cat" class="form-select">
               <option value="ALL">All Categories</option>
               <option value="General Information">General Information</option>
               <option value="Registration & Account">Registration &amp; Account</option>
@@ -313,11 +223,14 @@
         </div>
 
       </div>
+      </div>
     </section>
 
 
     <!-- ─────────────────── VIEW 3: EMAIL ALERTS & PROBLEM FLAGGING ─────────────────── -->
     <section id="view-alerts" class="view-section">
+      <div class="page">
+      <header class="page-head"><h2>Email alerts</h2><p>Problems Rio detects in chat are flagged and emailed to the support inbox.</p></header>
       <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
         <!-- Email Config Card -->
@@ -326,13 +239,13 @@
             <div class="card-title">
               <i class="fa-solid fa-envelope-circle-check"></i> Email Alert Dispatcher Settings
             </div>
-            <span class="tag-pill" style="background: rgba(16,185,129,0.15); color: var(--accent-emerald);">
+            <span class="tag-pill tag-ok">
               Auto Problem Flagging Active
             </span>
           </div>
 
           <form id="email-config-form"
-                style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: end;">
+                class="cfg-grid">
             <div class="form-group">
               <label class="form-label">Developer Recipient Email (Target Inbox)</label>
               <input type="email" id="cfg-admin-email" class="form-input"
@@ -375,7 +288,7 @@
               </p>
             </div>
 
-            <div style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;" id="fields-emailjs">
+            <div style="display: none;" class="cfg-3" id="fields-emailjs">
               <div class="form-group">
                 <label class="form-label">EmailJS Service ID</label>
                 <input type="text" id="cfg-emailjs-service" class="form-input" placeholder="service_xxxx">
@@ -441,18 +354,18 @@
             <div id="inspector-empty-state"
                  style="padding: 3rem 1rem; text-align: center; color: var(--text-muted);">
               <i class="fa-solid fa-envelope-circle-check"
-                 style="font-size: 2.5rem; color: var(--text-dim); margin-bottom: 1rem;"></i>
+                 style="font-size: 2rem; color: var(--line-2); margin-bottom: .75rem;"></i>
               <p>No email alert selected. Click "Inspect Email" on any flagged incident to view the
                 dispatched email content.</p>
             </div>
 
             <div id="inspector-content" style="display: none; flex-direction: column; gap: 1rem;">
-              <div style="background: rgba(10,14,26,0.6); padding: 0.75rem 1rem;
+              <div style="background: var(--panel-2); padding: 0.75rem 1rem;
                            border-radius: var(--radius-sm); border: 1px solid var(--border-color);
                            font-size: 0.85rem;">
                 <p><strong>To:</strong> <span id="insp-to" style="color: var(--accent-cyan);"></span></p>
                 <p><strong>Subject:</strong>
-                  <span id="insp-subject" style="color: #fff; font-weight: 600;"></span></p>
+                  <span id="insp-subject" style="color: var(--ink); font-weight: 600;"></span></p>
                 <p><strong>Dispatched At:</strong>
                   <span id="insp-time" style="color: var(--text-muted);"></span></p>
               </div>
@@ -466,11 +379,14 @@
         </div>
 
       </div>
+      </div>
     </section>
 
 
     <!-- ─────────────────── VIEW 4: VOICE SETTINGS ─────────────────── -->
     <section id="view-voice" class="view-section">
+      <div class="page">
+      <header class="page-head"><h2>Voice</h2><p>Speech output voice, rate and pitch, plus a microphone test.</p></header>
       <div class="panel-grid">
 
         <div class="card">
@@ -517,7 +433,7 @@
 
           <div style="display: flex; flex-direction: column; gap: 1rem; height: 100%;
                        justify-content: center; text-align: center;">
-            <div style="padding: 2rem; background: rgba(10,14,26,0.5); border-radius: var(--radius-md);
+            <div style="padding: 2rem; background: var(--panel-2); border-radius: var(--radius-md);
                          border: 1px dashed var(--border-color);">
               <i class="fa-solid fa-microphone" id="voice-sandbox-icon"
                  style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 1rem;"></i>
@@ -537,11 +453,14 @@
         </div>
 
       </div>
+      </div>
     </section>
 
 
     <!-- ─────────────────── VIEW 5: EMBED CODE & INTEGRATION STUDIO ─────────────────── -->
     <section id="view-embed" class="view-section">
+      <div class="page">
+      <header class="page-head"><h2>Integrations</h2><p>Embed the Rio widget in another site, or relay alerts through Gmail.</p></header>
       <div class="card">
         <div class="card-header">
           <div class="card-title">
@@ -611,7 +530,7 @@ export const RioAiWidget = () => {
             </h4>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
               Copy this script into
-              <a href="https://script.google.com" target="_blank" style="color: var(--cyan);">
+              <a href="https://script.google.com" target="_blank" rel="noopener">
                 script.google.com
               </a>, click <strong>Deploy &rsaquo; Web App</strong>
               (Execute as: <em>Me</em>, Access: <em>Anyone</em>), and paste the Web App URL in Email Settings.
@@ -639,9 +558,9 @@ export const RioAiWidget = () => {
           </div>
 
           <!-- Live Widget Notice -->
-          <div style="background: rgba(34,211,238,0.05); border: 1px solid rgba(34,211,238,0.2);
+          <div style="background: var(--em-soft); border: 1px solid var(--em-line);
                        padding: 1.25rem; border-radius: var(--radius-md);">
-            <h4 style="color: #fff; margin-bottom: 0.5rem; display:flex; align-items:center; gap:0.5rem;">
+            <h4 style="color: var(--ink); margin-bottom: 0.5rem; display:flex; align-items:center; gap:0.5rem;">
               <i class="fa-solid fa-circle-play" style="color: var(--cyan);"></i> Live Web Widget Test
             </h4>
             <p style="font-size: 0.875rem; color: var(--text-muted);">
@@ -652,63 +571,53 @@ export const RioAiWidget = () => {
 
         </div>
       </div>
+      </div>
     </section>
 
   </main>
+</div>
 
-
-  <!-- ═══════════════════════════════════════════════════════════
-       FLOATING RIO AI WIDGET DRAWER (Bottom Right)
-  ═══════════════════════════════════════════════════════════ -->
-  <button class="rio-widget-launcher" id="rio-widget-launcher" title="Open Rio AI Chat Assistant">
-    <img src="assets/rio_logo.png?v=8.1" alt="Rio AI"
-         style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+  <!-- Floating widget preview -->
+  <button class="rio-widget-launcher" id="rio-widget-launcher" type="button" title="Open Rio chat widget" aria-label="Open Rio chat widget">
+    <img src="assets/rio_logo.png?v=8.1" alt="">
   </button>
 
-  <div class="rio-widget-drawer" id="rio-widget-drawer">
+  <div class="rio-widget-drawer" id="rio-widget-drawer" role="dialog" aria-label="Rio widget preview">
     <div class="chat-header">
       <div class="chat-user-info">
-        <div class="brand-avatar" style="width: 32px; height: 32px;">
-          <img src="assets/rio_logo.png?v=8.1" alt="Rio AI" class="rio-bird-avatar">
-        </div>
+        <span class="brand-avatar sm"><img src="assets/rio_logo.png?v=8.1" alt="" class="rio-bird-avatar"></span>
         <div>
-          <h4 style="font-size: 0.875rem; font-weight: 600;">Rio AI Support</h4>
-          <p style="font-size: 0.7rem; color: var(--accent-emerald);">
-            <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Online &bull; Ready
-          </p>
+          <h4>Rio AI Support</h4>
+          <p class="online"><span class="live-dot"></span>Online</p>
         </div>
       </div>
-      <button class="btn-icon" id="btn-close-widget" style="width: 28px; height: 28px;">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <button class="icon-btn" id="btn-close-widget" type="button" aria-label="Close widget"><i class="fa-solid fa-xmark"></i></button>
     </div>
-
-    <!-- Widget Messages List -->
-    <div class="messages-list" id="widget-messages-list" style="padding: 1rem; gap: 0.85rem;">
-      <!-- Shared with main chat state -->
-    </div>
-
-    <!-- Widget Input Bar -->
-    <div class="chat-input-area" style="padding: 0.75rem 1rem;">
+    <div class="messages-list" id="widget-messages-list"></div>
+    <div class="chat-input-area">
       <div class="input-box">
-        <input type="text" id="widget-chat-input" class="chat-input"
-               placeholder="Ask Rio AI..." autocomplete="off">
-        <button class="send-btn" id="widget-btn-send" style="width: 32px; height: 32px;">
-          <i class="fa-solid fa-paper-plane" style="font-size: 0.85rem;"></i>
-        </button>
+        <input type="text" id="widget-chat-input" class="chat-input" placeholder="Ask Rio…" autocomplete="off" aria-label="Message Rio">
+        <button class="send-btn" id="widget-btn-send" type="button" aria-label="Send"><i class="fa-solid fa-arrow-up"></i></button>
       </div>
     </div>
   </div>
 
-
-  <!-- ═══════════════════════════════════════════════════════════
-       SCRIPTS — v8.1
-  ═══════════════════════════════════════════════════════════ -->
+  <script>
+  // Rail drawer (small screens only): presentation, no app state.
+  (function () {
+    var app = document.getElementById('app');
+    function set(open) { app.classList.toggle('rail-open', open); }
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-rail-open]')) set(true);
+      else if (e.target.closest('[data-rail-close]') || e.target.closest('.rail .nav-btn')) set(false);
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  })();
+  </script>
   <script src="knowledge-base.js?v=8.1"></script>
   <script src="email-alert.js?v=8.1"></script>
   <script src="voice-engine.js?v=8.1"></script>
   <script src="rio-engine.js?v=8.1"></script>
-  <script src="app.js?v=8.1"></script>
-
+  <script src="app.js?v=9"></script>
 </body>
 </html>

@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- INITIALIZATION ---
   function init() {
-    initCursorSpotlight();
     setupTabNavigation();
     renderWelcomeMessage();
     renderKnowledgeBaseTable();
@@ -107,91 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAlertLogs();
     initVoiceControls();
     setupEventListeners();
-    init3DCursorCardTilt();
-    initButtonRippleFX();
-  }
-
-  // Real-time Cursor Spotlight Tracker
-  function initCursorSpotlight() {
-    window.addEventListener('mousemove', (e) => {
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-    });
-  }
-
-  // Interactive Button Click Ripple Effect
-  function initButtonRippleFX() {
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('button:not(.rio-widget-launcher), .btn-primary, .btn-secondary, .chip-btn');
-      if (!btn) return;
-
-      const rect = btn.getBoundingClientRect();
-      const ripple = document.createElement('span');
-      ripple.style.cssText = `
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.4);
-        transform: scale(0);
-        pointer-events: none;
-        width: ${Math.max(rect.width, rect.height) * 2}px;
-        height: ${Math.max(rect.width, rect.height) * 2}px;
-        left: ${e.clientX - rect.left - Math.max(rect.width, rect.height)}px;
-        top: ${e.clientY - rect.top - Math.max(rect.width, rect.height)}px;
-      `;
-
-      if (window.getComputedStyle(btn).position === 'static') {
-        btn.style.position = 'relative';
-      }
-      btn.style.overflow = 'hidden';
-      btn.appendChild(ripple);
-
-      if (window.gsap) {
-        gsap.to(ripple, {
-          scale: 1,
-          opacity: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          onComplete: () => ripple.remove()
-        });
-      } else {
-        setTimeout(() => ripple.remove(), 500);
-      }
-    });
-  }
-
-  // 3D Cursor Card Tilt Motion Engine
-  function init3DCursorCardTilt() {
-    if (!window.gsap) return;
-
-    document.querySelectorAll('.card, .sidebar-box').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = -((y - centerY) / centerY) * 7;
-        const rotateY = ((x - centerX) / centerX) * 7;
-
-        gsap.to(card, {
-          rotateX: rotateX,
-          rotateY: rotateY,
-          transformPerspective: 1000,
-          duration: 0.25,
-          ease: "power1.out"
-        });
-      });
-
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-          rotateX: 0,
-          rotateY: 0,
-          duration: 0.4,
-          ease: "power2.out"
-        });
-      });
-    });
   }
 
   // Toast Notification Helper with GSAP Entrance
@@ -218,7 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
           onComplete: () => toast.remove()
         });
       } else {
-        toast.remove();
+        toast.classList.add('out');
+        setTimeout(() => toast.remove(), 220);
       }
     }, 4000);
   }
@@ -366,18 +281,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let confidencePill = '';
     if (msg.confidence && msg.confidence > 0) {
-      const confColor = msg.confidence >= 70 ? 'var(--emerald)' : msg.confidence >= 40 ? 'var(--amber)' : 'var(--indigo-light)';
-      confidencePill = `<span class="conf-pill" style="background: ${confColor}22; color: ${confColor}; border: 1px solid ${confColor}44;">KB Match: ${msg.confidence}%</span>`;
+      const confTone = msg.confidence >= 70 ? 'hi' : msg.confidence >= 40 ? 'mid' : 'lo';
+      confidencePill = `<span class="conf-pill conf-${confTone}">KB match ${msg.confidence}%</span>`;
     }
 
     const listenBtnHtml = !isUser ? `
-      <button class="btn-icon btn-speak-msg" style="width: 26px; height: 26px; font-size: 0.72rem; flex-shrink:0;" title="Listen with Rio Voice">
+      <button class="btn-icon btn-speak-msg" title="Read aloud" aria-label="Read this reply aloud">
         <i class="fa-solid fa-volume-high"></i>
       </button>
     ` : '';
 
     const avatarHtml = isUser
-      ? `<div class="msg-avatar"><i class="fa-solid fa-user" style="font-size:0.75rem;"></i></div>`
+      ? `<div class="msg-avatar"><i class="fa-solid fa-user"></i></div>`
       : `<div class="brand-avatar" style="width:34px; height:34px;"><img src="assets/rio_logo.png" alt="Rio AI" class="rio-bird-avatar"></div>`;
 
     wrapper.innerHTML = `
@@ -482,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (filtered.length === 0) {
-      kbTableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2rem;">No Knowledge Base entries found. Add a new query above!</td></tr>`;
+      kbTableBody.innerHTML = `<tr><td colspan="3" class="empty-row">No Knowledge Base entries found. Add a new query above!</td></tr>`;
       return;
     }
 
@@ -490,20 +405,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>
-          <div style="font-weight: 600; color: #fff; margin-bottom: 0.2rem;">${item.question}</div>
+          <div class="kb-q">${item.question}</div>
           <span class="tag-pill">${item.category}</span>
-          ${item.tags.map(t => `<span class="tag-pill" style="opacity:0.7;">#${t}</span>`).join(' ')}
+          ${item.tags.map(t => `<span class="tag-pill">#${t}</span>`).join(' ')}
         </td>
-        <td style="color: var(--text-main); font-size: 0.85rem;">
+        <td class="kb-a">
           ${item.answer.length > 120 ? item.answer.substring(0, 120) + '...' : item.answer}
         </td>
         <td>
-          <div style="display: flex; gap: 0.35rem;">
-            <button class="btn-icon btn-edit-kb" style="width:28px; height:28px;" data-id="${item.id}" title="Edit Entry">
-              <i class="fa-solid fa-pen-to-square" style="font-size: 0.75rem;"></i>
+          <div class="row-actions">
+            <button class="btn-icon btn-edit-kb" aria-label="Edit entry" data-id="${item.id}" title="Edit Entry">
+              <i class="fa-solid fa-pen-to-square"></i>
             </button>
-            <button class="btn-icon btn-delete-kb" style="width:28px; height:28px; color: var(--accent-rose);" data-id="${item.id}" title="Delete Entry">
-              <i class="fa-solid fa-trash-can" style="font-size: 0.75rem;"></i>
+            <button class="btn-icon btn-delete-kb" aria-label="Delete entry" data-id="${item.id}" title="Delete Entry">
+              <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
         </td>
@@ -677,7 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
     alertLogsTbody.innerHTML = '';
 
     if (logs.length === 0) {
-      alertLogsTbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 2rem;">No problem alerts flagged yet. Try typing an issue in Chat Workspace!</td></tr>`;
+      alertLogsTbody.innerHTML = `<tr><td colspan="3" class="empty-row">No problem alerts flagged yet. Try typing an issue in Chat Workspace!</td></tr>`;
       return;
     }
 
@@ -688,14 +603,14 @@ document.addEventListener('DOMContentLoaded', () => {
       tr.innerHTML = `
         <td>
           <span class="severity-pill ${sevClass}">${log.severity}</span>
-          <div style="font-size:0.725rem; color:var(--text-dim); margin-top:0.2rem;">${log.timestamp}</div>
+          <div class="cell-sub">${log.timestamp}</div>
         </td>
         <td>
-          <div style="font-weight:600; color:var(--accent-cyan); font-size:0.8rem;">${log.category}</div>
-          <div style="color:#fff; font-size:0.825rem;">"${log.userQuery}"</div>
+          <div class="al-cat">${log.category}</div>
+          <div class="al-q">"${log.userQuery}"</div>
         </td>
         <td>
-          <button class="btn-secondary btn-inspect-alert" style="font-size:0.75rem; padding:0.3rem 0.6rem;" data-index="${index}">
+          <button class="btn-secondary btn-sm btn-inspect-alert" data-index="${index}">
             <i class="fa-solid fa-eye"></i> Inspect Mail
           </button>
         </td>
@@ -811,7 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
             voiceSandboxIcon.style.color = "var(--accent-cyan)";
           }
         },
-        (state) => {}
+        window.rioVoice.onStateChangeCallback // keep the shared mic/status UI in sync
       );
     } else {
       window.rioVoice.stopListening();
@@ -835,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
             handleSendMessage(chatInput);
           }
         },
-        () => {}
+        window.rioVoice.onStateChangeCallback // keep the shared mic/status UI in sync
       );
     }
   });
