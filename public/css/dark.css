@@ -1,0 +1,179 @@
+/* RECYCLE HUB -- dark theme tokens. Linked last on the themed pages (dashboards, login,
+   register*, terms-sourcing); never on index.html. Active only when theme.js sets
+   html[data-theme=dark]. Pages build on CSS variables, so this is mostly a remap.
+   Accent rule: text accents go light (>= 4.5:1 on dark surfaces); filled buttons keep a
+   deep shade (--acc-fill) so their white labels stay >= 4.5:1. */
+
+html:root:root[data-theme=dark] {
+  color-scheme: dark;
+  --ax-body: #0e1110; --ax-surface: #161a18; --ax-muted: #1c211f; --ax-hover: #232826;
+  --ax-line: rgba(255,255,255,.08); --ax-line-2: #353c39;
+  --ax-text: #e8ecea; --ax-text-2: #b3bcb7; --ax-text-3: #8f9893;
+  --ax-low: 0 1px 2px rgba(0,0,0,.45);
+  --ax-med: 0 2px 6px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.35);
+  --ax-high: 0 16px 40px -12px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.45);
+  --ax-ring: 0 0 0 3px rgba(52,211,153,.28);
+
+  /* hairlines astryx.css hardcodes */
+  --t-line: #262c29; --a-line: #262c29; --ln: #262c29; --line: #262c29; --border: #262c29; --rh-surface-3: #262c29;
+
+  /* brand green: light for text, deep for fills */
+  --acc: #34d399; --acc-hi: #6ee7b7; --acc-soft: rgba(16,185,129,.14); --acc-line: rgba(52,211,153,.35); --acc-ring: rgba(52,211,153,.45);
+  --acc-fill: #047857;
+  --em: #34d399; --em-hi: #6ee7b7; --em-acc: #34d399; --em-soft: rgba(16,185,129,.14); --em-line: rgba(52,211,153,.35);
+  --em-400: #34d399; --em-500: #34d399;
+  --green: #34d399; --green-deep: #6ee7b7; --accent: #34d399;
+  --t-em: #34d399; --t-em-hi: #6ee7b7; --t-em-soft: rgba(16,185,129,.14); --t-em-line: rgba(52,211,153,.35); --t-on-em: #fff;
+  --a-em: #34d399; --a-em-2: #34d399; --a-em-soft: rgba(16,185,129,.14); --a-em-line: rgba(52,211,153,.35);
+
+  /* status hues, lifted for dark */
+  --sky: #60a5fa; --sky-hi: #93c5fd; --sky-soft: rgba(59,130,246,.16);
+  --cyan: #60a5fa; --cyan-deep: #93c5fd;
+  --t-sky: #60a5fa; --t-sky-hi: #93c5fd; --t-sky-soft: rgba(59,130,246,.16);
+  --a-blue: #60a5fa; --a-blue-soft: rgba(59,130,246,.16);
+  --amber: #fbbf24; --t-amber: #fbbf24; --a-amber: #fbbf24; --a-amber-soft: rgba(245,158,11,.14);
+  --red: #f87171; --err: #f87171; --t-red: #f87171; --a-red: #f87171; --a-red-soft: rgba(239,68,68,.14);
+  --t-violet: #a78bfa; --a-violet: #a78bfa; --a-violet-soft: rgba(139,92,246,.16);
+  --t-teal: #2dd4bf;
+}
+/* Blue-accent pages (industrial) */
+html:root:root[data-theme=dark][data-acc=blue] {
+  --acc: #60a5fa; --acc-hi: #93c5fd; --acc-soft: rgba(59,130,246,.16); --acc-line: rgba(96,165,250,.35); --acc-ring: rgba(96,165,250,.45);
+  --acc-fill: #2563eb;
+  --ax-ring: 0 0 0 3px rgba(96,165,250,.28);
+}
+
+/* Filled buttons outside the dashboards (astryx.css paints them with --acc) */
+html[data-theme=dark] body .btn-primary, html[data-theme=dark] body .btn-primary-solid, html[data-theme=dark] body .btn-green,
+html[data-theme=dark] body .rh-btn.pri, html[data-theme=dark] body .btn-buy, html[data-theme=dark] body .rh-btn-primary,
+html[data-theme=dark] body .btn-submit, html[data-theme=dark] body #signinBtn, html[data-theme=dark] body .btn-main.btn-next,
+html[data-theme=dark] body .btn-main.btn-green, html[data-theme=dark] body .card-btn, html[data-theme=dark] body .send-btn,
+html[data-theme=dark] body .btn-cyan, html[data-theme=dark] body .submit-btn {
+  background-color: var(--acc-fill);
+}
+
+/* Glass bars astryx hardcodes as white */
+html[data-theme=dark] body .topbar, html[data-theme=dark] body .top-nav, html[data-theme=dark] body .chat-top {
+  background: rgba(22,26,24,.9);
+}
+html[data-theme=dark] body .nav-btn.active, html[data-theme=dark] body .nav-link.active { background: var(--acc-soft); color: var(--acc); }
+
+/* Theme toggle (theme.js) */
+.rh-theme-btn {
+  display: inline-grid; place-items: center; width: 36px; height: 36px; flex: none;
+  border: 1px solid var(--ax-line-2, #d4d4d4); border-radius: 10px;
+  background: var(--ax-surface, #fff); color: var(--ax-text-2, #474747); cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+.rh-theme-btn:hover { color: var(--ax-text, #0a0a0a); background: var(--ax-hover, #f1f1f1); }
+.rh-theme-btn:focus-visible { outline: 2px solid var(--acc, #047857); outline-offset: 2px; }
+.rh-theme-btn svg { width: 17px; height: 17px; }
+.rh-theme-btn.fab { position: fixed; top: 14px; right: 14px; z-index: 60; box-shadow: var(--ax-med); }
+
+/* ---- Hardcoded light colours in page styles, remapped ---- */
+/* theme.css forces white bars with !important */
+html[data-theme=dark] .sidebar, html[data-theme=dark] .topbar, html[data-theme=dark] .nav-in { background-color: #141816 !important; }
+html[data-theme=dark] body .accept-dock { background: rgba(22,26,24,.96); }
+
+/* White labels on filled accents need the deep fill, not the light text accent */
+html[data-theme=dark] body .partner-avatar, html[data-theme=dark] body .admin-avatar, html[data-theme=dark] body .wp-done,
+html[data-theme=dark] body .step-item.active .step-badge, html[data-theme=dark] body .sidebar-exec-btn,
+html[data-theme=dark] body .filter-tag-btn.active, html[data-theme=dark] body .btn-exec-submit:not(:disabled),
+html[data-theme=dark] body .pt-card.sourcing .card-btn, html[data-theme=dark] body .step-dot.active,
+html[data-theme=dark] body .v-step.active .v-step-icon, html[data-theme=dark] body .row-btn.row-cancel.armed {
+  background: var(--acc-fill); border-color: var(--acc-fill); color: #fff;
+}
+html[data-theme=dark] body .step-dot.active, html[data-theme=dark] body .v-step.active .v-step-icon { background: #2563eb; border-color: #2563eb; }
+html[data-theme=dark] body .row-btn.row-cancel.armed { background: #b91c1c; border-color: #b91c1c; }
+html[data-theme=dark] body .rh-badge { background: #dc2626; }
+html[data-theme=dark] body .btn-exec-submit:disabled { background: var(--ax-hover); color: var(--ax-text-3); }
+html[data-theme=dark] body .lg-brand { background: radial-gradient(120% 80% at 0% 0%, #065f46 0%, #064e3b 55%, #022c22 100%); }
+
+/* Light-mode-only text colours */
+html[data-theme=dark] body .row-btn.row-cancel, html[data-theme=dark] body .bridge-btn.out, html[data-theme=dark] body .rh-signout,
+html[data-theme=dark] body .rh-menu .danger, html[data-theme=dark] body [data-act=signout] { color: #f87171; }
+html[data-theme=dark] body .rh-chart figcaption { color: var(--ax-text-2); }
+html[data-theme=dark] body .rh-chart figcaption small { color: var(--ax-text-3); }
+html[data-theme=dark] body .sig-mode-btn { color: var(--ax-text-3); }
+html[data-theme=dark] body .sig-mode-btn.active { color: var(--ax-text); }
+html[data-theme=dark] body .canvas-hint, html[data-theme=dark] body .sig-pad::before { color: var(--ax-text-3); }
+html[data-theme=dark] body .key-points h2 { color: #6ee7b7; }
+html[data-theme=dark] body .key-points li, html[data-theme=dark] body .legal-preamble { color: var(--ax-text-2); }
+html[data-theme=dark] body .key-points a { color: var(--acc); }
+
+/* Status badges and tags: tinted fill, light text */
+html[data-theme=dark] body .badge-green, html[data-theme=dark] body .badge.nodot { color: #6ee7b7; border-color: rgba(52,211,153,.25); }
+html[data-theme=dark] body .badge-cyan, html[data-theme=dark] body .pill.go { color: #93c5fd; background: rgba(59,130,246,.16); border-color: rgba(96,165,250,.25); }
+html[data-theme=dark] body .badge-amber, html[data-theme=dark] body .tag.warm { color: #fcd34d; background: rgba(245,158,11,.14); border-color: rgba(251,191,36,.25); }
+html[data-theme=dark] body .badge-gray, html[data-theme=dark] body .who-av { background: var(--ax-hover); color: var(--ax-text-2); }
+html[data-theme=dark] body .who-av.ic-em { background: rgba(16,185,129,.16); color: #6ee7b7; }
+html[data-theme=dark] body .who-av.ic-red { background: rgba(239,68,68,.16); color: #fca5a5; }
+html[data-theme=dark] body .who-av.ic-violet { background: rgba(139,92,246,.18); color: #c4b5fd; }
+html[data-theme=dark] body .who-av.ic-blue, html[data-theme=dark] body .who-av.ic-sky { background: rgba(59,130,246,.16); color: #93c5fd; }
+html[data-theme=dark] body .who-av.ic-amber { background: rgba(245,158,11,.14); color: #fcd34d; }
+
+/* White panels and fields */
+html[data-theme=dark] body .impact-stat, html[data-theme=dark] body .ev-marker-tag, html[data-theme=dark] body .schedule-badge,
+html[data-theme=dark] body .custom-checkbox-label, html[data-theme=dark] body .clause-search-input, html[data-theme=dark] body .filter-tag-btn,
+html[data-theme=dark] body .step-badge, html[data-theme=dark] body .step-dot, html[data-theme=dark] body .v-step-icon,
+html[data-theme=dark] body .side-footer, html[data-theme=dark] body #industrialForm, html[data-theme=dark] body .v-step.active,
+html[data-theme=dark] body .v-step:hover { background: var(--ax-surface); }
+html[data-theme=dark] body .impact-stat.hi { background: var(--acc-soft); }
+html[data-theme=dark] body .sig-pad { background: #f7f7f5; border-color: #3a413d; } /* paper stays light: the ink is dark and the signature image is saved as drawn */
+html[data-theme=dark] body .tab-row { background: var(--ax-body); }
+html[data-theme=dark] body .tab-row .rh-ind, html[data-theme=dark] body .tab-btn.active { background: var(--ax-hover); color: var(--ax-text); }
+html[data-theme=dark] body .tab-row.rh-ind-host > .tab-btn.active { color: var(--ax-text) !important; }
+html[data-theme=dark] body .prog-track { background: var(--ax-hover); }
+html[data-theme=dark] body .radar-canvas-wrap { background: radial-gradient(circle at 50% 50%, #12261f 0%, #0f1412 70%); }
+html[data-theme=dark] body .key-points { background: rgba(16,185,129,.08); border-color: rgba(52,211,153,.25); }
+html[data-theme=dark] body .legal-preamble, html[data-theme=dark] body .notice-warning { background: rgba(245,158,11,.10); }
+html[data-theme=dark] body .notice-warning { color: #fcd34d; border-color: rgba(251,191,36,.25); }
+html[data-theme=dark] body .notice-info { background: rgba(59,130,246,.10); color: #bfdbfe; border-color: rgba(96,165,250,.25); }
+
+/* Rio launcher */
+html[data-theme=dark] body .rio-launch { background: var(--ax-surface); color: var(--ax-text); border-color: var(--ax-line-2); }
+html[data-theme=dark] body .rio-launch:hover { background: var(--ax-hover); }
+html[data-theme=dark] body .rio-launch .rio-ic-x { color: var(--ax-text); }
+html[data-theme=dark] body .canvas-hint { color: #5f6661; } /* on the light signature paper */
+html[data-theme=dark] body .bridge-btn.role small { background: var(--ax-surface); }
+html[data-theme=dark] body .rh-ana-h p, html[data-theme=dark] body .kp-note { color: var(--ax-text-3); }
+html[data-theme=dark] body .impact-stat.hi .metric-sub, html[data-theme=dark] body .impact-stat.hi .ops-val small { color: var(--ax-text-2); }
+html[data-theme=dark] body .verify-box h4 { color: var(--ax-text) !important; } /* inline #0f172a */
+html[data-theme=dark] body .prog-steps li.on .num { background: var(--acc-fill); border-color: var(--acc-fill); }
+html[data-theme=dark] body .prog-steps .num { background: var(--ax-hover); }
+/* account.css slate greys (drawers, tabs, tour, notes, KPI captions) */
+html[data-theme=dark] body .rh-note-b, html[data-theme=dark] body .rh-tour-tip p { color: var(--ax-text-2); }
+html[data-theme=dark] body .rh-note-ts, html[data-theme=dark] body .rh-empty, html[data-theme=dark] body .rh-dr-id small,
+html[data-theme=dark] body .rh-x, html[data-theme=dark] body .rh-tabs button, html[data-theme=dark] body .rh-f input:disabled,
+html[data-theme=dark] body .rh-f small, html[data-theme=dark] body .rh-switch small, html[data-theme=dark] body .rh-kpi small,
+html[data-theme=dark] body .rh-chart-empty { color: var(--ax-text-3); }
+
+/* Rio panel: its own token set */
+html[data-theme=dark] body .rio {
+  --rio-green: #047857; --rio-text: var(--ax-text); --rio-text-2: var(--ax-text-2); --rio-border: rgba(255,255,255,.08);
+}
+html[data-theme=dark] body .rio-panel { background: var(--ax-surface); border-color: var(--ax-line-2); }
+html[data-theme=dark] body .rio-msg.bot { background: rgba(255,255,255,.04); }
+html[data-theme=dark] body .rio-msg strong { color: #6ee7b7; }
+html[data-theme=dark] body .rio-msg.user strong { color: inherit; }
+html[data-theme=dark] body .rio-chip, html[data-theme=dark] body .rio-input, html[data-theme=dark] body .rio-foot { background: rgba(255,255,255,.03); }
+html[data-theme=dark] body .rio-chip:hover { color: #6ee7b7; }
+html[data-theme=dark] body .rio-mic { background: var(--ax-muted); }
+
+/* astryx.css light tints */
+html[data-theme=dark] body .sec-ic, html[data-theme=dark] body .metric-icon { background: var(--acc-soft); }
+html[data-theme=dark] body .data-table tr.flag td { background: rgba(239,68,68,.08); }
+html[data-theme=dark] body .meter { background: var(--ax-hover); }
+html[data-theme=dark] body .rh-draft-note { background: rgba(16,185,129,.08); border-color: rgba(52,211,153,.25); color: #6ee7b7; }
+html[data-theme=dark] body .rh-draft-note button { color: #6ee7b7; }
+
+/* Charts: gridlines and baselines drawn for a white page */
+html[data-theme=dark] body .mini-bars { background: repeating-linear-gradient(to top, transparent 0 calc(25% - 1px), rgba(255,255,255,.06) calc(25% - 1px) 25%); }
+html[data-theme=dark] body .rh-chart line { stroke: #343b38; }
+/* report.js monthly bars: hardcoded light axis + label greys */
+html[data-theme=dark] svg[aria-label="Monthly chart"] line { stroke: #343b38; }
+html[data-theme=dark] svg[aria-label="Monthly chart"] text { fill: var(--ax-text-3, #9aa29d); }
+/* photo-overlay pills (industrial store/lots): white glass -> dark glass */
+html[data-theme=dark] body .cond-badge { background: rgba(17,21,19,.88); color: var(--ax-text, #e7ebe8); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+html[data-theme=dark] body .cond-badge.low { background: #451a03; color: #fcd34d; }
+html[data-theme=dark] body .cond-badge.sold { background: #b91c1c; color: #fff; }
