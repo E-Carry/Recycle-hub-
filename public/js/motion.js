@@ -190,7 +190,53 @@
   let rz;
   addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => hosts.forEach((_, h) => place(h, false)), 120); });
 
+  const SKIP = '.rio, .rh-cmdk, [data-rh-static], .rv';
+
+  /* Headline reveal (Framer-style): each word of an h1 rises out of a blur in
+     sequence. Text nodes are split in place, so child markup (spans, <br>) and
+     textContent are preserved. Skipped for gradient text: background-clip:text
+     does not paint into transformed inline-block children. */
+  function words(h) {
+    if (h.dataset.rhWords || h.closest(SKIP) || !visible(h) || hasOwnAnim(h)) return;
+    const clipped = (el) => /text/.test(getComputedStyle(el).backgroundClip || getComputedStyle(el).webkitBackgroundClip || '');
+    if (clipped(h) || [...h.querySelectorAll('*')].some(clipped)) return;
+    h.dataset.rhWords = '1';
+    const walk = document.createTreeWalker(h, NodeFilter.SHOW_TEXT);
+    const nodes = []; while (walk.nextNode()) nodes.push(walk.currentNode);
+    let i = 0;
+    nodes.forEach((tn) => {
+      const parts = tn.data.split(/(\s+)/);
+      if (parts.every((p) => !p.trim())) return;
+      const frag = document.createDocumentFragment();
+      parts.forEach((p) => {
+        if (!p.trim()) { if (p) frag.appendChild(document.createTextNode(p)); return; }
+        const s = document.createElement('span');
+        s.className = 'rh-w'; s.textContent = p; s.style.setProperty('--w', i++);
+        frag.appendChild(s);
+      });
+      tn.replaceWith(frag);
+    });
+  }
+
+  /* Cursor spotlight: a soft glow follows the pointer across cards. Painted as a
+     background-image layer, so only cards with no background image of their own
+     get it (never clobbers a page gradient); no DOM or position changes. */
+  const SPOT_SEL = CARD + ', .rh-spot';
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse' || !e.target.closest) return;
+    const c = e.target.closest(SPOT_SEL);
+    if (!c || c.closest(SKIP)) return;
+    if (!c.classList.contains('rh-spot-on')) {
+      if (c.__rhNoSpot || getComputedStyle(c).backgroundImage !== 'none') { c.__rhNoSpot = true; return; }
+      c.classList.add('rh-spot-on');
+    }
+    const r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }, { passive: true });
+
   function init() {
+    document.querySelectorAll('h1').forEach(words);
     stagger(document.body);
     setupNav();
     document.querySelectorAll(METRIC).forEach(countUp);

@@ -84,3 +84,30 @@ a:hover .rh-logo-loop, .rh-logo:hover .rh-logo-loop, .brand-box:hover .rh-logo-l
 @keyframes rh-loop-in { from { transform: rotate(-120deg) scale(.6); opacity: 0; } }
 @keyframes rh-loop-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .rh-logo-loop { animation: none !important; } }
+
+/* Headline word reveal (words split by js/motion.js) */
+.rh-w { display: inline-block; animation: rh-word .8s cubic-bezier(.22, 1, .36, 1) both; animation-delay: calc(var(--w) * 55ms + 80ms); }
+@keyframes rh-word { from { opacity: 0; transform: translateY(.45em); filter: blur(8px); } }
+
+/* Cursor spotlight on cards (class + --mx/--my set by js/motion.js) */
+.rh-spot-on { background-image: radial-gradient(420px circle at var(--mx, -999px) var(--my, -999px), rgba(16, 185, 129, .09), transparent 45%); }
+
+/* Scroll progress: thin brand bar driven by the root scroller, no JS */
+@supports (animation-timeline: scroll()) {
+  html::before {
+    content: ""; position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 2147483000; pointer-events: none;
+    background: linear-gradient(90deg, #10b981, #047857); transform-origin: 0 50%; transform: scaleX(0); /* inactive timeline (page not root-scrolled) = hidden */
+    animation: rh-progress linear both; animation-timeline: scroll(root block);
+  }
+  @keyframes rh-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+}
+
+/* Page transition upgrade: incoming page slides up a touch while fading in */
+::view-transition-new(root) { animation: rh-vt-rise .38s cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes rh-vt-rise { from { opacity: 0; transform: translateY(10px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rh-w { animation: none; }
+  html::before { display: none; }
+  ::view-transition-new(root) { animation: none; }
+}
