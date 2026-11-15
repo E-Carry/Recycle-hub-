@@ -17,6 +17,7 @@ class VoiceEngine {
 
     this.onResultCallback = null;
     this.onStateChangeCallback = null;
+    this.onErrorCallback = null;
 
     this.initRecognition();
     this.initSynthesis();
@@ -47,6 +48,7 @@ class VoiceEngine {
 
       this.recognition.onerror = (event) => {
         console.warn('Voice recognition error:', event.error);
+        if (this.onErrorCallback) this.onErrorCallback(event.error);
         this.isListening = false;
         this.notifyStateChange('idle');
       };

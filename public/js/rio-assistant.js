@@ -8,8 +8,9 @@
   if (window.__rioAssistant) return;
   window.__rioAssistant = true;
 
-  const ENGINE = ['/rio/knowledge-base.js', '/rio/email-alert.js', '/rio/rio-engine.js'];
+  const ENGINE = ['/rio/voice-engine.js', '/rio/knowledge-base.js', '/rio/email-alert.js', '/rio/rio-engine.js'];
   const STORE = 'rio_chat_v1';
+  const SPEAK = 'rio_speak'; // localStorage: '1' = read every reply aloud
   const CHIPS = [
     // Verified to hit their KB entries (engine is keyword-matched; paraphrases can miss).
     'How do I book a pickup?',
@@ -42,6 +43,8 @@
     x: '<svg class="rio-ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
+    mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+    vol: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="rio-wave" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="rio-mute" d="M16 9l6 6M22 9l-6 6"/></svg>',
     open: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
   };
 
@@ -58,6 +61,7 @@
         </div>
         <div class="rio-head-actions">
           ${isAdmin ? `<a class="rio-icon-btn" href="/rio/" title="Open Rio console (knowledge base, alerts)">${ic.open}</a>` : ''}
+          <button class="rio-icon-btn rio-speak-toggle" data-act="speak" aria-pressed="false" title="Read replies aloud">${ic.vol}</button>
           <button class="rio-icon-btn" data-act="reset" title="New conversation">${ic.reset}</button>
         </div>
       </header>
@@ -65,6 +69,7 @@
       <div class="rio-chips"></div>
       <form class="rio-foot">
         <input class="rio-input" placeholder="Ask about pickups, payments, rates…" autocomplete="off" maxlength="500">
+        <button class="rio-mic" type="button" title="Speak to Rio" aria-label="Speak to Rio" aria-pressed="false">${ic.mic}</button>
         <button class="rio-send" type="submit" title="Send" disabled>${ic.send}</button>
       </form>
     </section>
@@ -73,7 +78,7 @@
   const $ = (s) => root.querySelector(s);
   const panel = $('.rio-panel'), body = $('.rio-body'), chips = $('.rio-chips');
   const form = $('.rio-foot'), input = $('.rio-input'), send = $('.rio-send');
-  const launch = $('.rio-launch'), hint = $('.rio-hint');
+  const launch = $('.rio-launch'), hint = $('.rio-hint'), mic = $('.rio-mic');
 
   let history = [];
   try { history = JSON.parse(sessionStorage.getItem(STORE)) || []; } catch (e) { history = []; }
@@ -128,6 +133,10 @@
       b.type = 'button'; b.className = 'rio-copy'; b.title = 'Copy'; b.setAttribute('aria-label', 'Copy reply');
       b.innerHTML = copyIc; b.onclick = () => copy(m.text);
       el.appendChild(b);
+      const v = document.createElement('button');
+      v.type = 'button'; v.className = 'rio-copy rio-say'; v.title = 'Read aloud'; v.setAttribute('aria-label', 'Read reply aloud');
+      v.innerHTML = ic.vol; v.onclick = () => say(m.text);
+      el.appendChild(v);
     }
     body.appendChild(el);
     body.scrollTop = body.scrollHeight;
@@ -193,9 +202,52 @@
     }
   }
 
+  // ── Voice (Web Speech API via /rio/voice-engine.js) ──
+  let speakOn = localStorage.getItem(SPEAK) === '1';
+  const voiceErr = {
+    'not-allowed': 'Microphone access is blocked. Allow it from the address-bar icon and try again.',
+    'service-not-allowed': 'Microphone access is blocked. Allow it from the address-bar icon and try again.',
+    'no-speech': "I didn't hear anything. Tap the mic and speak again.",
+    'audio-capture': 'No microphone was found on this device.',
+    network: 'Voice recognition needs an internet connection (and Chrome or Edge).',
+  };
+  const toast = (m, t) => (window.rhToast ? window.rhToast(m, t || 'info', 4200) : console.warn('[Rio]', m));
+  async function say(text) {
+    try { await loadEngine(); } catch (e) { return toast('Voice is unavailable right now.', 'error'); }
+    if (!window.rioVoice.synthesis) return toast('This browser cannot read text aloud.', 'error');
+    window.rioVoice.speak(String(text).replace(/\*\*/g, ''));
+  }
+  function setSpeak(on) {
+    speakOn = on;
+    localStorage.setItem(SPEAK, on ? '1' : '0');
+    const b = $('[data-act="speak"]');
+    b.setAttribute('aria-pressed', String(on));
+    b.title = on ? 'Reading replies aloud (click to mute)' : 'Read replies aloud';
+    if (!on && window.rioVoice) window.rioVoice.stopSpeaking();
+  }
+  async function listen() {
+    try { await loadEngine(); } catch (e) { return toast('Voice is unavailable right now.', 'error'); }
+    const v = window.rioVoice;
+    if (v.isListening) return v.stopListening();
+    if (!v.recognition) return toast('Voice input needs Chrome, Edge or Safari. You can still type your question.', 'error');
+    v.onErrorCallback = (code) => toast(voiceErr[code] || 'Voice input stopped (' + code + ').', 'error');
+    let heard = '';
+    v.startListening((t, final) => {
+      heard = t; input.value = t; send.disabled = !t.trim();
+      if (final) { ask(t, true); v.stopListening(); } // ask clears the input, so the idle fallback below won't re-send
+    }, (state) => {
+      const on = state === 'listening';
+      root.classList.toggle('listening', on);
+      mic.setAttribute('aria-pressed', String(on));
+      input.placeholder = on ? 'Listening…' : 'Ask about pickups, payments, rates…';
+      if (!on && heard && input.value === heard && !busy) ask(heard, true); // ended without a final result
+      if (!on) heard = '';
+    });
+  }
+
   let busy = false;
-  async function ask(text) {
-    text = text.trim();
+  async function ask(text, viaVoice) {
+    text = String(text).trim();
     if (!text || busy) return;
     busy = true; input.value = ''; send.disabled = true;
     chips.innerHTML = ''; root.classList.add('thinking');
@@ -217,7 +269,9 @@
       const reply = res.flaggedAlert ? null : await llm(text, prior);
       typing.remove();
       root.classList.remove('thinking');
-      await push({ who: 'bot', alert: !!res.flaggedAlert, text: reply || res.botMsg.text, time: res.botMsg.time }, true);
+      const answer = reply || res.botMsg.text;
+      if (viaVoice || speakOn) say(answer); // speak while the text types out
+      await push({ who: 'bot', alert: !!res.flaggedAlert, text: answer, time: res.botMsg.time }, true);
       const hit = window.rioKB && window.rioKB.findBestMatch(text);
       const asked = history.filter((h) => h.who === 'user').map((h) => h.text);
       const next = window.rhUX && hit ? window.rhUX.followUps(window.rioKB.getAll(), hit.entry, asked, 3) : [];
@@ -239,6 +293,7 @@
     launch.setAttribute('aria-expanded', String(open));
     launch.setAttribute('aria-label', open ? 'Close Rio AI assistant' : 'Open Rio AI assistant');
     hint.classList.remove('on');
+    if (!open && window.rioVoice) { window.rioVoice.stopListening(); window.rioVoice.stopSpeaking(); }
     if (open) {
       if (!body.childElementCount) {
         if (history.length) history.forEach((m) => render(m)); else greet();
@@ -250,6 +305,9 @@
   }
 
   launch.addEventListener('click', () => setOpen(!root.classList.contains('open')));
+  mic.addEventListener('click', listen);
+  $('[data-act="speak"]').addEventListener('click', () => setSpeak(!speakOn));
+  setSpeak(speakOn);
   form.addEventListener('submit', (e) => { e.preventDefault(); ask(input.value); });
   input.addEventListener('input', () => { send.disabled = busy || !input.value.trim(); });
   $('[data-act="reset"]').addEventListener('click', () => {
