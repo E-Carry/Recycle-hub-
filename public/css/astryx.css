@@ -108,11 +108,11 @@ html body .btn-main.btn-green { --acc: var(--green); }
 html body .pt-card .card-btn { --acc: var(--c, #047857); }
 
 /* Secondary: white with an emphasized border, grey on hover */
-html body .btn-sm:not(.btn-green):not(.btn-cyan), html body .btn-ghost, html body .row-btn, html body .filter-pill, html body .tab-btn, html body .mode-btn, html body .rh-btn:not(.pri), html body .tb-menu, html body .nav-toggle, html body .rh-bell, html body .bridge-btn, html body .rh-btn-secondary, html body .btn-secondary, html body .btn-nav {
+html body .btn-sm:not(.btn-green):not(.btn-cyan):not(.btn-primary), html body .btn-ghost, html body .row-btn, html body .filter-pill, html body .tab-btn, html body .mode-btn, html body .rh-btn:not(.pri), html body .tb-menu, html body .nav-toggle, html body .rh-bell, html body .bridge-btn, html body .rh-btn-secondary, html body .btn-secondary, html body .btn-nav {
   background: var(--ax-surface); border: 1px solid var(--ax-line-2); border-radius: var(--ax-r-inner);
   box-shadow: none; text-shadow: none; transition: background-color .15s ease, border-color .15s ease;
 }
-html body .btn-sm:not(.btn-green):not(.btn-cyan):hover, html body .btn-ghost:hover, html body .row-btn:hover, html body .filter-pill:hover, html body .tab-btn:hover, html body .rh-btn:not(.pri):hover, html body .rh-bell:hover, html body .rh-btn-secondary:hover, html body .btn-secondary:hover, html body .btn-nav:hover {
+html body .btn-sm:not(.btn-green):not(.btn-cyan):not(.btn-primary):hover, html body .btn-ghost:hover, html body .row-btn:hover, html body .filter-pill:hover, html body .tab-btn:hover, html body .rh-btn:not(.pri):hover, html body .rh-bell:hover, html body .rh-btn-secondary:hover, html body .btn-secondary:hover, html body .btn-nav:hover {
   background: var(--ax-hover);
 }
 html body .filter-pill.active, html body .tab-btn.active, html body .mode-btn.active, html body .rh-tabs .on, html body .rh-tabs button[aria-selected="true"] {
