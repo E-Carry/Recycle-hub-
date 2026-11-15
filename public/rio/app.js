@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="alert-banner">
           <i class="fa-solid fa-triangle-exclamation alert-banner-icon"></i>
           <div>
-            <strong>Incident Flagged &amp; Email Dispatched</strong><br>
+            <strong>Incident Flagged${msg.flaggedAlert.delivered ? ' &amp; Email Sent' : ' (email not delivered)'}</strong><br>
             Category: <em>${msg.flaggedAlert.category}</em> — Severity: <span class="sev-inline ${msg.flaggedAlert.severity.toLowerCase()}">${msg.flaggedAlert.severity}</span><br>
             Reported to: <em>${msg.flaggedAlert.recipient}</em> &nbsp;|&nbsp; Ref: <strong>${msg.flaggedAlert.alertId}</strong>
           </div>
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // If an alert was flagged, show toast & update alert tab
     if (result.flaggedAlert) {
-      showToast(`🚨 Incident Flagged! Alert dispatched to ${result.flaggedAlert.recipient}`, 'error');
+      showToast(result.flaggedAlert.delivered ? `Incident flagged and emailed to ${result.flaggedAlert.recipient}` : `Incident logged (Ref ${result.flaggedAlert.alertId}); email to support could not be delivered`, 'error');
       renderAlertLogs();
     }
 
@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const res = await window.rioEmailAlerts.dispatchAlert(testPayload);
     renderAlertLogs();
     inspectAlert(res.payload);
-    showToast(`Diagnostic report dispatched to recycle.hub.pvt.ltd@gmail.com!`, 'success');
+    showToast(res.payload.delivered ? 'Diagnostic report delivered to recycle.hub.pvt.ltd@gmail.com' : `Diagnostic email not delivered: ${res.payload.status}`, res.payload.delivered ? 'success' : 'error');
   });
 
   function renderAlertLogs() {

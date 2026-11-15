@@ -265,11 +265,11 @@ class RioEngine {
         if (kbMatch) {
           botResponseText = kbMatch.entry.answer;
           if (flaggedAlert) {
-            botResponseText += `\n\n📌 **Important**: I have flagged this issue and automatically dispatched a detailed incident report to our support team (Reference: **${flaggedAlert.alertId}**). Our engineering team will investigate and follow up with you promptly.`;
+            botResponseText += `\n\n📌 **Important**: I have flagged this issue (Reference: **${flaggedAlert.alertId}**). ${flaggedAlert.delivered ? 'A detailed incident report has been emailed to our support team, who will follow up with you.' : 'I could not reach the support inbox just now, so please email recycle.hub.pvt.ltd@gmail.com with this reference.'}`;
           }
         } else if (problemAssessment.isProblem) {
           // Problem detected but no exact KB match — use alert context
-          botResponseText = `I understand you are experiencing an issue related to **${problemAssessment.category}**.\n\nI have immediately escalated this problem and dispatched a high-priority alert to our engineering and support team (Incident Reference: **${flaggedAlert.alertId}**). A specialist will review the full details of your report and contact you as soon as possible.\n\nIn the meantime, please note down your incident reference number for follow-up purposes. Is there anything else I can assist you with?`;
+          botResponseText = `I understand you are experiencing an issue related to **${problemAssessment.category}**.\n\nI have logged this problem (Incident Reference: **${flaggedAlert.alertId}**). ${flaggedAlert.delivered ? 'A high-priority alert has been emailed to our support team, and a specialist will contact you as soon as possible.' : 'I could not reach the support inbox just now, so please email recycle.hub.pvt.ltd@gmail.com with this reference so a specialist can follow up.'}\n\nIn the meantime, please note down your incident reference number for follow-up purposes. Is there anything else I can assist you with?`;
         } else {
           // In-domain but no KB match
           botResponseText = this._getNoMatchResponse();

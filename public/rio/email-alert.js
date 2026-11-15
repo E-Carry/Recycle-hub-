@@ -199,7 +199,7 @@ ${formattedTranscript || 'User: ' + userQuery}
     if (this.config.emailProvider === 'formsubmit' || !this.config.emailProvider || (this.config.emailProvider === 'gmail_script' && !this.config.gmailScriptUrl)) {
       try {
         const formSubmitUrl = `https://formsubmit.co/ajax/${encodeURIComponent(recipientEmail)}`;
-        await fetch(formSubmitUrl, {
+        const res = await fetch(formSubmitUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -218,13 +218,16 @@ ${formattedTranscript || 'User: ' + userQuery}
             full_incident_report: payload.textBody
           })
         });
-        payload.status = `REAL EMAIL SENT (FormSubmit -> ${recipientEmail})`;
-        result.success = true;
+        // FormSubmit answers 200 with success:"false" until the inbox owner activates it
+        const body = await res.json().catch(() => ({}));
+        payload.delivered = res.ok && String(body.success) === 'true';
+        payload.status = payload.delivered ? `DELIVERED (FormSubmit -> ${recipientEmail})` : `FAILED (FormSubmit: ${body.message || 'HTTP ' + res.status})`;
       } catch (err) {
         console.error('FormSubmit Delivery Error', err);
-        payload.status = `SENT TO INBOX (${recipientEmail})`;
-        result.success = true;
+        payload.delivered = false;
+        payload.status = `FAILED (FormSubmit: ${err.message})`;
       }
+      result.success = payload.delivered;
     }
     // Real Provider: Gmail API via Google Apps Script Web App
     else if (this.config.emailProvider === 'gmail_script' && this.config.gmailScriptUrl) {
@@ -243,7 +246,7 @@ ${formattedTranscript || 'User: ' + userQuery}
             category: payload.category
           })
         });
-        payload.status = 'DELIVERED (Gmail API)';
+        payload.status = 'SENT, UNCONFIRMED (Gmail script, no-cors)';
       } catch (err) {
         console.error('Gmail API Delivery Error', err);
         payload.status = 'FAILED (Gmail API)';
@@ -268,6 +271,7 @@ ${formattedTranscript || 'User: ' + userQuery}
           this.config.emailJsPublicKey
         );
         payload.status = 'DELIVERED (EmailJS)';
+        payload.delivered = true;
       } catch (err) {
         console.error('EmailJS Delivery Error', err);
         payload.status = 'FAILED (EmailJS)';
@@ -285,6 +289,7 @@ ${formattedTranscript || 'User: ' + userQuery}
         });
         if (response.ok) {
           payload.status = 'DELIVERED (Webhook)';
+          payload.delivered = true;
         } else {
           payload.status = `HTTP ${response.status} (Webhook)`;
         }
