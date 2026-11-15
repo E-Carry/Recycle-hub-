@@ -1,0 +1,201 @@
+/* RECYCLE HUB -- skeuomorphic skin.
+   Linked LAST in <head> (after each page's inline <style>) so equal-specificity rules win
+   by order; `html body` prefixes beat the pages' single-class rules. Colour, depth and
+   texture only: no layout changes, so page JS and responsive rules keep working.
+   Undo: `git checkout before-skeuo -- public/` (see README). */
+
+:root {
+  --sk-linen: #e3dbcc;
+  --sk-paper-hi: #fdfbf7; --sk-paper-lo: #f3eee5;
+  --sk-edge: rgba(92, 72, 44, .17);
+  --sk-edge-2: rgba(92, 72, 44, .28);
+  --sk-ink: #2b2620; --sk-ink-2: #5d5447; --sk-ink-3: #847866;
+  --sk-raise: inset 0 1px 0 #fff, inset 0 -2px 0 rgba(92,72,44,.06), 0 1px 1px rgba(70,52,28,.12), 0 4px 8px -2px rgba(70,52,28,.18), 0 16px 28px -14px rgba(70,52,28,.40);
+  --sk-raise-hi: inset 0 1px 0 #fff, inset 0 -2px 0 rgba(92,72,44,.06), 0 2px 2px rgba(70,52,28,.14), 0 10px 18px -4px rgba(70,52,28,.26), 0 28px 44px -18px rgba(70,52,28,.45);
+  --sk-well: inset 0 2px 3px rgba(70,52,28,.16), inset 0 0 0 1px rgba(70,52,28,.10), 0 1px 0 rgba(255,255,255,.9);
+  --sk-paper: linear-gradient(180deg, var(--sk-paper-hi), var(--sk-paper-lo));
+  --sk-gloss-green: linear-gradient(180deg, #3fbf8c 0%, #13905f 48%, #0a7a50 52%, #086a45 100%);
+  --sk-gloss-cream: linear-gradient(180deg, #ffffff 0%, #f6f1e8 50%, #ece5d8 100%);
+  --sk-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .16 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --sk-brushed: repeating-linear-gradient(90deg, rgba(255,255,255,.35) 0 1px, rgba(0,0,0,.035) 1px 2px, transparent 2px 3px, rgba(255,255,255,.12) 3px 4px);
+
+  /* Re-point the dashboards' own tokens so everything built from them follows */
+  --a-bg: var(--sk-linen); --a-panel: var(--sk-paper-hi); --a-hover: #f4efe6;
+  --a-ink: var(--sk-ink); --a-ink-2: var(--sk-ink-2); --a-ink-3: var(--sk-ink-3);
+  --a-line: rgba(92,72,44,.15); --a-line-2: rgba(92,72,44,.26);
+  --a-shadow: var(--sk-raise); --a-shadow-lg: var(--sk-raise-hi);
+  --ink: var(--sk-ink); --ink-2: var(--sk-ink-2); --ink-3: var(--sk-ink-3);
+  --ln: rgba(92,72,44,.15); --ln-2: rgba(92,72,44,.26); --paper: var(--sk-linen);
+}
+
+/* Page: warm linen with paper grain */
+html body { background-color: var(--sk-linen); background-image: var(--sk-grain); color: var(--sk-ink); }
+
+/* Sidebars: brushed aluminium, engraved section captions */
+html body .sidebar {
+  background: var(--sk-brushed), linear-gradient(180deg, #eeebe5 0%, #d6d1c6 100%);
+  border-right: 1px solid rgba(70,52,28,.22);
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.7), 4px 0 14px -8px rgba(70,52,28,.35);
+}
+html body .sidebar .sb-label, html body .sidebar .nav-cap { color: #8a7f6e; text-shadow: 0 1px 0 rgba(255,255,255,.85); }
+html body .nav-btn, html body .nav-link { text-shadow: 0 1px 0 rgba(255,255,255,.7); transition: background .15s ease, box-shadow .15s ease, color .15s ease; }
+html body .nav-btn:hover, html body .nav-link:hover { background: rgba(255,255,255,.45); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 1px 2px rgba(70,52,28,.10); }
+/* active item sits pressed into the metal */
+html body .nav-btn.active, html body .nav-link.active {
+  background: linear-gradient(180deg, #c9dfd1, #dcebe1);
+  color: #04563a;
+  box-shadow: inset 0 3px 6px rgba(4,70,45,.30), inset 0 0 0 1px rgba(4,90,58,.25), 0 1px 0 rgba(255,255,255,.95);
+}
+html body .nav-btn .nav-n, html body .nav-badge {
+  background: linear-gradient(180deg, #fff, #ebe5da); color: var(--sk-ink-2);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(70,52,28,.22);
+}
+html body .nav-btn .nav-n.warn { background: linear-gradient(180deg, #f87171, #c62828); color: #fff; text-shadow: 0 -1px 0 rgba(0,0,0,.25); }
+
+/* Top bars: frosted cream strip with a bevelled lower edge */
+html body .topbar {
+  background: linear-gradient(180deg, rgba(253,251,247,.97), rgba(243,238,229,.97));
+  border-bottom: 1px solid rgba(70,52,28,.18);
+  box-shadow: 0 1px 0 rgba(255,255,255,.8), 0 6px 12px -10px rgba(70,52,28,.35);
+}
+
+/* Raised paper cards */
+html body .card, html body .glass-panel, html body .metric-card, html body .rh-kpi, html body .rh-chart, html body .store-card, html body .trk-card {
+  background: var(--sk-paper);
+  border: 1px solid var(--sk-edge);
+  box-shadow: var(--sk-raise);
+}
+html body .card:not(.static):hover, html body .metric-card:hover, html body .store-card:hover { box-shadow: var(--sk-raise-hi); }
+/* nested panels inside a card read as recessed trays instead of stacking more depth */
+html body .glass-panel .metric-card, html body .card .card, html body .glass-panel .rh-kpi, html body .glass-panel .rh-chart, html body .card .rh-kpi, html body .card .rh-chart {
+  background: linear-gradient(180deg, #f1ebe1, #f8f4ee);
+  box-shadow: inset 0 1px 3px rgba(70,52,28,.13), 0 1px 0 rgba(255,255,255,.9);
+  border-color: rgba(92,72,44,.12);
+}
+html body .card-head { border-bottom-color: rgba(92,72,44,.13); box-shadow: 0 1px 0 rgba(255,255,255,.8); }
+html body .sec-header h1, html body .topbar-title h1, html body .card-h, html body .sec-tt { text-shadow: 0 1px 0 rgba(255,255,255,.9); }
+
+/* Icon chips: little embossed tiles */
+html body .sec-ic, html body .metric-icon {
+  background: linear-gradient(180deg, #e9f6ef, #cfe8db);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 2px rgba(4,70,45,.22);
+}
+
+/* Inputs: pressed into the surface */
+html body .form-control, html body .modal-input, html body .calc-input, html body .topbar-center input, html body .rh-f input, html body .rh-f select, html body .rh-f textarea {
+  background-color: #f7f3ec;
+  border: 1px solid rgba(92,72,44,.22);
+  box-shadow: var(--sk-well);
+}
+html body .form-control:focus, html body .modal-input:focus, html body .calc-input:focus, html body .rh-f input:focus {
+  border-color: #0a7a50; outline: none;
+  box-shadow: var(--sk-well), 0 0 0 3px rgba(16,144,95,.20);
+}
+
+/* Primary buttons: glossy key in the page's accent (--acc: green sourcing, blue industrial;
+   admin has none, so green) with a hard bottom lip; press sinks 2px */
+html body .btn-primary, html body .btn-primary-solid, html body .btn-green, html body .rh-btn.pri, html body .btn-buy {
+  background-color: var(--acc, #0b7d52);
+  background-image: linear-gradient(110deg, transparent 42%, rgba(255,255,255,.32) 50%, transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.38) 0%, rgba(255,255,255,.10) 48%, rgba(0,0,0,.04) 52%, rgba(0,0,0,.20) 100%);
+  background-size: 250% 100%, 100% 100%; background-position: 200% 0, 0 0; background-repeat: no-repeat;
+  color: #fff; border: 1px solid rgba(0,0,0,.28);
+  text-shadow: 0 -1px 0 rgba(0,0,0,.28);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 2px 0 rgba(0,0,0,.32), 0 5px 10px -3px rgba(0,0,0,.35);
+  transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
+}
+html body .btn-primary:hover, html body .btn-primary-solid:hover, html body .btn-green:hover, html body .rh-btn.pri:hover, html body .btn-buy:hover {
+  filter: brightness(1.06); animation: sk-shine .9s cubic-bezier(.22,1,.36,1);
+}
+html body .btn-primary:active, html body .btn-primary-solid:active, html body .btn-green:active, html body .rh-btn.pri:active, html body .btn-buy:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.25), 0 0 0 transparent, 0 1px 2px rgba(0,0,0,.25);
+}
+html body .btn-primary:disabled, html body .btn-buy:disabled { filter: grayscale(.7) brightness(1.08); opacity: .7; transform: none; animation: none; }
+@keyframes sk-shine { from { background-position: 200% 0, 0 0; } to { background-position: -100% 0, 0 0; } }
+
+/* Secondary buttons: domed cream keys */
+html body .btn-sm:not(.btn-green), html body .btn-ghost, html body .row-btn, html body .filter-pill, html body .tab-btn, html body .mode-btn, html body .rh-btn:not(.pri), html body .tb-menu, html body .nav-toggle, html body .rh-bell, html body .bridge-btn {
+  background: var(--sk-gloss-cream);
+  border: 1px solid rgba(92,72,44,.24);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(92,72,44,.18), 0 2px 4px -1px rgba(70,52,28,.18);
+  text-shadow: 0 1px 0 rgba(255,255,255,.8);
+  transition: transform .08s ease, box-shadow .08s ease, background .15s ease;
+}
+html body .btn-sm:not(.btn-green):hover, html body .btn-ghost:hover, html body .row-btn:hover, html body .filter-pill:hover, html body .tab-btn:hover, html body .rh-btn:not(.pri):hover, html body .rh-bell:hover {
+  background: linear-gradient(180deg, #fff, #f9f5ee 50%, #f0e9dd);
+}
+html body .btn-sm:not(.btn-green):active, html body .btn-ghost:active, html body .row-btn:active, html body .filter-pill:active, html body .tab-btn:active, html body .rh-btn:not(.pri):active, html body .rh-bell:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 3px rgba(70,52,28,.20), 0 0 0 transparent;
+}
+/* selected segment / filter: pressed in */
+html body .filter-pill.active, html body .tab-btn.active, html body .mode-btn.active, html body .rh-tabs .on, html body .rh-tabs button[aria-selected="true"] {
+  background: linear-gradient(180deg, #e3dccf, #efe9df);
+  box-shadow: inset 0 2px 4px rgba(70,52,28,.24), 0 1px 0 rgba(255,255,255,.9);
+  color: var(--sk-ink);
+}
+html body .bridge-btn.out { color: #b42318; }
+
+/* Tables: ledger paper with a raised header rail */
+html body .data-table th, html body .table-wrap thead th {
+  background: linear-gradient(180deg, #faf7f1, #ebe4d7);
+  color: var(--sk-ink-2);
+  text-shadow: 0 1px 0 rgba(255,255,255,.9);
+  border-bottom: 1px solid rgba(92,72,44,.25);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(255,255,255,.6);
+}
+html body .data-table td, html body .table-wrap tbody td { border-bottom: 1px solid rgba(92,72,44,.09); }
+html body .data-table tbody tr:nth-child(even) td, html body .table-wrap tbody tr:nth-child(even) td { background: rgba(236,230,219,.35); }
+html body .data-table tbody tr:hover td, html body .table-wrap tbody tr:hover td { background: rgba(255,250,235,.95); }
+html body .data-table tr.flag td { background: rgba(254,226,226,.55); }
+
+/* Status pills: enamel badges (gloss over each page's own tint, which carries meaning) */
+html body .badge, html body .pill, html body .tag, html body .st-pick, html body .rh-chip {
+  background-image: linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0) 55%, rgba(0,0,0,.035));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 1px 1.5px rgba(70,52,28,.20);
+}
+/* the admin status dropdown keeps its caret on top of the gloss */
+html body .st-pick {
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%), linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0) 55%, rgba(0,0,0,.035));
+}
+
+/* Toggles: physical switch */
+html body .rh-switch { box-shadow: inset 0 2px 4px rgba(70,52,28,.25); }
+
+/* Drawer, popovers, modals: thick card stock */
+html body .rh-drawer, html body .rh-pop, html body .modal-box, html body .modal-card {
+  background: var(--sk-paper), var(--sk-grain);
+  border: 1px solid var(--sk-edge-2);
+  box-shadow: inset 0 1px 0 #fff, 0 24px 48px -16px rgba(50,36,18,.45), 0 4px 10px rgba(50,36,18,.12);
+}
+
+/* KPI mini bars: glass tubes (tint stays the chart's own) */
+html body .spark i:not(.z) {
+  box-shadow: inset 1px 0 0 rgba(255,255,255,.45), inset -1px 0 0 rgba(0,0,0,.10), 0 1px 2px rgba(70,52,28,.18);
+}
+
+/* Rio launcher: glossy jewel */
+html body .rio-launch { box-shadow: 0 3px 0 #04432d, 0 10px 22px -6px rgba(4,67,45,.55); }
+
+@media (prefers-reduced-motion: reduce) {
+  html body .btn-primary:hover, html body .btn-primary-solid:hover, html body .btn-green:hover, html body .rh-btn.pri:hover, html body .btn-buy:hover { animation: none; }
+}
+
+/* Logo tile: bevelled enamel badge */
+html body .sidebar .rh-logo, html body .topbar .rh-logo {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 2px 0 #04432d, 0 6px 14px -4px rgba(4,67,45,.5);
+}
+/* Big numbers and headings: letterpress */
+html body .ops-val, html body .metric-val, html body .rh-kpi b, html body .card .num { text-shadow: 0 1px 0 rgba(255,255,255,.95); }
+html body .sec-header h1 { color: #241f19; }
+
+/* Sliding nav pill (js/motion.js .rh-ind): pressed into the metal, keeps the theme tint */
+html body .sidebar .rh-ind:not(.h) {
+  background-image: linear-gradient(180deg, rgba(0,0,0,.05), rgba(255,255,255,.25));
+  box-shadow: inset 0 3px 6px rgba(30,40,60,.22), inset 0 0 0 1px rgba(30,40,60,.14), 0 1px 0 rgba(255,255,255,.95);
+}
+
+/* Stock / progress meters: recessed track, glossy fill */
+html body .meter { background: linear-gradient(180deg, #d9d1c2, #e9e3d8); box-shadow: inset 0 1px 2px rgba(70,52,28,.30), 0 1px 0 rgba(255,255,255,.9); height: 8px; }
+html body .meter > i { background-image: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 55%, rgba(0,0,0,.12)); }
