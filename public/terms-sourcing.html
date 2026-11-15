@@ -195,6 +195,14 @@
         .modal-detail-row:first-child { border-top: 0; }
         .modal-detail-row strong { overflow-wrap: anywhere; text-align: right; }
         .modal-action-btn { width: 100%; min-height: 46px; border: 0; border-radius: 10px; background: var(--green); color: #fff; font: 600 15px 'Inter', sans-serif; cursor: pointer; transition: background-color .2s ease, transform .25s var(--pop); }
+        .modal-copy-btn { width: 100%; min-height: 46px; margin-top: 10px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #d4d4d4; border-radius: 10px; background: #fff; color: #111; font: 600 15px 'Inter', sans-serif; cursor: pointer; }
+        .modal-copy-btn:hover { background: #f5f5f5; }
+        .key-points { margin: 0 0 24px; padding: 20px 24px; border: 1px solid #a7f3d0; border-radius: 12px; background: #f0fdf4; }
+        .key-points h2 { margin: 0 0 10px; font: 600 17px/1.3 'Inter', sans-serif; color: #065f46; }
+        .key-points ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+        .key-points li { font-size: 14.5px; line-height: 1.55; color: #1f2937; }
+        .key-points a { color: #047857; font-size: 13px; font-weight: 600; white-space: nowrap; margin-left: 4px; }
+        .kp-note { margin: 12px 0 0; font-size: 13px; color: #4b5563; }
         .modal-action-btn:hover { background: var(--green-deep); transform: translateY(-1px); }
 
         @keyframes tr-down { from { opacity: 0; transform: translateY(-14px); } }
@@ -371,6 +379,20 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Plain-language summary; the sections below are what you sign -->
+            <section class="key-points" aria-labelledby="kpH">
+                <h2 id="kpH">Key points in plain words</h2>
+                <ul>
+                    <li><b>Getting paid:</b> rates follow the daily market index, and payouts reach you by NEFT, RTGS or UPI within 24 hours of manifest approval. <a href="#sec-9">Section 9</a></li>
+                    <li><b>Ownership:</b> material becomes Recycle Hub's once it is inspected and the weighment slip is issued. <a href="#sec-4">Section 4</a></li>
+                    <li><b>Cancelling a pickup:</b> free up to 2 hours before the truck is dispatched. Frequent no-notice cancellations may carry a small fee. <a href="#sec-11">Section 11</a></li>
+                    <li><b>Never hand over:</b> chemicals, medical waste, explosives, gas cylinders or anything radioactive. <a href="#sec-6">Section 6</a></li>
+                    <li><b>Your login:</b> anything done from your account counts as done by you, so keep your password private. <a href="#sec-3">Section 3</a></li>
+                    <li><b>Leaving:</b> either side can end the agreement with 7 days' notice. Fraud or safety breaches mean immediate suspension. <a href="#sec-14">Section 14</a></li>
+                </ul>
+                <p class="kp-note">This summary helps you read the agreement. The full sections below are what you are signing.</p>
+            </section>
 
             <!-- Legal Preamble -->
             <div class="legal-preamble">
@@ -723,6 +745,10 @@
             <button type="button" class="modal-action-btn" onclick="window.location.href='login.html'">
                 Go to sign in
             </button>
+            <button type="button" class="modal-copy-btn" id="btnCopy">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+                Download signed copy
+            </button>
         </div>
     </div>
 
@@ -1030,6 +1056,17 @@
                 if (data.success) {
                     document.getElementById('modalEmail').textContent = finalPayload.email;
                     document.getElementById('modalCert').textContent = certHash;
+                    const copy = {
+                        title: document.querySelector('.doc-main-title').textContent.trim(),
+                        rev: document.querySelector('.doc-ref-id').textContent.trim(),
+                        party: finalPayload.fullName, email: finalPayload.email,
+                        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+                        ref: certHash, sig: signatureData,
+                        sections: [...document.querySelectorAll('.section-card')].map(c => ({
+                            n: c.querySelector('.sec-number').textContent, h: c.querySelector('.sec-h').textContent, html: c.querySelector('.sec-body').innerHTML
+                        }))
+                    };
+                    document.getElementById('btnCopy').onclick = () => rhSignedCopy.download(copy, 'recycle-hub-agreement-' + certHash + '.html');
 
                     const modal = document.getElementById('successModal');
                     modal.style.display = 'flex';
@@ -1053,6 +1090,7 @@
             }
         }
     </script>
+  <script src="js/signed-copy.js" defer></script>
   <script src="js/ux.js" defer></script>
   <script src="js/fx.js" defer></script>
   <script src="js/motion.js" defer></script>
