@@ -326,8 +326,26 @@
     if (q && q.trim()) ask(q);
   };
 
+  // Rise above a page's own bottom action bar (marked data-rio-avoid) while it is on screen.
+  function avoid() {
+    const base = innerHeight - parseFloat(getComputedStyle(root).bottom), top = base - launch.offsetHeight;
+    const h = hint.getBoundingClientRect(), left = h.width ? Math.min(h.left, launch.getBoundingClientRect().left) : launch.getBoundingClientRect().left;
+    let lift = 0;
+    if (!root.classList.contains('open')) for (const b of document.querySelectorAll('[data-rio-avoid]')) {
+      const r = b.getBoundingClientRect();
+      if (r.height && r.right > left && r.top < base && r.bottom > top) lift = Math.max(lift, base - r.top + 12);
+    }
+    root.style.setProperty('--rio-lift', lift + 'px');
+  }
+  let raf = 0;
+  const queue = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; avoid(); }); };
+
   function mount() {
     document.body.appendChild(root);
+    if (document.querySelector('[data-rio-avoid]')) {
+      for (const ev of ['scroll', 'resize', 'click', 'keyup']) addEventListener(ev, queue, { passive: true, capture: true });
+      queue();
+    }
     // One-time nudge per session, after the page has settled.
     if (!sessionStorage.getItem('rio_hinted')) {
       setTimeout(() => {
