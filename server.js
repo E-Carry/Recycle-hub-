@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 const { hashPw, checkPw, sign, verify, cookies } = require('./auth');
+const { feed, unread, partnerKey } = require('./notes');
 
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) {
@@ -142,8 +143,6 @@ const pub = (u) => {
     const { password, ...rest } = u;
     return { ...rest, type: role(u), isAdmin: role(u) === 'admin', partnerCode: u.partnerCode || u.uid };
 };
-// Industrial orders are keyed by partner code; older accounts without one fall back to email.
-const partnerKey = (u) => String(u.uid || u.partnerCode || u.email).toUpperCase();
 
 // Sliding-window rate limiter shared by login, OTP and Rio.
 const hits = new Map();
@@ -322,6 +321,39 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/api/me', need(), (req, res) => res.json({ success: true, user: pub(req.user) }));
+
+// Profile edits. Only these fields; identity, role and password go elsewhere.
+const EDITABLE = ['fullName', 'mobile', 'companyName', 'designation'];
+const PREFS = ['emailUpdates', 'weeklyDigest', 'priceAlerts'];
+app.patch('/api/me', need(), (req, res) => {
+    const b = req.body || {};
+    const u = updateUser(req.user.email, (u) => {
+        for (const k of EDITABLE) if (typeof b[k] === 'string') u[k] = b[k].trim().slice(0, 120);
+        if (b.prefs && typeof b.prefs === 'object') {
+            u.prefs = { ...(u.prefs || {}) };
+            for (const k of PREFS) if (typeof b.prefs[k] === 'boolean') u.prefs[k] = b.prefs[k];
+        }
+    });
+    res.json({ success: true, user: pub(u) });
+});
+
+// Wrong current password is 400, not 401: the client treats 401 as "session ended".
+app.post('/api/me/password', need(), (req, res) => {
+    const { current, next } = req.body || {};
+    if (!checkPw(current, req.user.password).ok) return res.status(400).json({ error: 'Current password is incorrect.' });
+    if (String(next || '').length < 8) return res.status(400).json({ error: 'New password must be at least 8 characters.' });
+    updateUser(req.user.email, (u) => { u.password = hashPw(next); });
+    res.json({ success: true, message: 'Password updated.' });
+});
+
+app.get('/api/notifications', need(), (req, res) => {
+    const items = feed(req.user, role(req.user), getAdminData());
+    res.json({ success: true, items, unread: unread(items, req.user.notifSeenAt) });
+});
+app.post('/api/notifications/read', need(), (req, res) => {
+    updateUser(req.user.email, (u) => { u.notifSeenAt = new Date().toISOString(); });
+    res.json({ success: true });
+});
 
 // Email a 6-digit code. purpose 'register' targets an address that has no
 // account yet; otherwise the code signs in an existing account. The reply never
