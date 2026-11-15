@@ -15,46 +15,30 @@
   transform: translateY(calc(-1 * var(--rio-lift, 0px))); transition: transform .35s var(--rio-spring);
 }
 
-/* ── Launcher ── */
+/* ── Launcher: flat Astryx pill (mark + "Ask Rio"); collapses to a round close button when open ── */
 .rio-launch {
-  position: relative; width: 58px; height: 58px; border-radius: 50%;
-  border: 0; cursor: pointer; color: #fff;
-  background: var(--rio-green);
-  box-shadow: 0 10px 30px -6px rgba(15,23,42,.08), inset 0 1px 0 rgba(255,255,255,.4);
-  display: grid; place-items: center;
-  transition: transform .45s var(--rio-spring), box-shadow .3s;
+  position: relative; height: 52px; padding: 0 20px 0 7px; border-radius: 999px;
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  font-family: inherit; font-size: 14px; font-weight: 600; line-height: 1; letter-spacing: -.005em; color: #0a0a0a;
+  background: #fff; border: 1px solid #00000014;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px -8px rgba(0,0,0,.18);
+  transition: padding .35s var(--rio-spring), background-color .2s, box-shadow .2s, transform .2s;
 }
-.rio-launch:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -6px rgba(15,23,42,.3); }
+.rio-launch:hover { background: #f7f7f7; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 28px -8px rgba(0,0,0,.22); }
 .rio-launch:active { transform: scale(.97); }
-.rio-launch .rio-ic-x { width: 26px; height: 26px; }
-.rio-launch svg { transition: transform .5s var(--rio-spring), opacity .25s; }
-.rio-launch .rio-ic-x { position: absolute; opacity: 0; transform: rotate(-90deg) scale(.5); }
+.rio-launch-ic { position: relative; width: 38px; height: 38px; flex: none; display: grid; place-items: center; }
+.rio-launch-ic svg { grid-area: 1 / 1; transition: transform .45s var(--rio-spring), opacity .2s; }
+.rio-launch .rio-ic-chat { width: 38px; height: 38px; }
+.rio-launch .rio-ic-x { width: 22px; height: 22px; color: #0a0a0a; opacity: 0; transform: rotate(-90deg) scale(.5); }
+.rio-launch-txt { white-space: nowrap; overflow: hidden; max-width: 80px; transition: max-width .35s var(--rio-spring), opacity .2s; }
+.rio.open .rio-launch { padding: 0 6px; gap: 0; }
+.rio.open .rio-launch-txt { max-width: 0; opacity: 0; }
 .rio.open .rio-launch .rio-ic-chat { opacity: 0; transform: rotate(90deg) scale(.5); }
 .rio.open .rio-launch .rio-ic-x { opacity: 1; transform: none; }
-/* breathing halo, idle only */
-.rio-launch::after {
-  content: ''; position: absolute; inset: -6px; border-radius: 50%;
-  border: 2px solid rgba(5,150,105,0.45);
-  display: none;
-}
-.rio.open .rio-launch::after { animation: none; opacity: 0; }
-@keyframes rio-halo { 0% { transform: scale(.85); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
-
-.rio-hint {
-  position: absolute; right: 70px; bottom: 12px; white-space: nowrap;
-  padding: 8px 14px; border-radius: 12px; font-size: 13px; font-weight: 600;
-  color: var(--rio-text); background: rgba(255,255,255,0.92);
-  border: 1px solid var(--rio-border); backdrop-filter: blur(14px);
-  box-shadow: 0 10px 30px -10px rgba(15,23,42,0.12);
-  pointer-events: none; opacity: 0; transform: translateX(8px) scale(.96);
-  transition: opacity .3s, transform .45s var(--rio-spring);
-}
-.rio-hint.on { opacity: 1; transform: none; }
-.rio.open .rio-hint { opacity: 0; }
 
 /* ── Panel (Figma "smart animate": grows out of the launcher) ── */
 .rio-panel {
-  position: absolute; right: 0; bottom: 74px;
+  position: absolute; right: 0; bottom: 66px;
   width: min(390px, calc(100vw - 32px)); height: min(600px, calc(100vh - 120px));
   display: flex; flex-direction: column; overflow: hidden;
   border-radius: 16px; color: var(--rio-text);
@@ -76,7 +60,7 @@
   border-bottom: 1px solid var(--rio-border);
   background: linear-gradient(180deg, rgba(5,150,105,0.049), transparent);
 }
-.rio-ava { width: 38px; height: 38px; flex: none; display: grid; filter: drop-shadow(0 4px 12px rgba(15,23,42,.08)); }
+.rio-ava { width: 38px; height: 38px; flex: none; display: grid; }
 .rio-ava .rio-mark { width: 100%; height: 100%; }
 .rio-title { font-family: var(--font-display, inherit); font-weight: 800; font-size: 15.5px; line-height: 1.2; }
 .rio-status { font-size: 12px; color: var(--rio-text-2); display: flex; align-items: center; gap: 6px; }
@@ -147,17 +131,14 @@
 
 @media (max-width: 520px) {
   .rio { right: 16px; bottom: 16px; }
-  .rio-hint { display: none; }
+  .rio-launch { padding: 0 6px; gap: 0; }
+  .rio-launch-txt { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rio *, .rio *::before, .rio *::after { animation: none !important; transition-duration: .01ms !important; }
 }
 
 /* ── Rio mark (SVG logo) ── */
-.rio-launch { background: transparent; padding: 0; box-shadow: 0 6px 20px -6px rgba(15,23,42,.25); }
-.rio-launch .rio-ic-chat { width: 100%; height: 100%; }
-.rio-launch .rio-ic-x { color: #fff; }
-.rio.open .rio-launch { background: var(--rio-green); }
 .rio-mark-core { transform-origin: 18px 18.5px; }
 .rio-mark-spark { transform-origin: 28.5px 28px; animation: rio-twinkle 4s ease-in-out infinite; }
 @keyframes rio-twinkle { 0%, 70%, 100% { transform: scale(1); opacity: 1; } 85% { transform: scale(.6); opacity: .6; } }

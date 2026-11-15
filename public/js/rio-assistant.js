@@ -25,19 +25,12 @@
   })();
   const isAdmin = !!(user.isAdmin || user.type === 'admin');
 
-  // Rio mark: emerald squircle with a white AI sparkle and a small companion star.
-  // Gradient ids must be unique per instance.
-  let markN = 0;
-  const mark = (cls) => {
-    const g = 'rioG' + (++markN);
-    return `<svg class="rio-mark ${cls}" viewBox="0 0 40 40" aria-hidden="true">
-      <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#059669"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>
-      <rect x="2" y="2" width="36" height="36" rx="11" fill="url(#${g})"/>
-      <rect x="2.5" y="2.5" width="35" height="35" rx="10.5" fill="none" stroke="#fff" stroke-opacity=".14"/>
+  // Rio mark: flat emerald squircle with a white AI sparkle and a small companion star.
+  const mark = (cls) => `<svg class="rio-mark ${cls}" viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="2" y="2" width="36" height="36" rx="11" fill="#047857"/>
       <path class="rio-mark-core" d="M18 9c.9 5.6 3.9 8.6 9.5 9.5-5.6.9-8.6 3.9-9.5 9.5-.9-5.6-3.9-8.6-9.5-9.5C14.1 17.6 17.1 14.6 18 9z" fill="#fff"/>
-      <path class="rio-mark-spark" d="M28.5 24.5c.35 2 1.5 3.15 3.5 3.5-2 .35-3.15 1.5-3.5 3.5-.35-2-1.5-3.15-3.5-3.5 2-.35 3.15-1.5 3.5-3.5z" fill="#d1fae5"/>
+      <path class="rio-mark-spark" d="M28.5 24.5c.35 2 1.5 3.15 3.5 3.5-2 .35-3.15 1.5-3.5 3.5-.35-2-1.5-3.15-3.5-3.5 2-.35 3.15-1.5 3.5-3.5z" fill="#a7f3d0"/>
     </svg>`;
-  };
 
   const ic = {
     x: '<svg class="rio-ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
@@ -51,7 +44,6 @@
   const root = document.createElement('div');
   root.className = 'rio';
   root.innerHTML = `
-    <div class="rio-hint" role="status">Need help? Ask Rio AI</div>
     <section class="rio-panel" role="dialog" aria-label="Rio AI assistant" aria-hidden="true">
       <header class="rio-head">
         <span class="rio-ava">${mark('')}</span>
@@ -73,12 +65,12 @@
         <button class="rio-send" type="submit" title="Send" disabled>${ic.send}</button>
       </form>
     </section>
-    <button class="rio-launch" aria-label="Open Rio AI assistant" aria-expanded="false">${mark('rio-ic-chat')}${ic.x}</button>`;
+    <button class="rio-launch" aria-label="Open Rio AI assistant" aria-expanded="false"><span class="rio-launch-ic">${mark('rio-ic-chat')}${ic.x}</span><span class="rio-launch-txt">Ask Rio</span></button>`;
 
   const $ = (s) => root.querySelector(s);
   const panel = $('.rio-panel'), body = $('.rio-body'), chips = $('.rio-chips');
   const form = $('.rio-foot'), input = $('.rio-input'), send = $('.rio-send');
-  const launch = $('.rio-launch'), hint = $('.rio-hint'), mic = $('.rio-mic');
+  const launch = $('.rio-launch'), mic = $('.rio-mic');
 
   let history = [];
   try { history = JSON.parse(sessionStorage.getItem(STORE)) || []; } catch (e) { history = []; }
@@ -292,7 +284,6 @@
     panel.setAttribute('aria-hidden', String(!open));
     launch.setAttribute('aria-expanded', String(open));
     launch.setAttribute('aria-label', open ? 'Close Rio AI assistant' : 'Open Rio AI assistant');
-    hint.classList.remove('on');
     if (!open && window.rioVoice) { window.rioVoice.stopListening(); window.rioVoice.stopSpeaking(); }
     if (open) {
       if (!body.childElementCount) {
@@ -329,7 +320,7 @@
   // Rise above a page's own bottom action bar (marked data-rio-avoid) while it is on screen.
   function avoid() {
     const base = innerHeight - parseFloat(getComputedStyle(root).bottom), top = base - launch.offsetHeight;
-    const h = hint.getBoundingClientRect(), left = h.width ? Math.min(h.left, launch.getBoundingClientRect().left) : launch.getBoundingClientRect().left;
+    const left = launch.getBoundingClientRect().left;
     let lift = 0;
     if (!root.classList.contains('open')) for (const b of document.querySelectorAll('[data-rio-avoid]')) {
       const r = b.getBoundingClientRect();
@@ -345,15 +336,6 @@
     if (document.querySelector('[data-rio-avoid]')) {
       for (const ev of ['scroll', 'resize', 'click', 'keyup']) addEventListener(ev, queue, { passive: true, capture: true });
       queue();
-    }
-    // One-time nudge per session, after the page has settled.
-    if (!sessionStorage.getItem('rio_hinted')) {
-      setTimeout(() => {
-        if (root.classList.contains('open')) return;
-        hint.classList.add('on');
-        sessionStorage.setItem('rio_hinted', '1');
-        setTimeout(() => hint.classList.remove('on'), 4500);
-      }, 2200);
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
