@@ -49,3 +49,14 @@ test('cookies: parses header, decodes values', () => {
   assert.deepStrictEqual(cookies('a=1; rh_s=x%2Ey'), { a: '1', rh_s: 'x.y' });
   assert.deepStrictEqual(cookies(undefined), {});
 });
+
+test('roleOf: admin only for the configured admin email, whatever type is stored', () => {
+  const { roleOf } = require('../auth.js');
+  const A = 'boss@example.com';
+  assert.strictEqual(roleOf({ email: 'Boss@Example.com', type: 'admin' }, A), 'admin');
+  assert.strictEqual(roleOf({ email: 'eve@example.com', type: 'admin' }, A), 'sourcing');
+  assert.strictEqual(roleOf({ email: 'ind@example.com', type: 'industrial' }, A), 'industrial');
+  assert.strictEqual(roleOf({ email: 'x@example.com', type: 'weird' }, A), 'sourcing');
+  assert.strictEqual(roleOf({ type: 'admin' }, A), 'sourcing');
+  assert.strictEqual(roleOf({ email: A, type: 'sourcing' }, A), 'sourcing');
+});

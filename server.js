@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
-const { hashPw, checkPw, sign, verify, cookies } = require('./auth');
+const { roleOf, hashPw, checkPw, sign, verify, cookies } = require('./auth');
 const { feed, unread, partnerKey } = require('./notes');
 
 const DATA_DIR = path.join(__dirname, 'data');
@@ -94,7 +94,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || (() => {
     return crypto.randomBytes(32).toString('hex');
 })();
 const HOME = { admin: '/admin-dashboard.html', sourcing: '/sourcing-dashboard.html', industrial: '/industrial-dashboard.html' };
-const role = (u) => (u.type in HOME ? u.type : 'sourcing');
+const role = (u) => roleOf(u, ADMIN_EMAIL);
 
 // Lookup by email, UID or partner code (codes are case/space-insensitive).
 const findUser = (key) => {

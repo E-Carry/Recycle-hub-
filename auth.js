@@ -40,4 +40,13 @@ const cookies = (h) => Object.fromEntries((h || '').split(';')
   .map((s) => s.trim()).filter(Boolean)
   .map((s) => { const i = s.indexOf('='); return [s.slice(0, i), decodeURIComponent(s.slice(i + 1))]; }));
 
-module.exports = { hashPw, checkPw, sign, verify, cookies };
+// Admin needs both the stored type AND the one configured admin email, so an account
+// whose type somehow became 'admin' (DB edit, future bug) still gets no admin access.
+const ROLES = ['sourcing', 'industrial'];
+function roleOf(u, adminEmail) {
+  const email = String(u.email || '').toLowerCase();
+  if (u.type === 'admin') return email && email === String(adminEmail).toLowerCase() ? 'admin' : 'sourcing';
+  return ROLES.includes(u.type) ? u.type : 'sourcing';
+}
+
+module.exports = { roleOf, hashPw, checkPw, sign, verify, cookies };
