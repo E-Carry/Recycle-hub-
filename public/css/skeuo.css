@@ -15,6 +15,8 @@
   --sk-well: inset 0 2px 3px rgba(70,52,28,.16), inset 0 0 0 1px rgba(70,52,28,.10), 0 1px 0 rgba(255,255,255,.9);
   --sk-paper: linear-gradient(180deg, var(--sk-paper-hi), var(--sk-paper-lo));
   --sk-gloss-green: linear-gradient(180deg, #3fbf8c 0%, #13905f 48%, #0a7a50 52%, #086a45 100%);
+  --sk-key: linear-gradient(110deg, transparent 42%, rgba(255,255,255,.32) 50%, transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.38) 0%, rgba(255,255,255,.10) 48%, rgba(0,0,0,.04) 52%, rgba(0,0,0,.20) 100%);
   --sk-gloss-cream: linear-gradient(180deg, #ffffff 0%, #f6f1e8 50%, #ece5d8 100%);
   --sk-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .16 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --sk-brushed: repeating-linear-gradient(90deg, rgba(255,255,255,.35) 0 1px, rgba(0,0,0,.035) 1px 2px, transparent 2px 3px, rgba(255,255,255,.12) 3px 4px);
@@ -94,20 +96,19 @@ html body .form-control:focus, html body .modal-input:focus, html body .calc-inp
 
 /* Primary buttons: glossy key in the page's accent (--acc: green sourcing, blue industrial;
    admin has none, so green) with a hard bottom lip; press sinks 2px */
-html body .btn-primary, html body .btn-primary-solid, html body .btn-green, html body .rh-btn.pri, html body .btn-buy {
+html body .btn-primary, html body .btn-primary-solid, html body .btn-green, html body .rh-btn.pri, html body .btn-buy, html body .rh-btn-primary, html body .btn-submit, html body #signinBtn, html body .btn-main.btn-next, html body .btn-main.btn-green, html body .card-btn, html body .send-btn, html body .btn-cyan {
   background-color: var(--acc, #0b7d52);
-  background-image: linear-gradient(110deg, transparent 42%, rgba(255,255,255,.32) 50%, transparent 58%),
-    linear-gradient(180deg, rgba(255,255,255,.38) 0%, rgba(255,255,255,.10) 48%, rgba(0,0,0,.04) 52%, rgba(0,0,0,.20) 100%);
+  background-image: var(--sk-key);
   background-size: 250% 100%, 100% 100%; background-position: 200% 0, 0 0; background-repeat: no-repeat;
   color: #fff; border: 1px solid rgba(0,0,0,.28);
   text-shadow: 0 -1px 0 rgba(0,0,0,.28);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 2px 0 rgba(0,0,0,.32), 0 5px 10px -3px rgba(0,0,0,.35);
   transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
 }
-html body .btn-primary:hover, html body .btn-primary-solid:hover, html body .btn-green:hover, html body .rh-btn.pri:hover, html body .btn-buy:hover {
+html body .btn-primary:hover, html body .btn-primary-solid:hover, html body .btn-green:hover, html body .rh-btn.pri:hover, html body .btn-buy:hover, html body .rh-btn-primary:hover, html body .btn-submit:hover, html body #signinBtn:hover, html body .btn-main.btn-next:hover, html body .btn-main.btn-green:hover, html body .card-btn:hover, html body .send-btn:hover, html body .btn-cyan:hover {
   filter: brightness(1.06); animation: sk-shine .9s cubic-bezier(.22,1,.36,1);
 }
-html body .btn-primary:active, html body .btn-primary-solid:active, html body .btn-green:active, html body .rh-btn.pri:active, html body .btn-buy:active {
+html body .btn-primary:active, html body .btn-primary-solid:active, html body .btn-green:active, html body .rh-btn.pri:active, html body .btn-buy:active, html body .rh-btn-primary:active, html body .btn-submit:active, html body #signinBtn:active, html body .btn-main.btn-next:active, html body .btn-main.btn-green:active, html body .card-btn:active, html body .send-btn:active, html body .btn-cyan:active {
   transform: translateY(2px);
   box-shadow: inset 0 2px 4px rgba(0,0,0,.25), 0 0 0 transparent, 0 1px 2px rgba(0,0,0,.25);
 }
@@ -115,17 +116,17 @@ html body .btn-primary:disabled, html body .btn-buy:disabled { filter: grayscale
 @keyframes sk-shine { from { background-position: 200% 0, 0 0; } to { background-position: -100% 0, 0 0; } }
 
 /* Secondary buttons: domed cream keys */
-html body .btn-sm:not(.btn-green), html body .btn-ghost, html body .row-btn, html body .filter-pill, html body .tab-btn, html body .mode-btn, html body .rh-btn:not(.pri), html body .tb-menu, html body .nav-toggle, html body .rh-bell, html body .bridge-btn {
+html body .btn-sm:not(.btn-green):not(.btn-cyan), html body .btn-ghost, html body .row-btn, html body .filter-pill, html body .tab-btn, html body .mode-btn, html body .rh-btn:not(.pri), html body .tb-menu, html body .nav-toggle, html body .rh-bell, html body .bridge-btn, html body .rh-btn-secondary, html body .btn-secondary, html body .btn-nav {
   background: var(--sk-gloss-cream);
   border: 1px solid rgba(92,72,44,.24);
   box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(92,72,44,.18), 0 2px 4px -1px rgba(70,52,28,.18);
   text-shadow: 0 1px 0 rgba(255,255,255,.8);
   transition: transform .08s ease, box-shadow .08s ease, background .15s ease;
 }
-html body .btn-sm:not(.btn-green):hover, html body .btn-ghost:hover, html body .row-btn:hover, html body .filter-pill:hover, html body .tab-btn:hover, html body .rh-btn:not(.pri):hover, html body .rh-bell:hover {
+html body .btn-sm:not(.btn-green):not(.btn-cyan):hover, html body .btn-ghost:hover, html body .row-btn:hover, html body .filter-pill:hover, html body .tab-btn:hover, html body .rh-btn:not(.pri):hover, html body .rh-bell:hover, html body .rh-btn-secondary:hover, html body .btn-secondary:hover, html body .btn-nav:hover {
   background: linear-gradient(180deg, #fff, #f9f5ee 50%, #f0e9dd);
 }
-html body .btn-sm:not(.btn-green):active, html body .btn-ghost:active, html body .row-btn:active, html body .filter-pill:active, html body .tab-btn:active, html body .rh-btn:not(.pri):active, html body .rh-bell:active {
+html body .btn-sm:not(.btn-green):not(.btn-cyan):active, html body .btn-ghost:active, html body .row-btn:active, html body .filter-pill:active, html body .tab-btn:active, html body .rh-btn:not(.pri):active, html body .rh-bell:active, html body .rh-btn-secondary:active, html body .btn-secondary:active, html body .btn-nav:active {
   transform: translateY(1px);
   box-shadow: inset 0 2px 3px rgba(70,52,28,.20), 0 0 0 transparent;
 }
@@ -179,7 +180,7 @@ html body .spark i:not(.z) {
 html body .rio-launch { box-shadow: 0 3px 0 #04432d, 0 10px 22px -6px rgba(4,67,45,.55); }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .btn-primary:hover, html body .btn-primary-solid:hover, html body .btn-green:hover, html body .rh-btn.pri:hover, html body .btn-buy:hover { animation: none; }
+  html body .btn-primary:hover, html body .btn-primary-solid:hover, html body .btn-green:hover, html body .rh-btn.pri:hover, html body .btn-buy:hover, html body .rh-btn-primary:hover, html body .btn-submit:hover, html body #signinBtn:hover, html body .btn-main.btn-next:hover, html body .btn-main.btn-green:hover, html body .card-btn:hover, html body .send-btn:hover, html body .btn-cyan:hover { animation: none; }
 }
 
 /* Logo tile: bevelled enamel badge */
@@ -199,3 +200,77 @@ html body .sidebar .rh-ind:not(.h) {
 /* Stock / progress meters: recessed track, glossy fill */
 html body .meter { background: linear-gradient(180deg, #d9d1c2, #e9e3d8); box-shadow: inset 0 1px 2px rgba(70,52,28,.30), 0 1px 0 rgba(255,255,255,.9); height: 8px; }
 html body .meter > i { background-image: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 55%, rgba(0,0,0,.12)); }
+
+/* ── Stage 2: landing, sign-in, registration, terms, Rio ─────────────────────
+   Those pages build surfaces from their own token names; re-point them too. */
+:root {
+  --line: rgba(92,72,44,.15); --line-2: rgba(92,72,44,.26);
+  --border: rgba(92,72,44,.15); --border-2: rgba(92,72,44,.26);
+  --bg: var(--sk-linen); --surface: var(--sk-paper-hi); --surface-2: #f1ebe1;
+  --panel: var(--sk-paper-hi); --panel-2: #f4efe6;
+  --text: var(--sk-ink); --text-2: var(--sk-ink-2); --text-3: var(--sk-ink-3); --text-muted: var(--sk-ink-2); --muted: var(--sk-ink-3);
+  --sh-1: var(--sk-raise); --sh-2: var(--sk-raise-hi); --sh-3: var(--sk-raise-hi);
+  --shadow-sm: var(--sk-raise); --shadow: var(--sk-raise-hi);
+}
+
+/* Raised paper surfaces (page-scoped so dashboard classes with the same names are untouched) */
+html body .hero .pk, html body .hero .chip, html body #platform.trust, html body #how .step, html body .roles .role,
+html body #matGrid .mat, html body #rates.panel, html body .qa,
+html body .pt-card, html body .wz, html body .side .panel,
+html body .section-card, html body .signature-exec-card,
+html body .rail-card, html body .chip-btn {
+  background-color: var(--sk-paper-hi);
+  background-image: var(--sk-paper);
+  border-color: var(--sk-edge);
+  box-shadow: var(--sk-raise);
+}
+html body #how .step:hover, html body .roles .role:hover, html body #matGrid .mat:hover, html body .pt-card:hover, html body .chip-btn:hover { box-shadow: var(--sk-raise-hi); }
+/* login: preview card on the green panel, form column on a paper sheet */
+html body .pv { background: var(--sk-paper); box-shadow: inset 0 1px 0 #fff, 0 24px 48px -20px rgba(2,44,34,.65); }
+html body .tick { background: linear-gradient(180deg, #f6f2ea, #ece5d8); box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(92,72,44,.10); }
+
+/* Sticky top navs: cream strip */
+html body .nav.scrolled, html body .top-nav, html body .chat-top {
+  background: linear-gradient(180deg, rgba(253,251,247,.97), rgba(243,238,229,.97));
+  border-bottom-color: rgba(70,52,28,.18);
+  box-shadow: 0 1px 0 rgba(255,255,255,.8), 0 6px 12px -10px rgba(70,52,28,.35);
+}
+
+/* Inputs pressed into the page */
+html body .field-input, html body .form-input, html body .form-select, html body .form-textarea, html body .typed-sig-input {
+  background: linear-gradient(180deg, #f3eee5, #fbf9f5);
+  border-color: rgba(92,72,44,.22);
+  box-shadow: var(--sk-well);
+}
+html body .field-input:focus, html body .form-input:focus, html body .form-select:focus, html body .form-textarea:focus, html body .typed-sig-input:focus {
+  background: #fffdf9; border-color: #0b7d52;
+  box-shadow: inset 0 2px 3px rgba(70,52,28,.12), 0 0 0 3px rgba(16,185,129,.22);
+}
+
+/* Segmented switches: a recessed track with a raised key that slides */
+html body .seg, html body .sig-mode-selector { background: linear-gradient(180deg, #e4dccd, #eee8dd); border-color: rgba(92,72,44,.18); box-shadow: var(--sk-well); }
+html body .seg-ind, html body .sig-mode-selector::before { background: var(--sk-gloss-cream); box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(70,52,28,.25), 0 3px 6px -2px rgba(70,52,28,.25); }
+html body .role-tab, html body .sig-mode-btn { text-shadow: 0 1px 0 rgba(255,255,255,.7); }
+
+/* Progress tracks: recessed groove, glossy fill */
+html body .prog-track { background: linear-gradient(180deg, #d9d1c2, #e9e3d8); box-shadow: inset 0 1px 2px rgba(70,52,28,.30), 0 1px 0 rgba(255,255,255,.9); }
+/* gloss via inset shadow so each page keeps its own fill colour */
+html body .prog-fill { box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(0,0,0,.15); }
+
+/* Upload slots and the terms dock */
+html body .upload-card:not(.uploaded) { background: linear-gradient(180deg, #f1ebe1, #f8f4ee); box-shadow: inset 0 1px 3px rgba(70,52,28,.13), 0 1px 0 rgba(255,255,255,.9); }
+html body .accept-dock { background: linear-gradient(180deg, rgba(253,251,247,.97), rgba(243,238,229,.97)); box-shadow: inset 0 1px 0 #fff, 0 -6px 12px -10px rgba(70,52,28,.35); }
+html body .toc-link:hover { background: rgba(255,255,255,.55); }
+
+/* accent per page for the shared glossy primary: blue on industrial flows, card colour on the chooser */
+html body .btn-main.btn-next { --acc: var(--cyan); }
+html body .btn-main.btn-green { --acc: var(--green); }
+html body .pt-card .card-btn { --acc: var(--c, #047857); }
+html body .btn-cyan { --acc: var(--cyan); }
+/* register chooser: the page sets background on .pt-card.sourcing / :hover (3 classes), so re-gloss at that weight */
+html body .pt-card.sourcing .card-btn, html body .pt-card:hover .card-btn { background-color: var(--acc); background-image: var(--sk-key); }
+/* Rio: composer fade and header were hard-coded white */
+html body .composer-wrap { background: linear-gradient(to bottom, rgba(227,219,204,0), var(--sk-linen) 18px); }
+
+/* Short pages (phone login) let the root show below body: paint it linen too. */
+html:root { background-color: var(--sk-linen); }
